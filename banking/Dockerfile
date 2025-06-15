@@ -17,5 +17,5 @@ RUN mvn clean install -DskipTests -pl banking -am
 FROM eclipse-temurin:21-alpine
 WORKDIR /app
 COPY --from=build /build/banking/target/*.jar app.jar
-EXPOSE 8082
+EXPOSE 8001
 ENTRYPOINT ["java", "-jar", "app.jar"]
