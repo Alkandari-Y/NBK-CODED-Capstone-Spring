@@ -41,6 +41,22 @@ services:
     volumes:
       - maven_cache:/root/.m2
 
+  recommendation:
+    build:
+      context: .
+      dockerfile: recommendation/Dockerfile
+    ports:
+      - "${RECOMMENDATION_SERVER_PORT}:8002"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+      - authentication
+      - banking
+    volumes:
+      - maven_cache:/root/.m2
+
   minio:
     image: minio/minio@sha256:a1ea29fa28355559ef137d71fc570e508a214ec84ff8083e39bc5428980b015e
     container_name: minio

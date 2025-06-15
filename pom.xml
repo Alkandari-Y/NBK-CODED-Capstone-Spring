@@ -25,6 +25,7 @@
         <module>authentication</module>
         <module>banking</module>
         <module>common</module>
+        <module>recommendation</module>
     </modules>
     <scm>
         <connection/>
