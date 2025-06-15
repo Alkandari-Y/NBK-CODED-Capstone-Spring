@@ -26,6 +26,7 @@
         <module>banking</module>
         <module>common</module>
         <module>recommendation</module>
+        <module>notification</module>
     </modules>
     <scm>
         <connection/>

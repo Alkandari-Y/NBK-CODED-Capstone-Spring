@@ -57,6 +57,23 @@ services:
     volumes:
       - maven_cache:/root/.m2
 
+  notification:
+    build:
+      context: .
+      dockerfile: notification/Dockerfile
+    ports:
+      - "${NOTIFICATION_SERVER_PORT}:8003"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+      - authentication
+      - banking
+      - recommendation
+    volumes:
+      - maven_cache:/root/.m2
+
   minio:
     image: minio/minio@sha256:a1ea29fa28355559ef137d71fc570e508a214ec84ff8083e39bc5428980b015e
     container_name: minio
