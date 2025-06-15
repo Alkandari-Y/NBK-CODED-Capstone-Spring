@@ -8,10 +8,10 @@ COPY common common
 
 RUN mvn dependency:go-offline -B
 
-RUN mvn clean install -DskipTests -pl recommendation -am
+RUN mvn clean install -DskipTests -pl notification -am
 
 FROM eclipse-temurin:21-alpine
 WORKDIR /app
-COPY --from=build /build/recommendation/target/*.jar app.jar
-EXPOSE 8002
+COPY --from=build /build/notification/target/*.jar app.jar
+EXPOSE 8003
 ENTRYPOINT ["java", "-jar", "app.jar"]

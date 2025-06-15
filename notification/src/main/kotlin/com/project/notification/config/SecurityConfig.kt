@@ -1,6 +1,6 @@
 package com.project.notification.config
 
-import com.project.recommendation.filters.RemoteAuthenticationFilter
+import com.project.notification.filters.RemoteAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity

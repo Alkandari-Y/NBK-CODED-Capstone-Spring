@@ -2,7 +2,7 @@ package com.project.notification.filters
 
 import com.project.common.data.responses.authentication.toUserInfoDto
 import com.project.common.security.RemoteUserPrincipal
-import com.project.recommendation.providers.JwtAuthProvider
+import com.project.notification.providers.JwtAuthProvider
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
