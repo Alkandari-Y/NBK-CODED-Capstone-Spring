@@ -1,17 +1,22 @@
 package com.project.banking.entities
 
 import jakarta.persistence.*
+import lombok.AllArgsConstructor
+import lombok.Data
+import lombok.NoArgsConstructor
+
 
 @Entity
 @Table(name = "categories")
-data class CategoryEntity(
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    val id: Long? = null,
+    private var id: Long? = null
 
     @Column(name = "name", nullable = false, unique = true)
-    val name: String = "",
-) {
-    constructor() : this(id = null, name = "")
+    private var name: String? = null
 }

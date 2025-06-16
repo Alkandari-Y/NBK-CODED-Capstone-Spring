@@ -1,44 +1,48 @@
 package com.project.banking.entities
 
 import jakarta.persistence.*
+import lombok.AllArgsConstructor
+import lombok.Data
+import lombok.NoArgsConstructor
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+
 
 @Entity
 @Table(name = "kycs")
-data class KYCEntity(
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+class KycEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    val id: Long? = null,
+    @Column(name = "id")
+    private var id: Long? = null
 
-    @Column(name = "user_id", nullable = false, unique = true)
-    val userId: Long?,
+    @Column(name = "user_id", nullable = false)
+    private var userId: Long? = null
 
-    @Column(name="first_name")
-    val firstName: String,
+    @Column(name = "first_name", nullable = false)
+    private var firstName: String? = null
 
-    @Column(name="last_name")
-    val lastName: String,
+    @Column(name = "last_name", nullable = false)
+    private var lastName: String? = null
 
     @Column(name = "date_of_birth", nullable = false)
-    val dateOfBirth: LocalDate,
+    private var dateOfBirth: LocalDate? = null
 
-    @Column(name="nationality", nullable = false)
-    val nationality: String,
+    @Column(name = "nationality", nullable = false)
+    private var nationality: String? = null
 
-    @Column(name = "salary", precision = 9, scale = 2, nullable = false)
-    val salary: BigDecimal,
-) {
-    constructor(): this(
-        id =null,
-        userId=null,
-        firstName="",
-        lastName="",
-        dateOfBirth=LocalDate.now(),
-        nationality="",
-        salary=BigDecimal(0.0),
-    )
+    @Column(name = "salary", nullable = false, precision = 8, scale = 2)
+    private var salary: BigDecimal? = null
+
+    @Column(name = "civil_id", nullable = false)
+    private var civilId: String? = null
+
+    @Column(name = "mobile_number", nullable = false)
+    private var mobileNumber: String? = null
+
+    @Column(name = "is_verified", nullable = false)
+    private var isVerified = false
 }
-

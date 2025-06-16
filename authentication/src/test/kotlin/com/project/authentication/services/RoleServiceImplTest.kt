@@ -29,7 +29,6 @@ class RoleServiceImplTest {
         username = "testuser",
         password = "hashed",
         email = "test@example.com",
-        civilId = "12345678",
         roles = mutableSetOf(defaultRole),
         isActive = true
     )

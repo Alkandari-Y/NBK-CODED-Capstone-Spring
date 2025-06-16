@@ -38,7 +38,6 @@ class UserServiceImplTest {
             username = "testuser",
             password = "encodedPassword",
             email = "test@example.com",
-            civilId = "11111111",
             isActive = false,
             roles = mutableSetOf(defaultRole)
         )
@@ -49,11 +48,10 @@ class UserServiceImplTest {
         val request = RegisterCreateRequest(
             username = testUser.username,
             password = "plainPassword",
-            email = testUser.email,
-            civilId = testUser.civilId
+            email = testUser.email
         )
 
-        every { userRepository.existsByUsernameOrCivilIdOrEmail(any(), any(), any()) } returns false
+        every { userRepository.existsByUsernameOrEmail(any(), any()) } returns false
         every { passwordEncoder.encode("plainPassword") } returns "encodedPassword"
         every { roleService.getDefaultRole() } returns defaultRole
         every { userRepository.save(any()) } returns testUser
@@ -76,7 +74,7 @@ class UserServiceImplTest {
             civilId = "22222222"
         )
 
-        every { userRepository.existsByUsernameOrCivilIdOrEmail(any(), any(), any()) } returns true
+        every { userRepository.existsByUsernameOrEmail(any(), any()) } returns true
 
         assertThrows(UserExistsException::class.java) {
             userService.createUser(request)
@@ -89,10 +87,9 @@ class UserServiceImplTest {
             username = testUser.username,
             password = "plainPassword",
             email = testUser.email,
-            civilId = testUser.civilId
         )
 
-        every { userRepository.existsByUsernameOrCivilIdOrEmail(any(), any(), any()) } returns false
+        every { userRepository.existsByUsernameOrEmail(any(), any()) } returns false
         every { passwordEncoder.encode("plainPassword") } returns "encodedPassword"
         every { roleService.getDefaultRole() } returns defaultRole
         every { userRepository.save(any()) } answers { firstArg() }
@@ -153,10 +150,9 @@ class UserServiceImplTest {
             username = testUser.username,
             password = "rawPassword",
             email = testUser.email,
-            civilId = testUser.civilId
         )
 
-        every { userRepository.existsByUsernameOrCivilIdOrEmail(any(), any(), any()) } returns false
+        every { userRepository.existsByUsernameOrEmail(any(), any()) } returns false
         every { passwordEncoder.encode("rawPassword") } returns "encodedPassword"
         every { roleService.getDefaultRole() } returns defaultRole
         every { userRepository.save(capture(slot())) } returns testUser
@@ -174,10 +170,9 @@ class UserServiceImplTest {
             username = testUser.username,
             password = "anyPassword",
             email = testUser.email,
-            civilId = testUser.civilId
         )
 
-        every { userRepository.existsByUsernameOrCivilIdOrEmail(any(), any(), any()) } returns false
+        every { userRepository.existsByUsernameOrEmail(any(), any()) } returns false
         every { passwordEncoder.encode(any()) } returns "encodedPassword"
         every { roleService.getDefaultRole() } returns defaultRole
         every { userRepository.save(any()) } returns testUser
