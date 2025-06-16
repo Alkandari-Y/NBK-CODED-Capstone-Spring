@@ -55,7 +55,6 @@ class UsersApiControllerTest {
             username = "testuser",
             email = "test@example.com",
             password = "password",
-            civilId = "12345678",
             isActive = false,
             roles = mutableSetOf(testRole)
         )

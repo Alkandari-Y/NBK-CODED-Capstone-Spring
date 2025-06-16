@@ -16,9 +16,6 @@ data class UserEntity(
     @Column(name="username", nullable = false, unique = true)
     val username: String = "",
 
-    @Column(name="civil_id", nullable = false, unique = true)
-    val civilId: String = "",
-
     @Column(name="email", nullable = false, unique = true)
     val email: String = "",
 
@@ -47,7 +44,6 @@ data class UserEntity(
     constructor() : this(
         id = null,
         username = "",
-        civilId = "",
         email = "",
         password = "",
         isActive = false,

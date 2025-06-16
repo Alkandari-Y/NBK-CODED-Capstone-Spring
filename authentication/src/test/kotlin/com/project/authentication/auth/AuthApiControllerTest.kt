@@ -98,7 +98,6 @@ class AuthApiControllerTest {
             username = "testuser",
             password = encodedPassword,
             email = "test@example.com",
-            civilId = UUID.randomUUID().toString().take(8),
             isActive = true,
             roles = mutableSetOf(roleUser)
         )
@@ -120,8 +119,7 @@ class AuthApiControllerTest {
         val registerRequest = RegisterCreateRequest(
             username = "testuser",
             password = "passworD123",
-            email = "test@example.com",
-            civilId = "11111111"
+            email = "test@example.com"
         )
 
         every { userService.createUser(any()) } returns testUser
@@ -151,8 +149,7 @@ class AuthApiControllerTest {
         val registerRequest = RegisterCreateRequest(
             username = "testuser",
             password = "passworD123",
-            email = "test@example.com",
-            civilId = "11111111"
+            email = "test@example.com"
         )
 
         every { userService.createUser(any()) } throws UserExistsException("User already exists")

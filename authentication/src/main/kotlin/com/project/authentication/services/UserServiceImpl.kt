@@ -19,7 +19,7 @@ class UserServiceImpl(
     private val mailService: MailService
 ): UserService {
     override fun createUser(user: RegisterCreateRequest): UserEntity {
-        val usernameExists = userRepository.existsByUsernameOrCivilIdOrEmail(user.username, user.civilId, user.email)
+        val usernameExists = userRepository.existsByUsernameOrEmail(user.username, user.email)
 
         if (usernameExists) {
             throw UserExistsException("User already exists", code = ErrorCode.USER_ALREADY_EXISTS)

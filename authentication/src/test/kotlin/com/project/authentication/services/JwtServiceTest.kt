@@ -19,7 +19,6 @@ class JwtServiceTest {
         username = "testuser",
         password = "password",
         email = "test@example.com",
-        civilId = "1234567890",
         isActive = true,
         roles = mutableSetOf()
     )

@@ -15,7 +15,4 @@ data class RegisterCreateRequest(
     @field:NotBlank(message = "Username is required")
     @field:Email(message = "Email is not valid")
     val email: String,
-
-    @field:NotBlank(message = "Civil Id is required")
-    val civilId: String,
 )

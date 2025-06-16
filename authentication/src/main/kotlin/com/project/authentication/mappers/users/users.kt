@@ -11,7 +11,6 @@ fun RegisterCreateRequest.toEntity(
 ) = UserEntity(
     username = this.username,
     password = hashedPassword,
-    civilId = this.civilId,
     email = this.email,
     isActive = false,
     roles = roles.toMutableSet()
