@@ -15,8 +15,8 @@ class CategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private var id: Long? = null
+     var id: Long? = null
 
     @Column(name = "name", nullable = false, unique = true)
-    private var name: String? = null
+     var name: String? = null
 }

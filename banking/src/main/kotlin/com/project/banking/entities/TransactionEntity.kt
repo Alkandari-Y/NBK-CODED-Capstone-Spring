@@ -1,53 +1,40 @@
 package com.project.banking.entities
 
-import com.fasterxml.jackson.annotation.JsonBackReference
 import com.project.common.enums.TransactionType
 import jakarta.persistence.*
-import org.hibernate.annotations.CreationTimestamp
+import lombok.AllArgsConstructor
+import lombok.Data
+import lombok.NoArgsConstructor
 import java.math.BigDecimal
-import java.time.Instant
+import java.time.LocalDateTime
+
 
 @Entity
 @Table(name = "transactions")
-data class TransactionEntity(
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+class TransactionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    val id: Long? = null,
+     var id: Long? = null
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "source_account", nullable = false)
-    @JsonBackReference
-    val sourceAccount: AccountEntity?,
+    @Column(name = "source_account", nullable = false)
+     var sourceAccount: String? = null
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "destination_account", nullable = false)
-    @JsonBackReference
-    val destinationAccount: AccountEntity?,
+    @Column(name = "destination_account", nullable = false)
+     var destinationAccount: String? = null
 
-    @Column(name = "amount", nullable = false)
-    val amount: BigDecimal,
+    @Column(name = "amount", nullable = false, precision = 9, scale = 3)
+     var amount: BigDecimal? = null
 
-    @CreationTimestamp
     @Column(name = "created_at", nullable = false)
-    val createdAt: Instant = Instant.now(),
+     var createdAt: LocalDateTime? = null
+
+    @Column(name = "category_id", nullable = false)
+     var categoryId: Int? = null
 
     @Column(name = "type", nullable = false)
-    @Enumerated(EnumType.ORDINAL)
-    val type: TransactionType? = TransactionType.PAYMENT,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    val category: CategoryEntity? = null,
-    ) {
-    constructor() : this(
-        id = null,
-        sourceAccount = null,
-        destinationAccount = null,
-        amount = BigDecimal.ZERO,
-        createdAt = Instant.now(),
-        category = null,
-        type = TransactionType.TRANSFER
-    )
+     var transactionType: TransactionType = TransactionType.TRANSFER
 }
-
