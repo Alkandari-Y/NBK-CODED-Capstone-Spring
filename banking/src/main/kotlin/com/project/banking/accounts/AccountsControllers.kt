@@ -107,7 +107,7 @@ class AccountsControllers(
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
 
-        if (account.active.not() && isAdmin.not()) {
+        if (account.isActive.not() && isAdmin.not()) {
             throw APIException(
                 message = "Account is not active anymore",
                 httpStatus = HttpStatus.BAD_REQUEST,
@@ -118,32 +118,7 @@ class AccountsControllers(
         return ResponseEntity(account.toBasicResponse(), HttpStatus.OK)
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/clients/{clientId}")
-    fun getUserAccounts(@PathVariable("clientId") clientId: Long): UserAccountsResponse {
-        val kyc = kycService.findKYCByUserId(clientId)
-            ?: throw AccountNotFoundException("User not found")
 
-        val accounts = accountService.getAllAccountsByUserId(clientId)
-            .map {
-                AccountBalanceCheck(
-                    accountId = it.id!!,
-                    accountNumber = it.accountNumber,
-                    balance = it.balance,
-                    accountType = it.accountType.name,
-                )
-            }
-
-        return UserAccountsResponse(
-            userId = kyc.userId!!,
-            firstName = kyc.firstName,
-            lastName = kyc.lastName,
-            dateOfBirth = kyc.dateOfBirth,
-            salary = kyc.salary,
-            nationality = kyc.nationality,
-            accounts = accounts
-        )
-    }
 
     @GetMapping("/clients")
     fun getAccountDetails(

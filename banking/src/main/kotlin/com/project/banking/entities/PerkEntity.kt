@@ -1,0 +1,43 @@
+package com.project.banking.entities
+
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.Table
+import lombok.AllArgsConstructor
+import lombok.Data
+import lombok.NoArgsConstructor
+import java.math.BigDecimal
+
+
+@Entity
+@Table(name = "perks")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+class PerkEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+     var id: Long? = null
+
+    @Column(name = "business_id", nullable = false)
+     var businessId: Long? = null
+
+    @Column(name = "type", nullable = false)
+     var type: Long? = null
+
+    @Column(name = "min_payment", nullable = false, precision = 8, scale = 2)
+     var minPayment: BigDecimal? = null
+
+    @Column(name = "rewards_xp", nullable = false)
+     var rewardsXp: Long? = null
+
+    @Column(name = "perk_amount", nullable = false, precision = 8, scale = 2)
+     var perkAmount: BigDecimal? = null
+
+    @Column(name = "is_tier_based", nullable = false)
+     var isTierBased = false
+}

@@ -29,7 +29,6 @@ CREATE TABLE IF NOT EXISTS  "xp_tiers"(
     "perk_amount_percentage" BIGINT NOT NULL
 );
 
-
 CREATE TABLE IF NOT EXISTS "user_xp"(
     "id" SERIAL PRIMARY KEY,
     "user_id" BIGINT NOT NULL,
@@ -64,8 +63,6 @@ CREATE TABLE IF NOT EXISTS "accounts"
     REFERENCES "account_products" ("id") ON DELETE CASCADE
     );
 
-
-
 CREATE TABLE IF NOT EXISTS "business_partners"(
     "id"            SERIAL PRIMARY KEY,
     "admin_user"    BIGINT NOT NULL,
@@ -75,15 +72,6 @@ CREATE TABLE IF NOT EXISTS "business_partners"(
     CONSTRAINT "business_partners_account_id_foreign"
         FOREIGN KEY ("account_id")
             REFERENCES "accounts" ("id") ON DELETE CASCADE
-);
-
-CREATE TABLE IF NOT EXISTS "events"(
-    "id" SERIAL PRIMARY KEY,
-    "type" BIGINT NOT NULL,
-    "start_date" DATE NOT NULL,
-    "end_date" DATE NOT NULL,
-    "description" VARCHAR(255) NOT NULL,
-    "google_map_url" VARCHAR(255) NULL
 );
 
 CREATE TABLE IF NOT EXISTS "perks"(
@@ -98,7 +86,6 @@ CREATE TABLE IF NOT EXISTS "perks"(
         FOREIGN KEY("business_id")
             REFERENCES "business_partners"("id")
 );
-
 
 CREATE TABLE IF NOT EXISTS "account_perks"(
     "id" SERIAL PRIMARY KEY,
@@ -120,7 +107,7 @@ CREATE TABLE IF NOT EXISTS "transactions"
     "amount"              DECIMAL(9, 3) NOT NULL,
     "created_at"          TIMESTAMP     NOT NULL,
     "category_id"         INT           NOT NULL,
-    "type"                INT           NOT NULL,
+    "transaction_type"                INT           NOT NULL,
     CONSTRAINT "transaction_category_id_foreign"
         FOREIGN KEY ("category_id")
             REFERENCES "categories" ("id"),
