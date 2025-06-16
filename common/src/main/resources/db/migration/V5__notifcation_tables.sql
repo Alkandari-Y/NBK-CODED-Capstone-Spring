@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS "notifications"(
     "created_at" TIMESTAMP NOT NULL,
     "delivered" BOOLEAN NOT NULL,
     "partner_id" BIGINT NULL,
-    "event_id" BIGINT NULL,
+    "event_id" BIGINT NULL, -- is this for seasonal events? because we also have a promo id below?
     "recommendation_id" BIGINT NULL,
     "promotion_id" BIGINT NULL,
     "trigger_type" INT

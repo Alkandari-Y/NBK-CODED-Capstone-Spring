@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS "recommendations"(
      "id"                   SERIAL PRIMARY KEY,
      "category_id" BIGINT NOT NULL,
-     "event_id" BIGINT NULL,
+     "promotion_id" BIGINT NULL, -- UPDATED!!!
      "user_id" BIGINT NOT NULL,
      "partner_id" BIGINT NULL,
      "rec_type" INT NOT NULL,
@@ -26,10 +26,10 @@ CREATE TABLE IF NOT EXISTS "fav_categories"(
      UNIQUE ("user_id", "category_id")
 );
 
-CREATE TABLE IF NOT EXISTS "event_categories"(
+CREATE TABLE IF NOT EXISTS "promotion_categories"( -- UPDATED!!!
    "id"                     SERIAL PRIMARY KEY,
    "category_id"            BIGINT NOT NULL,
-   "event_id"               BIGINT NOT NULL
+   "promotion_id"               BIGINT NOT NULL -- UPDATED!!!
 );
 
 CREATE TABLE IF NOT EXISTS "promotions"(
