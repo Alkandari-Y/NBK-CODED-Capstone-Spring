@@ -325,7 +325,6 @@ class AuthApiControllerTest {
             username = "",
             password = "123",
             email = "invalid-email",
-            civilId = ""
         )
 
         mockMvc.perform(

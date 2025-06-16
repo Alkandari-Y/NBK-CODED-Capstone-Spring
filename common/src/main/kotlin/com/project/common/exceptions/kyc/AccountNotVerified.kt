@@ -1,4 +1,4 @@
-package com.project.common.exceptions.kycs
+package com.project.common.exceptions.kyc
 
 import com.project.common.exceptions.APIException
 import com.project.common.enums.ErrorCode
