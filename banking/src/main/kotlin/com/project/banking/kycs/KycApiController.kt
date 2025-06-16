@@ -5,7 +5,7 @@ import com.project.common.data.requests.kyc.KYCRequest
 import com.project.common.data.responses.kyc.KYCResponse
 import com.project.banking.services.KYCService
 import com.project.common.data.responses.authentication.UserInfoDto
-import com.project.common.exceptions.kycs.KycNotFoundException
+import com.project.common.exceptions.kyc.KycNotFoundException
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
