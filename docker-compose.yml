@@ -3,7 +3,7 @@ services:
     image: postgis/postgis:17-3.4
     container_name: gis_postgres
     ports:
-      - "5432:5432"
+      - "9002:9002"
     restart: always
     environment:
       POSTGRES_USER: postgres
