@@ -5,7 +5,7 @@ import java.time.LocalDate
 
 @Entity
 @Table(name = "promotions")
-data class PromotionsEntity(
+data class PromotionEntity(
     @Column(name = "id", nullable = true)
     var id: Long?,
 

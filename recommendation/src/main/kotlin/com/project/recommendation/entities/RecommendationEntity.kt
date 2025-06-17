@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(name = "recommendations")
-data class RecommendationsEntity(
+data class RecommendationEntity(
     @Column(name = "id", nullable = true)
     var id: Long?,
 

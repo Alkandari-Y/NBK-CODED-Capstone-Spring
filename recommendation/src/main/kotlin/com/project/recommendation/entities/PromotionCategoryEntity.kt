@@ -4,7 +4,7 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "event_categories")
-data class PromotionCategoriesEntity(
+data class PromotionCategoryEntity(
     @Column(name = "id", nullable = true)
     var id: Long?,
 

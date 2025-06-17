@@ -1,4 +1,4 @@
-package com.project.recommendation.entities.seasonal
+package com.project.recommendation.seasonal
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
