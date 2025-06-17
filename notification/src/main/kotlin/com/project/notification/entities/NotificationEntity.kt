@@ -1,6 +1,7 @@
 package com.project.notification.entities
 
 import com.project.common.enums.NotificationDeliveryType
+import com.project.common.enums.NotificationTriggerType
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -40,5 +41,5 @@ data class NotificationEntity(
     var promotionId: Long? = null,
 
     @Column(name = "trigger_type")
-    var triggerType: Int? = null
+    var triggerType: NotificationTriggerType? = null
 )
