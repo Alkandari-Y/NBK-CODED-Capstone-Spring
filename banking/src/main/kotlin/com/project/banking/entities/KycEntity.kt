@@ -32,10 +32,10 @@ data class KycEntity (
      var salary: BigDecimal? = null,
 
     @Column(name = "civil_id", nullable = false)
-     var civilId: String? = null,
+     var civilId: String = "",
 
     @Column(name = "mobile_number", nullable = false)
-     var mobileNumber: String? = null,
+     var mobileNumber: String = "",
 
     @Column(name = "is_verified", nullable = false)
      var isVerified: Boolean = false,

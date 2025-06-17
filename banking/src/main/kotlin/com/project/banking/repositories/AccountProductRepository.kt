@@ -1,4 +1,9 @@
 package com.project.banking.repositories
 
-interface AccountProductRepository {
+import com.project.banking.entities.AccountProductEntity
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
+
+@Repository
+interface AccountProductRepository: JpaRepository<AccountProductEntity, Long> {
 }

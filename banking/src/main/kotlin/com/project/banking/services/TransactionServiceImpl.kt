@@ -7,7 +7,7 @@ import com.project.common.exceptions.accounts.InvalidTransferException
 import com.project.banking.entities.TransactionEntity
 import com.project.banking.repositories.AccountRepository
 import com.project.banking.repositories.TransactionRepository
-import com.project.common.data.responses.transactions.TransactionDetails
+import com.project.banking.transactions.dtos.TransactionDetails
 import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.accounts.TransactionResponse
 import com.project.common.enums.TransactionType
@@ -36,7 +36,7 @@ class TransactionServiceImpl(
             throw AccountNotFoundException("One or both accounts not found.")
         }
 
-        if (sourceAccount.active.not() || destinationAccount.active.not()) {
+        if (sourceAccount.isActive.not() || destinationAccount.isActive.not()) {
             throw InvalidTransferException(
                 "Cannot transfer with inactive account.",
                 code = ErrorCode.INVALID_TRANSFER
@@ -67,7 +67,7 @@ class TransactionServiceImpl(
                 destinationAccount = destinationAccount,
                 amount = newTransaction.amount.setScale(3),
                 category = category,
-                type = newTransaction.type ?: TransactionType.TRANSFER
+                transactionType = newTransaction.type ?: TransactionType.TRANSFER
             )
         )
 

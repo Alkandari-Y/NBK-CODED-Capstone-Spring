@@ -64,8 +64,8 @@ CREATE TABLE IF NOT EXISTS "participating_partners"(
 CREATE TABLE IF NOT EXISTS "store_locations"(
    "id" SERIAL PRIMARY KEY,
    "partner_id" BIGINT NOT NULL,
-   "longitude" DECIMAL(8, 2) NOT NULL,
-    "latitude" DECIMAL(8, 2) NOT NULL,
+   "longitude" DECIMAL(9, 3) NOT NULL,
+    "latitude" DECIMAL(9, 3) NOT NULL,
     "google_map_url" VARCHAR(255) NOT NULL,
     "country" VARCHAR(255) NOT NULL,
     "address_line_1" VARCHAR(255) NOT NULL,
@@ -84,7 +84,7 @@ CREATE INDEX idx_store_locations_location
 CREATE TABLE IF NOT EXISTS "account_scores"(
     "id" SERIAL PRIMARY KEY,
     "account_id" BIGINT NOT NULL,
-    "account_score_rating" DECIMAL(8, 2) NOT NULL,
+    "account_score_rating" DECIMAL(9, 3) NOT NULL,
     "user_id" BIGINT NOT NULL
 );
 

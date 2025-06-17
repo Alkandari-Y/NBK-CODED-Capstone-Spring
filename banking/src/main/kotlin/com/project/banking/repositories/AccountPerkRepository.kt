@@ -1,4 +1,10 @@
 package com.project.banking.repositories
 
-interface AccountPerkRepository {
+import com.project.banking.entities.AccountEntity
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
+
+
+@Repository
+interface AccountPerkRepository: JpaRepository<AccountEntity, Long> {
 }

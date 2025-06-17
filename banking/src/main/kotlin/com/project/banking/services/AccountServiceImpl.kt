@@ -4,14 +4,16 @@ import com.project.common.exceptions.accounts.AccountLimitException
 import com.project.common.exceptions.accounts.AccountNotFoundException
 import com.project.common.exceptions.accounts.AccountVerificationException
 import com.project.banking.entities.AccountEntity
-import com.project.banking.mappers.toDto
+import com.project.banking.mappers.toEntity
+import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.AccountRepository
+import com.project.common.data.requests.accounts.AccountCreateRequest
 import com.project.common.data.requests.accounts.UpdateAccountRequest
 import com.project.common.data.responses.accounts.AccountDto
 import com.project.common.data.responses.authentication.UserInfoDto
+import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
 import com.project.common.exceptions.accounts.AccountNotActiveException
 import jakarta.transaction.Transactional
-import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.CachePut
 import org.springframework.data.repository.findByIdOrNull
@@ -21,6 +23,7 @@ const val MAX_ACCOUNT_LIMIT = 3
 
 @Service
 class AccountServiceImpl(
+    private val accountProductRepository: AccountProductRepository,
     private val accountRepository: AccountRepository,
     private val mailService: MailService,
 ): AccountService {
@@ -32,21 +35,15 @@ class AccountServiceImpl(
 
     @CacheEvict(value = ["accountsByUserId"], key = "#userInfoDto.userId")
     override fun createClientAccount(
-        accountEntity: AccountEntity,
+        accountRequest: AccountCreateRequest,
         userInfoDto: UserInfoDto
     )
     : AccountEntity {
 
-        val numOfCustomerAccount = accountRepository.getAccountCountByUserId(
-            userId = userInfoDto.userId,
-            accountType = accountEntity.accountType
-        )
+        val accountProduct = accountProductRepository.findByIdOrNull(accountRequest.accountProductId)
+            ?: throw AccountProductNotFoundException()
 
-        if (numOfCustomerAccount >= MAX_ACCOUNT_LIMIT) {
-            throw AccountLimitException()
-        }
-
-        val account = accountRepository.save(accountEntity.copy(ownerId = userInfoDto.userId))
+        val account = accountRepository.save(accountRequest.toEntity(userInfoDto.userId, accountProduct))
         mailService.sendHtmlEmail(
             to = userInfoDto.username,
             subject = "Your bank account has been created",
@@ -57,15 +54,14 @@ class AccountServiceImpl(
         return account
     }
 
-    @CacheEvict(value = ["accountsByUserId"], key = "#userInfoDto.userId")
     override fun closeAccount(accountNumber: String, user: UserInfoDto) {
         accountRepository.findByAccountNumber(accountNumber)?.apply {
             if (this.ownerId != user.userId) {
                 throw AccountVerificationException()
             }
 
-            if (this.active) {
-                accountRepository.save(this.copy(active = false))
+            if (this.isActive) {
+                accountRepository.save(this.copy(isActive = false))
             }
             mailService.sendHtmlEmail(
                 to = user.email,
@@ -76,28 +72,7 @@ class AccountServiceImpl(
         }
     }
 
-    @Transactional
-    override fun updateAccount(
-        accountNumber: String,
-        userId: Long,
-        accountUpdate: UpdateAccountRequest
-    ): AccountEntity {
-        val accountToUpdate = accountRepository.findByAccountNumber(accountNumber)
-            ?: throw AccountNotFoundException()
 
-
-        if (!accountToUpdate.active) {
-            throw AccountNotActiveException(accountNumber)
-        }
-
-        val updatedAccount = accountRepository.save(
-            accountToUpdate.copy(
-                name = accountUpdate.name
-            )
-        )
-
-        return updatedAccount
-    }
 
     override fun getAccountById(accountId: Long): AccountEntity? {
         return accountRepository.findByIdOrNull(accountId)
@@ -108,7 +83,7 @@ class AccountServiceImpl(
     }
 
 
-    override fun getAllAccountsByUserId(userId: Long): List<AccountEntity> {
+    override fun getAllAccountsByUserId(userId: Long): List<AccountDto> {
         return accountRepository.findAllByOwnerId(userId)
     }
 }

@@ -19,5 +19,10 @@ data class KYCRequest(
     val salary: BigDecimal,
     @field:NotBlank
     val nationality: String,
+    @field:NotBlank(message = "Mobile number is required")
+    val mobileNumber: String,
+
+    @field:NotBlank(message = "Civil Id is required")
+    val civilId: String,
 )
 

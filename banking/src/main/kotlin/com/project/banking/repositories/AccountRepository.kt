@@ -15,29 +15,39 @@ interface AccountRepository: JpaRepository<AccountEntity, Long> {
         SELECT NEW com.project.common.data.responses.accounts.AccountDto(
         a.id,
         a.accountNumber,
-        a.name,
         a.balance,
-        a.active,
         a.ownerId,
+        a.ownerType,
+        ap.id,
         a.accountType
         )
         FROM AccountEntity a
-        WHERE a.ownerId = :ownerId AND a.active = true
+            JOIN a.accountProduct ap
+        WHERE a.ownerId = :ownerId AND a.isActive = true
     """)
     fun findByOwnerIdActive(@Param("ownerId") ownerId: Long): List<AccountDto>
 
 
     @Query("""
-        SELECT a
+        SELECT NEW com.project.common.data.responses.accounts.AccountDto(
+        a.id,
+        a.accountNumber,
+        a.balance,
+        a.ownerId,
+        a.ownerType,
+        ap.id,
+        a.accountType
+        )
         FROM AccountEntity a
-        WHERE a.ownerId = :ownerId
+            JOIN a.accountProduct ap
+        WHERE a.ownerId = :ownerId AND a.isActive = true
     """)
-    fun findAllByOwnerId(@Param("ownerId") ownerId: Long): List<AccountEntity>
+    fun findAllByOwnerId(@Param("ownerId") ownerId: Long): List<AccountDto>
 
     @Query("""
         SELECT COUNT(a) FROM AccountEntity a 
         WHERE a.ownerId = :userId 
-        AND a.active = true 
+        AND a.isActive = true 
         AND a.accountType = :accountType
     """)
     fun getAccountCountByUserId(

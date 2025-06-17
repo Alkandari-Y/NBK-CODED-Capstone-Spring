@@ -1,14 +1,13 @@
 package com.project.banking.services
 
 import com.project.common.exceptions.accounts.AccountVerificationException
-import com.project.banking.entities.KYCEntity
+import com.project.banking.entities.KycEntity
 import com.project.banking.mappers.toEntity
-import com.project.common.data.requests.kyc.KYCRequest
 import com.project.banking.repositories.KYCRepository
+import com.project.common.data.requests.kyc.KYCRequest
 import com.project.common.data.responses.authentication.UserInfoDto
 import com.project.common.enums.ErrorCode
 import com.project.common.utils.dateFormatter
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.Period
@@ -16,14 +15,13 @@ import java.time.Period
 @Service
 class KYCServiceImpl(
     private val kycRepository: KYCRepository,
-    private val applicationEventPublisher: ApplicationEventPublisher,
     private val mailService: MailService
 ): KYCService {
 
     override fun createKYCOrUpdate(
         kycRequest: KYCRequest,
         user: UserInfoDto
-    ): KYCEntity {
+    ): KycEntity {
         val existingKYC = kycRepository.findByUserId(user.userId)
 
         val newKycEntity  = existingKYC?.copy(
@@ -34,6 +32,8 @@ class KYCServiceImpl(
             },
             nationality= kycRequest.nationality,
             salary= kycRequest.salary,
+            civilId = kycRequest.civilId,
+            mobileNumber = kycRequest.mobileNumber,
         )
             ?: kycRequest.toEntity(user.userId)
 
@@ -54,7 +54,7 @@ class KYCServiceImpl(
         return savedKyc
     }
 
-    override fun findKYCByUserId(userId: Long): KYCEntity? {
+    override fun findKYCByUserId(userId: Long): KycEntity? {
         return kycRepository.findByUserId(userId)
     }
 }
