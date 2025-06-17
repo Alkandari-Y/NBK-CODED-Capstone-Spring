@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS "promotion_categories"( -- UPDATED!!!
 
 CREATE TABLE IF NOT EXISTS "promotions"(
     "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR(255) NOT NULL,
     "business_partner_id" BIGINT NOT NULL,
     "type" BIGINT NOT NULL,
     "start_date" DATE,
@@ -64,8 +65,8 @@ CREATE TABLE IF NOT EXISTS "participating_partners"(
 CREATE TABLE IF NOT EXISTS "store_locations"(
    "id" SERIAL PRIMARY KEY,
    "partner_id" BIGINT NOT NULL,
-   "longitude" DECIMAL(9, 3) NOT NULL,
-    "latitude" DECIMAL(9, 3) NOT NULL,
+   longitude DOUBLE PRECISION NOT NULL,
+   latitude DOUBLE PRECISION NOT NULL,
     "google_map_url" VARCHAR(255) NOT NULL,
     "country" VARCHAR(255) NOT NULL,
     "address_line_1" VARCHAR(255) NOT NULL,

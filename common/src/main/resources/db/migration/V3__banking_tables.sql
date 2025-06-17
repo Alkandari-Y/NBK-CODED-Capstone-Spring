@@ -87,16 +87,16 @@ CREATE TABLE IF NOT EXISTS "perks"(
             REFERENCES "business_partners"("id")
 );
 
-CREATE TABLE IF NOT EXISTS "account_perks"(
+CREATE TABLE IF NOT EXISTS "perk_categories"(
     "id" SERIAL PRIMARY KEY,
-    "account_product_id" BIGINT NOT NULL,
+    "category_id" BIGINT NOT NULL,
     "perk_id" BIGINT NOT NULL,
-    CONSTRAINT "account_perks_perk_id_foreign"
+    CONSTRAINT "perk_categories_perk_id_foreign"
         FOREIGN KEY ("perk_id")
             REFERENCES "perks" ("id") ON DELETE CASCADE,
-    CONSTRAINT "account_perks_account_product_id_foreign"
-        FOREIGN KEY ("account_product_id")
-            REFERENCES "account_products" ("id") ON DELETE CASCADE
+    CONSTRAINT "perk_categories_id_foreign"
+        FOREIGN KEY ("category_id")
+            REFERENCES "categories" ("id") ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS "transactions"

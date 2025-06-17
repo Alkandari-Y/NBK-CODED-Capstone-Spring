@@ -38,6 +38,7 @@ data class AccountProductEntity (
 
     @Column(name = "min_salary")
      var minSalary: Long? = null,
+
     @Column(name = "image")
      var image: String? = null,
 )
