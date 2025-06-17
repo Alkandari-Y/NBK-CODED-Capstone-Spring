@@ -1,17 +1,11 @@
 package com.project.banking.accounts
 
 import com.project.banking.entities.AccountEntity
-import com.project.banking.mappers.toBasicResponse
-import com.project.banking.mappers.toEntity
+import com.project.banking.mappers.toDto
 import com.project.banking.services.AccountService
-import com.project.banking.services.KYCService
 import com.project.banking.services.TransactionService
-import com.project.common.data.requests.accounts.AccountBalanceCheck
 import com.project.common.data.requests.accounts.AccountCreateRequest
-import com.project.common.data.requests.accounts.AccountResponse
 import com.project.common.data.requests.accounts.TransferCreateRequest
-import com.project.common.data.requests.accounts.UpdateAccountRequest
-import com.project.common.data.requests.accounts.UserAccountsResponse
 import com.project.common.data.responses.accounts.AccountDto
 import com.project.common.data.responses.accounts.TransactionResponse
 import com.project.common.data.responses.authentication.UserInfoDto
@@ -22,7 +16,6 @@ import com.project.common.security.RemoteUserPrincipal
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
@@ -31,15 +24,14 @@ import org.springframework.web.bind.annotation.*
 class AccountsControllers(
     private val accountService: AccountService,
     private val transactionService: TransactionService,
-    private val kycService: KYCService
 ) {
-
     @GetMapping
     fun getAllAccounts(
         @AuthenticationPrincipal user: RemoteUserPrincipal
     ): List<AccountDto> {
         return accountService.getActiveAccountsByUserId(user.getUserId())
     }
+
     @PostMapping
     fun createAccount(
         @Valid @RequestBody accountCreateRequestDto : AccountCreateRequest,
@@ -47,7 +39,7 @@ class AccountsControllers(
     ) : ResponseEntity<AccountEntity>
     {
         val account = accountService.createClientAccount(
-            accountCreateRequestDto.toEntity(),
+            accountCreateRequestDto,
             authUser,
         )
         return ResponseEntity(account, HttpStatus.CREATED)
@@ -77,28 +69,25 @@ class AccountsControllers(
         return ResponseEntity(HttpStatus.OK)
     }
 
-    @PutMapping(path=["/details/{accountNumber}"])
-    fun updateAccount(
-        @PathVariable accountNumber : String,
-        @Valid @RequestBody accountUpdate: UpdateAccountRequest,
-        @RequestAttribute("authUser") authUser: UserInfoDto,
-    ): ResponseEntity<AccountResponse>{
-        val updatedAccount = accountService.updateAccount(
-            accountNumber = accountNumber,
-            userId = authUser.userId,
-            accountUpdate = accountUpdate,
-        ).toBasicResponse()
-        return ResponseEntity(updatedAccount, HttpStatus.OK)
-    }
-
-    @GetMapping(path=["/details/{accountNumber}"])
+    @GetMapping("/details")
     fun getAccountDetails(
-        @PathVariable accountNumber : String,
+        @RequestParam(required = false) accountId: Long?,
+        @RequestParam(required = false) accountNumber: String?,
         @AuthenticationPrincipal user: RemoteUserPrincipal
-    ): ResponseEntity<AccountResponse>{
-        println("in controller $accountNumber")
-        val account = accountService.getByAccountNumber(accountNumber)
-            ?: throw AccountNotFoundException()
+    ): ResponseEntity<AccountDto> {
+        if (accountId == null && accountNumber == null) {
+            throw APIException(
+                message = "You must provide either accountId or accountNumber",
+                httpStatus = HttpStatus.BAD_REQUEST,
+                code = ErrorCode.INVALID_INPUT
+            )
+        }
+
+        val account = when {
+            accountId != null -> accountService.getAccountById(accountId)
+            accountNumber != null -> accountService.getByAccountNumber(accountNumber)
+            else -> null
+        } ?: throw AccountNotFoundException()
 
         val isOwner = account.ownerId == user.getUserId()
         val isAdmin = user.authorities.any { it.authority == "ROLE_ADMIN" }
@@ -115,33 +104,6 @@ class AccountsControllers(
             )
         }
 
-        return ResponseEntity(account.toBasicResponse(), HttpStatus.OK)
-    }
-
-
-
-    @GetMapping("/clients")
-    fun getAccountDetails(
-        @RequestParam(required = false) accountId: Long?,
-        @RequestParam(required = false) accountNumber: String?,
-        @AuthenticationPrincipal user: RemoteUserPrincipal
-    ): AccountResponse {
-        val account = when {
-            accountId != null -> accountService.getAccountById(accountId)
-            accountNumber != null -> accountService.getByAccountNumber(accountNumber)
-            else -> throw APIException("Either accountId or accountNumber must be provided")
-        } ?: throw AccountNotFoundException()
-
-        val isOwner = account.ownerId == user.getUserId()
-        val isAdmin = user.authorities.any { it.authority == "ROLE_ADMIN" }
-
-        if (!isOwner && !isAdmin) {
-            throw APIException(
-                "Unauthorized access to account",
-                HttpStatus.UNAUTHORIZED,
-                ErrorCode.UNAUTHORIZED
-            )
-        }
-        return account.toBasicResponse()
+        return ResponseEntity(account.toDto(), HttpStatus.OK)
     }
 }

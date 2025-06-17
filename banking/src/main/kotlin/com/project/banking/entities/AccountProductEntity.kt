@@ -1,49 +1,43 @@
 package com.project.banking.entities
 
+import com.project.common.enums.AccountType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import lombok.AllArgsConstructor
-import lombok.Data
-import lombok.NoArgsConstructor
 import java.math.BigDecimal
 
 
 @Entity
 @Table(name = "account_products")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class AccountProductEntity {
+data class AccountProductEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-     var id: Long? = null
+     var id: Long? = null,
 
     @Column(name = "name", nullable = false)
-     var name: String? = null
+     var name: String? = null,
 
     @Column(name = "type", nullable = false)
-     var type: String? = null
+     var accountType: AccountType = AccountType.DEBIT,
 
-    @Column(name = "interest_rate", precision = 8, scale = 2)
-     var interestRate: BigDecimal? = null
+    @Column(name = "interest_rate", precision = 9, scale = 2)
+     var interestRate: BigDecimal? = null,
 
-    @Column(name = "min_balance_required", precision = 8, scale = 2)
-     var minBalanceRequired: BigDecimal? = null
+    @Column(name = "min_balance_required", precision = 9, scale = 2)
+     var minBalanceRequired: BigDecimal? = null,
 
-    @Column(name = "credit_limit", precision = 8, scale = 2)
-     var creditLimit: BigDecimal? = null
+    @Column(name = "credit_limit", precision = 9, scale = 2)
+     var creditLimit: BigDecimal? = null,
 
-    @Column(name = "annual_fee", precision = 8, scale = 2)
-     var annualFee: BigDecimal? = null
+    @Column(name = "annual_fee", precision = 9, scale = 2)
+     var annualFee: BigDecimal? = null,
 
     @Column(name = "min_salary")
-     var minSalary: Long? = null
-
+     var minSalary: Long? = null,
     @Column(name = "image")
-     var image: String? = null
-}
+     var image: String? = null,
+)

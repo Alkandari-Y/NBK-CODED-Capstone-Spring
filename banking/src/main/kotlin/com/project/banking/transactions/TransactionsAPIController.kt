@@ -1,9 +1,10 @@
 package com.project.banking.transactions
 
+import com.project.banking.permissions.hasAccountPermission
 import com.project.common.exceptions.accounts.AccountNotFoundException
 import com.project.banking.services.AccountService
 import com.project.banking.services.TransactionService
-import com.project.common.data.responses.transactions.TransactionDetails
+import com.project.banking.transactions.dtos.TransactionDetails
 import com.project.common.security.RemoteUserPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -30,14 +31,9 @@ class TransactionsAPIController(
         val account = accountService.getByAccountNumber(accountNumber)
             ?: throw AccountNotFoundException()
 
-        val isOwner = account.ownerId == user.getUserId()
-        val isAdmin = user.authorities.any { it.authority == "ROLE_ADMIN" }
+        hasAccountPermission(account, user)
 
-        if (!isOwner && !isAdmin) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
-        }
-
-        val transactions = transactionService.getTransactionsByAccount(account.accountNumber)
+        val transactions = transactionService.getTransactionsByAccount(accountNumber)
         return ResponseEntity(transactions, HttpStatus.OK)
     }
 
@@ -59,5 +55,4 @@ class TransactionsAPIController(
             HttpStatus.OK
         )
     }
-
 }

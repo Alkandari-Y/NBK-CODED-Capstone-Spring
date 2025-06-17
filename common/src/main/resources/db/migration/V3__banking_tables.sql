@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS "kycs"
     "last_name" VARCHAR(255) NOT NULL,
     "date_of_birth" DATE NOT NULL,
     "nationality" VARCHAR(255) NOT NULL,
-    "salary" DECIMAL(8, 2) NOT NULL,
+    "salary" DECIMAL(9, 3) NOT NULL,
     "civil_id" VARCHAR(255) NOT NULL,
     "mobile_number" VARCHAR(255) NOT NULL,
     "is_verified" BOOLEAN NOT NULL
@@ -39,10 +39,10 @@ CREATE TABLE IF NOT EXISTS "account_products"(
     "id"            SERIAL PRIMARY KEY,
     "name"          VARCHAR(255) NOT NULL,
     "type"          VARCHAR(255) NOT NULL,
-    "interest_rate" DECIMAL(8, 2) NULL,
-    "min_balance_required" DECIMAL(8, 2) NULL,
-    "credit_limit"  DECIMAL(8, 2) NULL,
-    "annual_fee"    DECIMAL(8, 2) NULL,
+    "interest_rate" DECIMAL(9, 3) NULL,
+    "min_balance_required" DECIMAL(9, 3) NULL,
+    "credit_limit"  DECIMAL(9, 3) NULL,
+    "annual_fee"    DECIMAL(9, 3) NULL,
     "min_salary"    BIGINT NULL,
     "image"         VARCHAR(255)
 );
@@ -78,9 +78,9 @@ CREATE TABLE IF NOT EXISTS "perks"(
     "id" SERIAL PRIMARY KEY,
     "business_id" BIGINT NOT NULL,
     "type" BIGINT NOT NULL,
-    "min_payment" DECIMAL(8, 2) NOT NULL,
+    "min_payment" DECIMAL(9, 3) NOT NULL,
     "rewards_xp" BIGINT NOT NULL,
-    "perk_amount" DECIMAL(8, 2) NOT NULL,
+    "perk_amount" DECIMAL(9, 3) NOT NULL,
     "is_tier_based" BOOLEAN NOT NULL DEFAULT FALSE,
     CONSTRAINT "perks_business_id_foreign"
         FOREIGN KEY("business_id")

@@ -1,40 +1,40 @@
 package com.project.banking.entities
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import com.project.common.enums.TransactionType
 import jakarta.persistence.*
-import lombok.AllArgsConstructor
-import lombok.Data
-import lombok.NoArgsConstructor
 import java.math.BigDecimal
 import java.time.LocalDateTime
 
 
 @Entity
 @Table(name = "transactions")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class TransactionEntity {
+data class TransactionEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-     var id: Long? = null
+     var id: Long? = null,
 
-    @Column(name = "source_account", nullable = false)
-     var sourceAccount: String? = null
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_account", nullable = false)
+    @JsonBackReference
+    val sourceAccount: AccountEntity?,
 
-    @Column(name = "destination_account", nullable = false)
-     var destinationAccount: String? = null
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "destination_account", nullable = false)
+    @JsonBackReference
+    val destinationAccount: AccountEntity?,
 
     @Column(name = "amount", nullable = false, precision = 9, scale = 3)
-     var amount: BigDecimal? = null
+     var amount: BigDecimal? = null,
 
     @Column(name = "created_at", nullable = false)
-     var createdAt: LocalDateTime? = null
+     var createdAt: LocalDateTime? = null,
 
-    @Column(name = "category_id", nullable = false)
-     var categoryId: Int? = null
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    var category: CategoryEntity? = null,
 
     @Column(name = "type", nullable = false)
-     var transactionType: TransactionType = TransactionType.TRANSFER
-}
+     var transactionType: TransactionType = TransactionType.TRANSFER,
+)

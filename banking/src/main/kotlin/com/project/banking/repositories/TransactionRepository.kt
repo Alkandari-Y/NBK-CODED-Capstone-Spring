@@ -1,7 +1,7 @@
 package com.project.banking.repositories
 
 import com.project.banking.entities.TransactionEntity
-import com.project.common.data.responses.transactions.TransactionDetails
+import com.project.banking.transactions.dtos.TransactionDetails
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -9,11 +9,10 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface TransactionRepository: JpaRepository<TransactionEntity, Long> {
-    fun findBySourceAccountId(accountId: Long): List<TransactionEntity>
 
     @Query(
         value = """
-        SELECT NEW com.project.common.data.responses.transactions.TransactionDetails(
+        SELECT NEW com.project.banking.transactions.dtos.TransactionDetails(
             sa.accountNumber,
             da.accountNumber,
             te.amount,
@@ -33,7 +32,7 @@ interface TransactionRepository: JpaRepository<TransactionEntity, Long> {
 
 
     @Query("""
-        SELECT new com.project.common.data.responses.transactions.TransactionDetails(
+        SELECT new com.project.banking.transactions.dtos.TransactionDetails(
             t.sourceAccount.accountNumber,
             t.destinationAccount.accountNumber,
             t.amount,
