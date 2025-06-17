@@ -1,5 +1,6 @@
 package com.project.banking.entities
 
+import com.project.common.enums.GainMethod
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -19,7 +20,7 @@ data class XpHistoryEntity (
      var amount: Long? = null,
 
     @Column(name = "gain_method", nullable = false)
-     var gainMethod: Int? = null,
+     var gainMethod: GainMethod? = null,
 
     @Column(name = "transaction_id")
      var transactionId: Long? = null,
