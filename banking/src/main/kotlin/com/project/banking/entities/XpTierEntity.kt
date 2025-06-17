@@ -29,11 +29,11 @@ data class XpTierEntity (
     @Column(name = "xp_perk_multiplier", nullable = false)
      var xpPerkMultiplier: Long? = null,
 
-    @Column(name = "xp_per_notifcation", nullable = false)
-     var xpPerNotifcation: Long? = null,
+    @Column(name = "xp_per_notification", nullable = false)
+     var xpPerNotification: Long? = null,
 
-    @Column(name = "xp_per_event", nullable = false)
-     var xpPerEvent: Long? = null,
+    @Column(name = "xp_per_promotion", nullable = false)
+     var xpPerPromotion: Long? = null,
 
     @Column(name = "perk_amount_percentage", nullable = false)
      var perkAmountPercentage: Long? = null,

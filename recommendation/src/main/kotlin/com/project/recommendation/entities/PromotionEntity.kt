@@ -11,6 +11,7 @@ data class PromotionEntity(
     @Column(name = "id", nullable = true)
     var id: Long? = null,
 
+    @Column(name = "name", nullable = true)
     var name: String = "",
 
     @Column(name = "business_partner_id", nullable = false)

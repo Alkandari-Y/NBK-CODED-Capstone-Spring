@@ -1,12 +1,13 @@
 package com.project.common.data.responses.transactions
 
 import java.math.BigDecimal
-import java.time.Instant
+import java.time.LocalDateTime
 
 data class TransactionDetails(
+    val transactionId: Long,
     val sourceAccountNumber: String,
     val destinationAccountNumber: String,
     val amount: BigDecimal,
-    val createdAt: Instant,
+    val createdAt: LocalDateTime,
     val category: String
 )

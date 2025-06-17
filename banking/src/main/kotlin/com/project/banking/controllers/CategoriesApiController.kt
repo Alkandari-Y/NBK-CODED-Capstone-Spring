@@ -1,10 +1,9 @@
-package com.project.banking.categories
-
-import com.project.common.data.requests.categories.CategoryRequest
+package com.project.banking.controllers
 
 import com.project.banking.entities.CategoryEntity
 import com.project.banking.mappers.toEntity
 import com.project.banking.services.CategoryService
+import com.project.common.data.requests.categories.CategoryRequest
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-
 
 @RestController
 @RequestMapping("/api/v1/categories")
