@@ -7,7 +7,9 @@ import java.time.LocalDateTime
 @Entity
 @Table(name = "recommendations")
 data class RecommendationEntity(
-    @Column(name = "id", nullable = true)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     var id: Long?,
 
     @Column(name = "category_id", nullable = false)

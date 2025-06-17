@@ -1,7 +1,7 @@
-package com.project.authentication.users
+package com.project.authentication.controllers
 
 import com.project.authentication.entities.RoleEntity
-import com.project.authentication.mappers.roles.toEntity
+import com.project.authentication.mappers.toEntity
 import com.project.authentication.services.RoleService
 import com.project.authentication.services.UserService
 import com.project.common.data.requests.users.RoleCreateRequest

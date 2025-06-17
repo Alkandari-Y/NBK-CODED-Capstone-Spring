@@ -70,8 +70,7 @@ class UserServiceImplTest {
         val request = RegisterCreateRequest(
             username = "existing",
             password = "Password1",
-            email = "exist@example.com",
-            civilId = "22222222"
+            email = "exist@example.com"
         )
 
         every { userRepository.existsByUsernameOrEmail(any(), any()) } returns true

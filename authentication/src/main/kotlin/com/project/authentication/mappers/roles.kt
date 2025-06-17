@@ -1,4 +1,4 @@
-package com.project.authentication.mappers.roles
+package com.project.authentication.mappers
 
 import com.project.authentication.entities.RoleEntity
 import com.project.common.data.requests.users.RoleCreateRequest

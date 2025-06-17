@@ -3,7 +3,7 @@ package com.project.authentication.entities
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
-import java.time.Instant
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "users")
@@ -27,11 +27,11 @@ data class UserEntity(
 
     @CreationTimestamp
     @Column(name="created_at", nullable = false)
-    val createdAt: Instant = Instant.now(),
+    val createdAt: LocalDateTime = LocalDateTime.now(),
 
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
-    val updatedAt: Instant = Instant.now(),
+    val updatedAt: LocalDateTime = LocalDateTime.now(),
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.MERGE])
     @JoinTable(
@@ -47,8 +47,8 @@ data class UserEntity(
         email = "",
         password = "",
         isActive = false,
-        createdAt = Instant.now(),
-        updatedAt = Instant.now(),
+        createdAt = LocalDateTime.now(),
+        updatedAt = LocalDateTime.now(),
         roles = mutableSetOf(),
     )
 }

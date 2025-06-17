@@ -6,7 +6,9 @@ import java.math.BigDecimal
 @Entity
 @Table(name = "account_scores")
 data class AccountScoreEntity(
-    @Column(name = "id", nullable = true)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     var id: Long?,
 
     @Column(name = "account_id", nullable = false)

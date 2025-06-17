@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.ServletWebRequest
 import org.springframework.web.context.request.WebRequest
-import java.time.Instant
+import java.time.LocalDateTime
 
 @ControllerAdvice
 class GlobalExceptionHandler {
@@ -30,7 +30,7 @@ class GlobalExceptionHandler {
     ): ResponseEntity<ApiErrorResponse> {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
             ApiErrorResponse(
-                timestamp = Instant.now().toString(),
+                timestamp = LocalDateTime.now().toString(),
                 status = HttpStatus.UNAUTHORIZED.value(),
                 error = HttpStatus.UNAUTHORIZED.reasonPhrase,
                 message = "Expired JWT token. Please re-login",
@@ -47,7 +47,7 @@ class GlobalExceptionHandler {
     ): ResponseEntity<ApiErrorResponse> {
         return ResponseEntity.status(ex.httpStatus).body(
             ApiErrorResponse(
-                timestamp = Instant.now().toString(),
+                timestamp = LocalDateTime.now().toString(),
                 status = ex.httpStatus.value(),
                 error = ex.httpStatus.reasonPhrase,
                 message = ex.message,
@@ -64,7 +64,7 @@ class GlobalExceptionHandler {
     ): ResponseEntity<ApiErrorResponse> {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
             ApiErrorResponse(
-                timestamp = Instant.now().toString(),
+                timestamp = LocalDateTime.now().toString(),
                 status = HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 error = HttpStatus.INTERNAL_SERVER_ERROR.reasonPhrase,
                 message = ex.message ?: "Unexpected error occurred",
@@ -81,7 +81,7 @@ class GlobalExceptionHandler {
     ): ResponseEntity<ApiErrorResponse> {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
             ApiErrorResponse(
-                timestamp = Instant.now().toString(),
+                timestamp = LocalDateTime.now().toString(),
                 status = HttpStatus.UNAUTHORIZED.value(),
                 error = HttpStatus.UNAUTHORIZED.reasonPhrase,
                 message = "Invalid Credentials",
@@ -98,7 +98,7 @@ class GlobalExceptionHandler {
     ): ResponseEntity<ApiErrorResponse> {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
             ApiErrorResponse(
-                timestamp = Instant.now().toString(),
+                timestamp = LocalDateTime.now().toString(),
                 status = HttpStatus.UNAUTHORIZED.value(),
                 error = HttpStatus.UNAUTHORIZED.reasonPhrase,
                 message = "Invalid Credentials",
@@ -119,7 +119,7 @@ class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             ApiErrorResponse(
-                timestamp = Instant.now().toString(),
+                timestamp = LocalDateTime.now().toString(),
                 status = HttpStatus.BAD_REQUEST.value(),
                 error = HttpStatus.BAD_REQUEST.reasonPhrase,
                 message = "Validation failed",
@@ -142,7 +142,7 @@ class GlobalExceptionHandler {
                 message = "Malformed JSON",
                 code = "MALFORMED_REQUEST",
                 path = (request as? ServletWebRequest)?.request?.requestURI!!,
-                timestamp = Instant.now().toString()
+                timestamp = LocalDateTime.now().toString()
             )
         )
     }
@@ -159,7 +159,7 @@ class GlobalExceptionHandler {
                 message = ex.message ?: "Access denied",
                 code = "FORBIDDEN",
                 path = (request as? ServletWebRequest)?.request?.requestURI!!,
-                timestamp = Instant.now().toString()
+                timestamp = LocalDateTime.now().toString()
             )
         )
     }
@@ -176,7 +176,7 @@ class GlobalExceptionHandler {
                 message = ex.message ?: "Invalid input",
                 code = "INVALID_ARGUMENT",
                 path = (request as? ServletWebRequest)?.request?.requestURI!!,
-                timestamp = Instant.now().toString()
+                timestamp = LocalDateTime.now().toString()
             )
         )
     }
@@ -193,7 +193,7 @@ class GlobalExceptionHandler {
                 message = "Invalid JWT signature. Please log in again.",
                 code = ErrorCode.INVALID_TOKEN.name,
                 path = (request as? ServletWebRequest)?.request?.requestURI ?: "unknown",
-                timestamp = Instant.now().toString(),
+                timestamp = LocalDateTime.now().toString(),
             ),
             HttpStatus.UNAUTHORIZED
         )

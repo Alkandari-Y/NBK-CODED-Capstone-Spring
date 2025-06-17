@@ -5,7 +5,9 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "category_scores")
 data class CategoryScoreEntity(
-    @Column(name = "id", nullable = true)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     var id: Long?,
 
     @Column(name = "user_id", nullable = false)
