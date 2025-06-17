@@ -7,12 +7,12 @@ import jakarta.persistence.*
 data class FavBusinessEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    var id: Long?,
+    @Column(name = "id", nullable = true)
+    var id: Long? = null,
 
     @Column(name = "user_id", nullable = false)
-    var userId: Long,
+    var userId: Long? = null,
 
     @Column(name = "partner_id", nullable = false)
-    var partnerId: Long
+    var partnerId: Long? = null,
 )

@@ -3,6 +3,7 @@ package com.project.recommendation.entities
 import jakarta.persistence.*
 import java.time.LocalTime
 import org.locationtech.jts.geom.Point
+import java.math.BigDecimal
 
 @Entity
 @Table(name = "store_locations")
@@ -13,13 +14,13 @@ data class StoreLocationEntity(
     var id: Long? = null,
 
     @Column(name = "partner_id", nullable = false)
-    var partnerId: Long,
+    var partnerId: Long? = null,
 
-    @Column(name = "longitude", nullable = false, precision = 8, scale = 2)
-    var longitude: Double,
+    @Column(name = "longitude", nullable = false)
+    var longitude: Double? = null,
 
-    @Column(name = "latitude", nullable = false, precision = 8, scale = 2)
-    var latitude: Double,
+    @Column(name = "latitude", nullable = false)
+    var latitude: Double? = null,
 
     @Column(name = "google_map_url", nullable = false)
     var googleMapUrl: String,

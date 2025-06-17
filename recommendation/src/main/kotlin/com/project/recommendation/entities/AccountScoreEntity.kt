@@ -8,15 +8,15 @@ import java.math.BigDecimal
 data class AccountScoreEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    var id: Long?,
+    @Column(name = "id", nullable = true)
+    var id: Long? = null,
 
     @Column(name = "account_id", nullable = false)
-    var accountId: Long,
+    var accountId: Long? = null,
 
     @Column(name = "account_score_rating", nullable = false)
-    var accountScoreRating: BigDecimal,
+    var accountScoreRating: BigDecimal = BigDecimal.ZERO,
 
     @Column(name = "user_id", nullable = false)
-    var userId: Long
+    var userId: Long? = null,
 )
