@@ -33,18 +33,18 @@ interface TransactionRepository: JpaRepository<TransactionEntity, Long> {
 
 
     @Query("""
-        SELECT new com.project.common.data.responses.transactions.TransactionDetails(
+        SELECT NEW com.project.common.data.responses.transactions.TransactionDetails(
             te.id,
-            t.sourceAccount.accountNumber,
-            t.destinationAccount.accountNumber,
-            t.amount,
-            t.createdAt,
+            sa.accountNumber,
+            da.accountNumber,
+            te.amount,
+            te.createdAt,
             c.name
         )
-        FROM TransactionEntity t
-        JOIN t.sourceAccount sa
-        JOIN t.destinationAccount da
-        JOIN t.category c
+        FROM TransactionEntity te
+            JOIN te.sourceAccount sa
+            JOIN te.destinationAccount da
+            JOIN te.category c
         WHERE sa.ownerId = :userId OR da.ownerId = :userId
     """)
     fun findAllByUserId(@Param("userId") userId: Long): List<TransactionDetails>
