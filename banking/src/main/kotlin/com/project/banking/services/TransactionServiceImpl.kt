@@ -8,13 +8,13 @@ import com.project.banking.entities.TransactionEntity
 import com.project.banking.repositories.AccountRepository
 import com.project.banking.repositories.TransactionRepository
 import com.project.common.data.requests.accounts.TransferCreateRequest
-import com.project.common.data.responses.accounts.TransactionResponse
 import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.enums.TransactionType
 import com.project.common.enums.ErrorCode
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
+import java.time.LocalDateTime
 
 @Service
 class TransactionServiceImpl(
@@ -24,7 +24,7 @@ class TransactionServiceImpl(
 ): TransactionService {
 
     @Transactional
-    override fun transfer(newTransaction: TransferCreateRequest, userIdMakingTransfer: Long): TransactionResponse {
+    override fun transfer(newTransaction: TransferCreateRequest, userIdMakingTransfer: Long): TransactionDetails {
         if (newTransaction.sourceAccountNumber == newTransaction.destinationAccountNumber) {
             throw InvalidTransferException(message="Cannot transfer to the same account.",  code = ErrorCode.INVALID_TRANSFER)
         }
@@ -77,12 +77,13 @@ class TransactionServiceImpl(
         val updatedDestinationAccount = accountRepository.save(
             destinationAccount.copy(balance = newDestinationBalance)
         )
-        return TransactionResponse(
-            sourceAccount = updatedSourceAccount.accountNumber,
-            destinationAccount = updatedDestinationAccount.accountNumber,
+        return TransactionDetails(
             transactionId = transaction.id!!,
             amount = newTransaction.amount.setScale(3),
             category = category?.name!!,
+            sourceAccountNumber = updatedSourceAccount.accountNumber,
+            destinationAccountNumber = updatedDestinationAccount.accountNumber,
+            createdAt = LocalDateTime.now(),
         )
     }
 

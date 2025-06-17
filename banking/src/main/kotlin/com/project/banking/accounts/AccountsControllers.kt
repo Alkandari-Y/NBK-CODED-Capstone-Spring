@@ -7,8 +7,8 @@ import com.project.banking.services.TransactionService
 import com.project.common.data.requests.accounts.AccountCreateRequest
 import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.accounts.AccountDto
-import com.project.common.data.responses.accounts.TransactionResponse
 import com.project.common.data.responses.authentication.UserInfoDto
+import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.exceptions.APIException
 import com.project.common.enums.ErrorCode
 import com.project.common.exceptions.accounts.AccountNotFoundException
@@ -49,7 +49,7 @@ class AccountsControllers(
     fun transfer(
         @Valid @RequestBody transferCreateRequestDto: TransferCreateRequest,
         @RequestAttribute("authUser") authUser: UserInfoDto,
-        ): ResponseEntity<TransactionResponse> {
+        ): ResponseEntity<TransactionDetails> {
             val result = transactionService.transfer(
                 transferCreateRequestDto,
                 userIdMakingTransfer = authUser.userId,
