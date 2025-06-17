@@ -2,7 +2,7 @@ package com.project.authentication.services
 
 import com.project.common.data.requests.authentication.RegisterCreateRequest
 import com.project.authentication.entities.UserEntity
-import com.project.authentication.mappers.users.toEntity
+import com.project.authentication.mappers.toEntity
 import com.project.common.exceptions.auth.UserExistsException
 import com.project.common.exceptions.auth.UserNotFoundException
 import com.project.authentication.repositories.UserRepository

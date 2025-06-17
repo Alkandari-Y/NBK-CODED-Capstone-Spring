@@ -1,4 +1,4 @@
-package com.project.authentication.auth
+package com.project.authentication.controllers
 
 import com.project.common.data.requests.authentication.LoginRequest
 import com.project.common.data.requests.authentication.RefreshRequest

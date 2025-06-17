@@ -1,4 +1,4 @@
-package com.project.banking.accounts
+package com.project.banking.controllers
 
 import com.project.banking.entities.AccountEntity
 import com.project.banking.mappers.toDto
@@ -9,19 +9,27 @@ import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.accounts.AccountDto
 import com.project.common.data.responses.authentication.UserInfoDto
 import com.project.common.data.responses.transactions.TransactionDetails
-import com.project.common.exceptions.APIException
 import com.project.common.enums.ErrorCode
+import com.project.common.exceptions.APIException
 import com.project.common.exceptions.accounts.AccountNotFoundException
 import com.project.common.security.RemoteUserPrincipal
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestAttribute
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/accounts")
-class AccountsControllers(
+class AccountApiController(
     private val accountService: AccountService,
     private val transactionService: TransactionService,
 ) {

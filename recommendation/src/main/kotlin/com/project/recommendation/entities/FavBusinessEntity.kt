@@ -5,7 +5,9 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "fav_businesses")
 data class FavBusinessEntity(
-    @Column(name = "id", nullable = true)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     var id: Long?,
 
     @Column(name = "user_id", nullable = false)

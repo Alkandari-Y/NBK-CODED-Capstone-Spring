@@ -1,4 +1,4 @@
-package com.project.banking.kyc
+package com.project.banking.controllers
 
 import com.project.banking.mappers.toResponse
 import com.project.banking.services.KYCService

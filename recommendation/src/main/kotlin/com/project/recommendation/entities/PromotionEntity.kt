@@ -6,7 +6,9 @@ import java.time.LocalDate
 @Entity
 @Table(name = "promotions")
 data class PromotionEntity(
-    @Column(name = "id", nullable = true)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     var id: Long?,
 
     @Column(name = "business_partner_id", nullable = false)

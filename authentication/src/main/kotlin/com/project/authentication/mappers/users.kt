@@ -1,4 +1,4 @@
-package com.project.authentication.mappers.users
+package com.project.authentication.mappers
 
 import com.project.authentication.entities.RoleEntity
 import com.project.authentication.entities.UserEntity
