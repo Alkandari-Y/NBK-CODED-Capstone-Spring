@@ -7,9 +7,9 @@ import com.project.common.exceptions.accounts.InvalidTransferException
 import com.project.banking.entities.TransactionEntity
 import com.project.banking.repositories.AccountRepository
 import com.project.banking.repositories.TransactionRepository
-import com.project.banking.transactions.dtos.TransactionDetails
 import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.accounts.TransactionResponse
+import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.enums.TransactionType
 import com.project.common.enums.ErrorCode
 import jakarta.transaction.Transactional

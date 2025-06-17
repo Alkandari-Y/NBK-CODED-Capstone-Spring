@@ -4,6 +4,7 @@ import java.math.BigDecimal
 import java.time.LocalDateTime
 
 data class TransactionDetails(
+    val transactionId: Long,
     val sourceAccountNumber: String,
     val destinationAccountNumber: String,
     val amount: BigDecimal,

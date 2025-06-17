@@ -4,7 +4,7 @@ import com.project.banking.permissions.hasAccountPermission
 import com.project.common.exceptions.accounts.AccountNotFoundException
 import com.project.banking.services.AccountService
 import com.project.banking.services.TransactionService
-import com.project.banking.transactions.dtos.TransactionDetails
+import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.security.RemoteUserPrincipal
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
