@@ -58,7 +58,19 @@ class DataSeeder(
                 image = "http://localhost:9000/capstone-public/fd4ac1cd-c88f-446a-846b-f23ecea8fe63"
             )
 
-            // 2. Debit Card – No Credit, No Fees
+            // 2. Business debit Card – No Credit, No Fees
+            val businessAccount = AccountProductEntity(
+                name = "Business Account",
+                accountType = AccountType.DEBIT,
+                interestRate = BigDecimal("0.000"),
+                minBalanceRequired = BigDecimal("0.000"),
+                creditLimit = BigDecimal("0.000"),
+                annualFee = BigDecimal("0.000"),
+                minSalary = BigDecimal("0.000"),
+                image = "http://localhost:9000/capstone-public/fd4ac1cd-c88f-446a-846b-f23ecea8fe63"
+            )
+
+            // 3. Debit Card – No Credit, No Fees
             val cashBackAccount = AccountProductEntity(
                 name = "Cashback Wallet",
                 accountType = AccountType.CASHBACK,
@@ -70,7 +82,7 @@ class DataSeeder(
                 image = "http://localhost:9000/capstone-public/fd4ac1cd-c88f-446a-846b-f23ecea8fe63"
             )
 
-            // 3. Basic Credit Card – For Low-Income
+            // 4. Basic Credit Card – For Low-Income
             val basicCreditCard = AccountProductEntity(
                 name = "Basic Credit",
                 accountType = AccountType.CREDIT,
@@ -82,11 +94,11 @@ class DataSeeder(
                 image = "http://localhost:9000/capstone-public/fd4ac1cd-c88f-446a-846b-f23ecea8fe63"
             )
 
-            // 4. Standard Credit Card – For Middle-Income
+            // 5. Standard Credit Card – For Middle-Income
             val standardCreditCard = AccountProductEntity(
                 name = "Standard Credit",
                 accountType = AccountType.CREDIT,
-                interestRate = BigDecimal("2.000"),
+                interestRate = BigDecimal("2.500"),
                 minBalanceRequired = BigDecimal("0.000"),
                 creditLimit = BigDecimal("2000.000"),
                 annualFee = BigDecimal("50.000"),
@@ -94,7 +106,7 @@ class DataSeeder(
                 image = "http://localhost:9000/capstone-public/fd4ac1cd-c88f-446a-846b-f23ecea8fe63"
             )
 
-            // 5. Premium Credit Card – For High-Income
+            // 6. Premium Credit Card – For High-Income
             val premiumCreditCard = AccountProductEntity(
                 name = "Infinity",
                 accountType = AccountType.CREDIT,

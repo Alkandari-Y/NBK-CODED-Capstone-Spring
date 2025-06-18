@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/products")
-class AccountsApiController(
+class AccountProductsApiController(
     private val accountProductService: AccountProductService
 ) {
 
@@ -32,4 +32,7 @@ class AccountsApiController(
             ?: throw AccountProductNotFoundException()
         return ResponseEntity(accountProduct, HttpStatus.OK)
     }
+
+
+
 }

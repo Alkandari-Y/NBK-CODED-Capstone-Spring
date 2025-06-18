@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS "accounts"
 
 CREATE TABLE IF NOT EXISTS "business_partners"(
     "id"            SERIAL PRIMARY KEY,
+    "name"          VARCHAR(255) UNIQUE NOT NULL,
     "admin_user"    BIGINT NOT NULL,
     "account_id"    BIGINT NOT NULL,
     "logo_url"      VARCHAR(255) NOT NULL,
