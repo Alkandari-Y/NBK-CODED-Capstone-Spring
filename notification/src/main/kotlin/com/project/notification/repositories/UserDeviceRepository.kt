@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserDeviceRepository: JpaRepository<UserDeviceEntity, Long> {
+    fun findByUserId(userId: Long): UserDeviceEntity?
 }
