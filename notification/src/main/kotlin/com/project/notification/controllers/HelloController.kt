@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
-@RequestMapping("/api/v1/hello")
+@RequestMapping("/api/v1/here")
 class HelloController {
 
 
     @GetMapping
-    fun hello() = "Hello World!"
+    fun hello() = "bashayer at coded triggering gps"
 }
