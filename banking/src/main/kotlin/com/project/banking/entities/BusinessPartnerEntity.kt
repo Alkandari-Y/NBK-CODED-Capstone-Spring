@@ -15,6 +15,9 @@ data class BusinessPartnerEntity (
     @Column(name = "id")
      var id: Long? = null,
 
+    @Column(name = "name", nullable = false)
+    var name: String = "",
+
     @Column(name = "admin_user", nullable = false)
      var adminUser: Long? = null,
 
