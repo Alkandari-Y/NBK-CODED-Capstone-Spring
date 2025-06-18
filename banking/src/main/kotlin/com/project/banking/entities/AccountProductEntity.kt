@@ -24,20 +24,20 @@ data class AccountProductEntity (
     @Column(name = "type", nullable = false)
      var accountType: AccountType = AccountType.DEBIT,
 
-    @Column(name = "interest_rate", precision = 9, scale = 2)
-     var interestRate: BigDecimal? = null,
+    @Column(name = "interest_rate", precision = 9, scale = 3)
+     var interestRate: BigDecimal = BigDecimal.ZERO,
 
-    @Column(name = "min_balance_required", precision = 9, scale = 2)
-     var minBalanceRequired: BigDecimal? = null,
+    @Column(name = "min_balance_required", precision = 9, scale = 3)
+     var minBalanceRequired: BigDecimal = BigDecimal.ZERO,
 
-    @Column(name = "credit_limit", precision = 9, scale = 2)
-     var creditLimit: BigDecimal? = null,
+    @Column(name = "credit_limit", precision = 9, scale = 3)
+     var creditLimit: BigDecimal = BigDecimal.ZERO,
 
-    @Column(name = "annual_fee", precision = 9, scale = 2)
-     var annualFee: BigDecimal? = null,
+    @Column(name = "annual_fee", precision = 9, scale = 3)
+     var annualFee: BigDecimal = BigDecimal.ZERO,
 
-    @Column(name = "min_salary")
-     var minSalary: Long? = null,
+    @Column(name = "min_salary", precision = 9, scale = 2)
+     var minSalary: BigDecimal = BigDecimal.ZERO,
 
     @Column(name = "image")
      var image: String? = null,

@@ -1,13 +1,15 @@
 package com.project.banking.services
 
-import com.project.banking.entities.AccountEntity
 import com.project.banking.entities.AccountProductEntity
+import com.project.banking.mappers.toEntity
 import com.project.banking.repositories.AccountProductRepository
 import com.project.common.data.requests.accountProducts.CreateAccountProductRequest
+import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-
+@Service
 class AccountProductServiceImpl(
     private val accountProductRepository: AccountProductRepository,
     private val fileStorageService: FileStorageService,
@@ -21,18 +23,10 @@ class AccountProductServiceImpl(
         val (publicBucket, imageUrl) = fileStorageService.uploadFile(image, true)
 
         val accountProduct = accountProductRepository.save(
-            AccountProductEntity(
-                name = newAccountProduct.name,
-                image = "$endpoint/$publicBucket/$imageUrl",
-                accountType = newAccountProduct.accountType,
-                interestRate = newAccountProduct.interestRate,
-                minBalanceRequired = newAccountProduct.minBalance,
-                creditLimit = newAccountProduct.creditLimit,
-                annualFee = newAccountProduct.annualFee,
-                minSalary = newAccountProduct.minSalary
+            newAccountProduct.toEntity(
+                imageUrl = "$endpoint/$publicBucket/$imageUrl"
             )
         )
-
         return accountProduct
     }
 
@@ -45,6 +39,8 @@ class AccountProductServiceImpl(
     }
 
     override fun deleteAccountProductById(id: Long) {
-        accountProductRepository.deleteById(id)
+        val accountProduct = accountProductRepository.findByIdOrNull(id)
+            ?: throw AccountProductNotFoundException()
+        accountProductRepository.deleteById(accountProduct.id!!)
     }
 }
