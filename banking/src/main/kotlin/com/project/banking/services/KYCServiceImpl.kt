@@ -2,12 +2,14 @@ package com.project.banking.services
 
 import com.project.common.exceptions.accounts.AccountVerificationException
 import com.project.banking.entities.KycEntity
+import com.project.banking.events.KycCreatedEvent
 import com.project.banking.mappers.toEntity
 import com.project.banking.repositories.KYCRepository
 import com.project.common.data.requests.kyc.KYCRequest
 import com.project.common.data.responses.authentication.UserInfoDto
 import com.project.common.enums.ErrorCode
 import com.project.common.utils.dateFormatter
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.Period
@@ -15,7 +17,9 @@ import java.time.Period
 @Service
 class KYCServiceImpl(
     private val kycRepository: KYCRepository,
-    private val mailService: MailService
+    private val mailService: MailService,
+    private val publisher: ApplicationEventPublisher
+
 ): KYCService {
 
     override fun createKYCOrUpdate(
@@ -45,6 +49,8 @@ class KYCServiceImpl(
         )
 
         val savedKyc = kycRepository.save(newKycEntity)
+        publisher.publishEvent(KycCreatedEvent(this, savedKyc))
+
         mailService.sendHtmlEmail(
             to = user.email,
             subject = "Account Activated",

@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS "user_xp"(
 
 CREATE TABLE IF NOT EXISTS "account_products"(
     "id"            SERIAL PRIMARY KEY,
-    "name"          VARCHAR(255) NOT NULL,
-    "type"          VARCHAR(255) NOT NULL,
+    "name"          VARCHAR(255) UNIQUE NOT NULL,
+    "type"          INT NOT NULL,
     "interest_rate" DECIMAL(9, 3) NULL,
     "min_balance_required" DECIMAL(9, 3) NULL,
     "credit_limit"  DECIMAL(9, 3) NULL,
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS "business_partners"(
 CREATE TABLE IF NOT EXISTS "perks"(
     "id" SERIAL PRIMARY KEY,
     "business_id" BIGINT NOT NULL,
-    "type" BIGINT NOT NULL,
+    "type" INT NOT NULL,
     "min_payment" DECIMAL(9, 3) NOT NULL,
     "rewards_xp" BIGINT NOT NULL,
     "perk_amount" DECIMAL(9, 3) NOT NULL,
