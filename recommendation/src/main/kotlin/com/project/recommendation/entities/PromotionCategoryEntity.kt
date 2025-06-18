@@ -7,7 +7,6 @@ import jakarta.persistence.*
 data class PromotionCategoryEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     @Column(name = "id", nullable = true)
     var id: Long? = null,
 

@@ -1,19 +1,14 @@
 package com.project.banking.services
 
-import com.project.common.exceptions.accounts.AccountLimitException
-import com.project.common.exceptions.accounts.AccountNotFoundException
 import com.project.common.exceptions.accounts.AccountVerificationException
 import com.project.banking.entities.AccountEntity
 import com.project.banking.mappers.toEntity
 import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.AccountRepository
 import com.project.common.data.requests.accounts.AccountCreateRequest
-import com.project.common.data.requests.accounts.UpdateAccountRequest
 import com.project.common.data.responses.accounts.AccountDto
 import com.project.common.data.responses.authentication.UserInfoDto
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
-import com.project.common.exceptions.accounts.AccountNotActiveException
-import jakarta.transaction.Transactional
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.CachePut
 import org.springframework.data.repository.findByIdOrNull

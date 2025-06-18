@@ -31,5 +31,5 @@ data class RecommendationEntity(
     var productId: Long? = null,
 
     @Column(name = "created_at", nullable = true)
-    var createdAt: LocalDateTime? = null,
+    var createdAt: LocalDateTime = LocalDateTime.now(),
 )

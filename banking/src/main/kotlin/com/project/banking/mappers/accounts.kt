@@ -5,14 +5,8 @@ import com.project.banking.entities.AccountProductEntity
 import com.project.common.data.requests.accounts.AccountCreateRequest
 import com.project.common.data.responses.accounts.AccountDto
 import com.project.common.enums.AccountOwnerType
-import java.math.RoundingMode
-
-fun AccountCreateRequest.toEntity(accountProduct: AccountProductEntity): AccountEntity {
-    return AccountEntity(
-        balance = initialBalance.setScale(3, RoundingMode.HALF_UP),
-
-    )
-}
+import com.project.common.enums.AccountType
+import java.math.BigDecimal
 
 fun AccountEntity.toDto() = AccountDto(
     id = this.id!!,
@@ -27,7 +21,7 @@ fun AccountEntity.toDto() = AccountDto(
 fun AccountCreateRequest.toEntity(ownerId: Long, accountProduct: AccountProductEntity) = AccountEntity(
     accountProduct = accountProduct,
     ownerId = ownerId,
-    balance = this.initialBalance.setScale(3, RoundingMode.HALF_UP),
+    balance = if (accountProduct.accountType == AccountType.DEBIT) BigDecimal.ZERO else accountProduct.creditLimit,
     ownerType = AccountOwnerType.CLIENT,
     accountType = accountProduct.accountType
 )
