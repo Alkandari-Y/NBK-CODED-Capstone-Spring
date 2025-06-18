@@ -18,7 +18,7 @@ data class AccountProductEntity (
     @Column(name = "id")
      var id: Long? = null,
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
      var name: String? = null,
 
     @Column(name = "type", nullable = false)

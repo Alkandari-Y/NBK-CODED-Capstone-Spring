@@ -21,8 +21,6 @@ import org.springframework.web.multipart.MultipartFile
 class AdminAccountProductsApiController(
     private val accountProductService: AccountProductService,
 ) {
-
-
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping(consumes = ["multipart/form-data"])
     fun createAccountProducts(

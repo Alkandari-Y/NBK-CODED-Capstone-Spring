@@ -2,6 +2,7 @@ package com.project.banking.services
 
 import com.project.common.exceptions.accounts.AccountVerificationException
 import com.project.banking.entities.AccountEntity
+import com.project.banking.entities.AccountProductEntity
 import com.project.banking.mappers.toEntity
 import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.AccountRepository
@@ -80,5 +81,17 @@ class AccountServiceImpl(
 
     override fun getAllAccountsByUserId(userId: Long): List<AccountDto> {
         return accountRepository.findAllByOwnerId(userId)
+    }
+
+    override fun createNewClientPackage(userId: Long, accountProducts: List<AccountProductEntity>) {
+
+        accountRepository.saveAll(
+            accountProducts.map { AccountEntity(
+                ownerId = userId,
+                accountType = it.accountType,
+                accountProduct = it
+                )
+            }
+        )
     }
 }
