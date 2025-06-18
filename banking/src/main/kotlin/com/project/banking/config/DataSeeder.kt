@@ -34,7 +34,7 @@ class DataSeeder(
     }
 
 
-    fun seedCategories() {
+fun seedCategories() {
         val categories = listOf(
             "personal", "retail", "manufacturing", "healthcare", "financial services",
             "real estate", "technology", "hospitality", "education", "logistics",
