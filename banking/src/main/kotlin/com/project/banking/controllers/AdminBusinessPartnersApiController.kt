@@ -17,39 +17,39 @@ import org.springframework.web.multipart.MultipartFile
 import kotlin.collections.contains
 
 
-//@RestController
-//@RequestMapping("/api/v1/admin/partners")
-//class AdminBusinessPartnersApiController(
-//    private val businessPartnerService: BusinessPartnerService
-//) {
-//
-//
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @PostMapping(consumes = ["multipart/form-data"])
-//    fun createPartner(
-//        @Valid @ModelAttribute createBusinessPartnerRequest: CreateBusinessPartnerRequest,
-//        @RequestPart("image", required = true) image: MultipartFile,
-//    ): ResponseEntity<String> {
-//        val allowedTypes = listOf("image/jpeg", "image/png", "image/jpg", "image/webp")
-//        if (image.contentType !in allowedTypes) {
-//            throw IllegalArgumentException("Only JPEG, PNG, or WEBP images are allowed.")
-//        }
-//
-//        if (image.contentType !in allowedTypes) {
-//            throw IllegalArgumentException("Only JPEG, PNG, or WEBP images are allowed.")
-//        }
-//
-//        return ResponseEntity("", HttpStatus.CREATED)
-//    }
-//
-//
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
-//    @DeleteMapping
-//    fun deletePartner(
-//        @PathVariable(value = "partnerId") partnerId: Long
-//    ):  ResponseEntity<Void> {
-//        businessPartnerService
-//        return ResponseEntity.noContent().build()
-//    }
-//
-//}
+@RestController
+@RequestMapping("/api/v1/admin/partners")
+class AdminBusinessPartnersApiController(
+    private val businessPartnerService: BusinessPartnerService
+) {
+
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping(consumes = ["multipart/form-data"])
+    fun createPartner(
+        @Valid @ModelAttribute createBusinessPartnerRequest: CreateBusinessPartnerRequest,
+        @RequestPart("image", required = true) image: MultipartFile,
+    ): ResponseEntity<String> {
+        val allowedTypes = listOf("image/jpeg", "image/png", "image/jpg", "image/webp")
+        if (image.contentType !in allowedTypes) {
+            throw IllegalArgumentException("Only JPEG, PNG, or WEBP images are allowed.")
+        }
+
+        if (image.contentType !in allowedTypes) {
+            throw IllegalArgumentException("Only JPEG, PNG, or WEBP images are allowed.")
+        }
+
+        return ResponseEntity("", HttpStatus.CREATED)
+    }
+
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping
+    fun deletePartner(
+        @PathVariable(value = "partnerId") partnerId: Long
+    ):  ResponseEntity<Void> {
+        businessPartnerService
+        return ResponseEntity.noContent().build()
+    }
+
+}

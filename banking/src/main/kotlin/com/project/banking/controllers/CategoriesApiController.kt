@@ -4,6 +4,8 @@ import com.project.banking.entities.CategoryEntity
 import com.project.banking.mappers.toEntity
 import com.project.banking.services.CategoryService
 import com.project.common.data.requests.categories.CategoryRequest
+import com.project.common.data.responses.categories.CategoriesResponse
+import com.project.common.data.responses.categories.CategoryDto
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -19,11 +21,14 @@ import org.springframework.web.bind.annotation.RestController
 class CategoriesApiController (
     private val categoryService: CategoryService
 ){
-
     @GetMapping
     fun getAllCategories()
-    : ResponseEntity<List<CategoryEntity>> = ResponseEntity(
-        categoryService.getCategories(),
+    : ResponseEntity<CategoriesResponse> = ResponseEntity(
+        CategoriesResponse(
+            categoryService.getCategories().map {
+                CategoryDto(id = it.id!!, it.name!!)
+            }
+        ),
         HttpStatus.OK
     )
 
@@ -31,8 +36,8 @@ class CategoriesApiController (
     @PostMapping
     fun createNewCategory(
         @Valid @RequestBody newCategory: CategoryRequest
-    ): ResponseEntity<CategoryEntity> {
+    ): ResponseEntity<CategoryDto> {
         val category = categoryService.createCategory(newCategory.toEntity())
-        return ResponseEntity(category, HttpStatus.CREATED)
+        return ResponseEntity(CategoryDto(id=category.id!!, name = category.name!!), HttpStatus.CREATED)
     }
 }

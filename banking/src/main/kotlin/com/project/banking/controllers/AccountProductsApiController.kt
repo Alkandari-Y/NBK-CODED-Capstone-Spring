@@ -32,7 +32,4 @@ class AccountProductsApiController(
             ?: throw AccountProductNotFoundException()
         return ResponseEntity(accountProduct, HttpStatus.OK)
     }
-
-
-
 }
