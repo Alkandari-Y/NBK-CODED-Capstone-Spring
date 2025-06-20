@@ -24,8 +24,9 @@ data class BusinessPartnerEntity (
     @Column(name = "admin_user", nullable = false)
      var adminUser: Long? = null,
 
-    @Column(name = "account_id", nullable = false)
-     var accountId: Long? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", nullable = false)
+    var account: AccountEntity? = null,
 
     @Column(name = "logo_url", nullable = false)
      var logoUrl: String? = null,
