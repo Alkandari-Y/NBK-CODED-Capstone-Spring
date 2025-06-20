@@ -3,7 +3,6 @@ package com.project.recommendation.entities
 import jakarta.persistence.*
 import java.time.LocalTime
 import org.locationtech.jts.geom.Point
-import java.math.BigDecimal
 
 @Entity
 @Table(name = "store_locations")
