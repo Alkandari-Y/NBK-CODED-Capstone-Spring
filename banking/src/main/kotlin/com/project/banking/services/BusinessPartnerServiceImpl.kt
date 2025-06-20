@@ -12,6 +12,7 @@ import com.project.common.data.responses.authentication.UserInfoDto
 import com.project.common.enums.AccountOwnerType
 import com.project.common.enums.AccountType
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
+import com.project.common.exceptions.businessPartner.BusinessNotFoundException
 import com.project.common.exceptions.categories.CategoryNotFoundException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -66,6 +67,9 @@ class BusinessServiceImpl(
 
 
     override fun deletePartnerById(id: Long) {
+        val business = businessPartnerRepository.findByIdOrNull(id)
+            ?: throw BusinessNotFoundException()
+        accountRepository.deleteById(business.account?.id!!)
         businessPartnerRepository.deleteById(id)
     }
 
