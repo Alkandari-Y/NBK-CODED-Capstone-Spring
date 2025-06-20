@@ -118,7 +118,7 @@ fun seedCategories() {
                 image = "http://localhost:9000/capstone-public/fd4ac1cd-c88f-446a-846b-f23ecea8fe63"
             )
 
-        accountProductRepository.saveAll(listOf(debitAccount, cashBackAccount, basicCreditCard, standardCreditCard, premiumCreditCard, ))
+        accountProductRepository.saveAll(listOf(debitAccount, businessAccount, cashBackAccount, basicCreditCard, standardCreditCard, premiumCreditCard, ))
         println("Seeded default account products.")
 
     }
