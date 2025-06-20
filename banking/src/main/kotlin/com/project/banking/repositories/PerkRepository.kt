@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository
 @Repository
 interface PerkRepository : JpaRepository<PerkEntity, Long> {
     fun findAllByAccountProductId(id: Long): List<PerkEntity>?
-//    fun findAllByCategoryId(id: Long): List<PerkEntity>
 }
