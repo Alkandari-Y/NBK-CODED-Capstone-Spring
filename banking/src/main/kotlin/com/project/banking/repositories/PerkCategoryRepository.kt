@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-interface AccountPerkRepository: JpaRepository<PerkCategoryEntity, Long> {
+interface PerkCategoryRepository: JpaRepository<PerkCategoryEntity, Long> {
 }

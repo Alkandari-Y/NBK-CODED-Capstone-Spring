@@ -1,5 +1,7 @@
 package com.project.banking.entities
 
+import com.project.common.enums.RewardType
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -7,6 +9,8 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
+import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import java.math.BigDecimal
@@ -21,7 +25,7 @@ data class PerkEntity (
      var id: Long? = null,
 
     @Column(name = "type", nullable = false)
-     var type: Long? = null,
+     var type: RewardType? = null,
 
     @Column(name = "min_payment", nullable = false, precision = 8, scale = 2)
      var minPayment: BigDecimal? = null,
@@ -38,4 +42,12 @@ data class PerkEntity (
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_product_id", nullable = false)
     var accountProduct: AccountProductEntity? = null,
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.MERGE])
+    @JoinTable(
+    name = "perk_categories",
+    joinColumns = [JoinColumn(name = "perk_id")],
+    inverseJoinColumns = [JoinColumn(name = "category_id")]
+)
+    var categories: MutableSet<CategoryEntity> = mutableSetOf()
 )
