@@ -1,7 +1,7 @@
 package com.project.recommendation.services
 
 import com.project.banking.repositories.BusinessPartnerRepository
-import com.project.common.data.requests.promotions.PromotionRequest
+import com.project.common.data.requests.promotions.CreatePromotionRequest
 import com.project.common.data.responses.promotions.PromotionResponse
 import com.project.common.exceptions.businessPartner.BusinessNotFoundException
 import com.project.recommendation.entities.PromotionEntity
@@ -15,7 +15,7 @@ class PromotionServiceImpl(
     private val promotionRepository: PromotionRepository,
     private val businessPartnerRepository: BusinessPartnerRepository
 ) : PromotionService {
-    override fun createPromotion(request: PromotionRequest): PromotionResponse {
+    override fun createPromotion(request: CreatePromotionRequest): PromotionResponse {
         val businessPartner = businessPartnerRepository.findByIdOrNull(request.businessPartnerId)
             ?: throw BusinessNotFoundException()
 

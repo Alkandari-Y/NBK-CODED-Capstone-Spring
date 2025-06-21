@@ -1,6 +1,6 @@
 package com.project.recommendation.controllers
 
-import com.project.common.data.requests.promotions.PromotionRequest
+import com.project.common.data.requests.promotions.CreatePromotionRequest
 import com.project.common.data.responses.promotions.PromotionResponse
 import com.project.recommendation.services.PromotionService
 import org.springframework.http.HttpStatus
@@ -16,7 +16,7 @@ class AdminPromotionsApiController(
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    fun createPromotion(@RequestBody request: PromotionRequest): ResponseEntity<PromotionResponse> {
+    fun createPromotion(@RequestBody request: CreatePromotionRequest): ResponseEntity<PromotionResponse> {
         val body = promotionService.createPromotion(request)
         return ResponseEntity(body, HttpStatus.CREATED)
     }
