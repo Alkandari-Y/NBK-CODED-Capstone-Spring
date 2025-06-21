@@ -37,20 +37,19 @@ CREATE TABLE IF NOT EXISTS "user_xp"(
 
 CREATE TABLE IF NOT EXISTS "account_products"(
     "id"            SERIAL PRIMARY KEY,
-    "name"          VARCHAR(255) NOT NULL,
-    "type"          VARCHAR(255) NOT NULL,
+    "name"          VARCHAR(255) UNIQUE NOT NULL,
+    "type"          INT NOT NULL,
     "interest_rate" DECIMAL(9, 3) NULL,
     "min_balance_required" DECIMAL(9, 3) NULL,
     "credit_limit"  DECIMAL(9, 3) NULL,
     "annual_fee"    DECIMAL(9, 3) NULL,
-    "min_salary"    BIGINT NULL,
+    "min_salary"    DECIMAL(9, 3) NULL,
     "image"         VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS "accounts"
 (
     "id"                    SERIAL PRIMARY KEY,
-    "name"                  VARCHAR(255)  NOT NULL,
     "balance"               DECIMAL(9, 3) NOT NULL,
     "is_active"             BOOLEAN       NOT NULL,
     "account_number"        VARCHAR(255)  NOT NULL UNIQUE,
@@ -65,6 +64,7 @@ CREATE TABLE IF NOT EXISTS "accounts"
 
 CREATE TABLE IF NOT EXISTS "business_partners"(
     "id"            SERIAL PRIMARY KEY,
+    "name"          VARCHAR(255) UNIQUE NOT NULL,
     "admin_user"    BIGINT NOT NULL,
     "account_id"    BIGINT NOT NULL,
     "logo_url"      VARCHAR(255) NOT NULL,
@@ -76,15 +76,15 @@ CREATE TABLE IF NOT EXISTS "business_partners"(
 
 CREATE TABLE IF NOT EXISTS "perks"(
     "id" SERIAL PRIMARY KEY,
-    "business_id" BIGINT NOT NULL,
-    "type" BIGINT NOT NULL,
+    "account_product_id" BIGINT NOT NULL,
+    "type" INT NOT NULL,
     "min_payment" DECIMAL(9, 3) NOT NULL,
     "rewards_xp" BIGINT NOT NULL,
     "perk_amount" DECIMAL(9, 3) NOT NULL,
     "is_tier_based" BOOLEAN NOT NULL DEFAULT FALSE,
-    CONSTRAINT "perks_business_id_foreign"
-        FOREIGN KEY("business_id")
-            REFERENCES "business_partners"("id")
+    CONSTRAINT "account_products_id_foreign"
+        FOREIGN KEY("account_product_id")
+            REFERENCES "account_products"("id")
 );
 
 CREATE TABLE IF NOT EXISTS "perk_categories"(

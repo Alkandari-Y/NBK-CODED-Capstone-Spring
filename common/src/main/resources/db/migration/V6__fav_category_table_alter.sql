@@ -1,2 +1,0 @@
-ALTER TABLE "fav_categories"
-    ADD COLUMN "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
