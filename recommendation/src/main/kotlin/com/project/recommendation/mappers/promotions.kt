@@ -5,7 +5,7 @@ import com.project.common.data.responses.promotions.PromotionResponse
 import com.project.recommendation.entities.PromotionEntity
 
 
-fun CreatePromotionRequest.toEntity(businessPartnerId: Long) = PromotionEntity(
+fun CreatePromotionRequest.toEntity() = PromotionEntity(
     name = name,
     businessPartnerId = businessPartnerId,
     type = type,
