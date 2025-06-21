@@ -1,7 +1,6 @@
 package com.project.banking.services
 
 import com.project.banking.entities.CategoryEntity
-import com.project.banking.repositories.CategoryWithPerksDto
 import com.project.banking.repositories.CategoryWithPerksView
 
 interface CategoryService {
