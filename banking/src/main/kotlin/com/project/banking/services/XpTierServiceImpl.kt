@@ -28,18 +28,19 @@ class XpTierServiceImpl(
     override fun createXpTier(tier: CreateXpTierRequest): XpTierResponse {
         if (tier.minXp > tier.maxXp) { throw XpMinMaxException() }
 
-        if (xpTierRepository.findAll().any { it.name == tier.name }) {
-            throw XpTierNameTakenException()
-        }
+        if (xpTierRepository.existsByName(tier.name)) { throw XpTierNameTakenException() }
 
-        val overlaps = xpTierRepository.findAll().any {
+        val existingTiers = xpTierRepository.findAllByOrderByMinXpAsc()
+
+        val overlaps = existingTiers.any {
             (tier.minXp in it.minXp!!..it.maxXp!!) ||
             (tier.maxXp in it.minXp!!..it.maxXp!!) ||
             (it.minXp!! in tier.minXp..tier.maxXp) ||
-            (it.maxXp!! in tier.minXp..tier.maxXp) }
+            (it.maxXp!! in tier.minXp..tier.maxXp)
+        }
         if (overlaps) { throw XpMinMaxException("XP tier range overlaps with an existing tier") }
 
-        val combined = xpTierRepository.findAll() + tier.toEntity()
+        val combined = existingTiers + tier.toEntity()
         val sorted = combined.sortedBy { it.minXp }
 
         if (sorted.first().minXp != 0L) {
