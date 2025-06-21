@@ -25,7 +25,7 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it.requestMatchers(
                     HttpMethod.GET,
-                    "/api/v1/partners/**", "/api/v1/categories"
+                    "/api/v1/partners/**", "/api/v1/categories", "/api/v1/products/**"
                 ).permitAll()
                     .anyRequest().authenticated()
             }

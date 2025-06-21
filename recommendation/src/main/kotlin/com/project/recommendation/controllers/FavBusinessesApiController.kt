@@ -1,11 +1,15 @@
 package com.project.recommendation.controllers
 
+import com.project.common.data.requests.businessPartners.FavBusinessRequest
+import com.project.common.data.requests.businessPartners.FavBusinessesRequest
 import com.project.common.data.requests.categories.FavCategoriesRequest
 import com.project.common.data.requests.categories.FavoriteCategoryRequest
 import com.project.common.data.responses.authentication.UserInfoDto
-import com.project.common.data.responses.categories.FavoriteCategoriesResponse
+import com.project.common.data.responses.businessPartners.FavoriteBusinessDto
+import com.project.common.data.responses.businessPartners.FavoriteBusinessesResponse
+import com.project.recommendation.mappers.toFavoriteBusinessResponse
 import com.project.recommendation.mappers.toFavoriteCategoryResponse
-import com.project.recommendation.services.FavCategoriesService
+import com.project.recommendation.services.FavBusinessService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -18,59 +22,60 @@ import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
-@RequestMapping("/api/v1/fav/categories")
-class FavCategoryApiController(
-    private val favCategoriesService: FavCategoriesService
+@RequestMapping("/api/v1/fav/businesses")
+class FavBusinessesApiController(
+    private val favBusinessService: FavBusinessService,
 ) {
+
     @GetMapping
-    fun getAllFavoriteCategories(
+    fun getAllFavoriteBusinesses(
         @RequestAttribute("authUser") authUser: UserInfoDto,
-        ): ResponseEntity<FavoriteCategoriesResponse> {
-        val favorites = favCategoriesService.findAllFavCategories(authUser.userId)
-        return ResponseEntity.ok(favorites.toFavoriteCategoryResponse())
+    ): ResponseEntity<FavoriteBusinessesResponse> {
+        val favorites = favBusinessService.findAllFavBusinesses(authUser.userId)
+        return ResponseEntity.ok(favorites.toFavoriteBusinessResponse())
     }
 
     @PostMapping
-    fun setAllFavoriteCategories(
+    fun setAllFavoriteBusinesses(
         @RequestAttribute("authUser") authUser: UserInfoDto,
-        @RequestBody request: FavCategoriesRequest
-    ): ResponseEntity<FavoriteCategoriesResponse> {
-        val updated = favCategoriesService.setAllFavCategories(request, authUser.userId)
-        return ResponseEntity.ok(updated.toFavoriteCategoryResponse())
+        @RequestBody request: FavBusinessesRequest
+    ): ResponseEntity<FavoriteBusinessesResponse> {
+        val updated = favBusinessService.setAllFavBusinesses(request, authUser.userId)
+        return ResponseEntity.ok(updated.toFavoriteBusinessResponse())
     }
 
     @PutMapping
     fun addFavoriteCategory(
         @RequestAttribute("authUser") authUser: UserInfoDto,
-        @RequestBody request: FavoriteCategoryRequest
+        @RequestBody request: FavBusinessRequest
     ): ResponseEntity<Unit> {
-        favCategoriesService.addOneFavCategory(request,authUser.userId)
+        favBusinessService.addOneFavBusiness(request,authUser.userId)
         return ResponseEntity.ok().build()
     }
 
     @DeleteMapping
     fun removeFavoriteCategories(
         @RequestAttribute("authUser") authUser: UserInfoDto,
-        @RequestBody request: FavCategoriesRequest
+        @RequestBody request: FavBusinessesRequest
     ): ResponseEntity<Unit> {
-        favCategoriesService.removeFavCategories(authUser.userId, request)
+        favBusinessService.removeFavBusinesses(authUser.userId, request)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/remove")
     fun removeOneFavoriteCategory(
         @RequestAttribute("authUser") authUser: UserInfoDto,
-        @RequestBody request: FavoriteCategoryRequest
+        @RequestBody request: FavBusinessRequest
     ): ResponseEntity<Unit> {
-        favCategoriesService.removeOneFavCategory(authUser.userId, request)
+        favBusinessService.removeOneFavBusiness(authUser.userId, request)
         return ResponseEntity.noContent().build()
     }
 
     @DeleteMapping("/clear")
-fun clearAllFavoriteCategories(
+    fun clearAllFavoriteBusinesses(
         @RequestAttribute("authUser") authUser: UserInfoDto,
     ): ResponseEntity<Unit> {
-        favCategoriesService.clearAllFavCategories(authUser.userId)
+        favBusinessService.clearAllFavBusinesses(authUser.userId)
         return ResponseEntity.noContent().build()
     }
 }

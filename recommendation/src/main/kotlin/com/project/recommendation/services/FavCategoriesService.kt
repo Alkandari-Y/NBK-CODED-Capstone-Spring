@@ -6,7 +6,7 @@ import com.project.recommendation.entities.FavCategoryEntity
 
 
 
-interface FavCategoryService {
+interface FavCategoriesService {
     fun findAllFavCategories(userId: Long): List<FavCategoryEntity>
     fun setAllFavCategories(favCategoriesRequest: FavCategoriesRequest, userId: Long): List<FavCategoryEntity>
     fun addOneFavCategory(favoriteCategoryRequest: FavoriteCategoryRequest, userId: Long): FavCategoryEntity

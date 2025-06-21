@@ -17,12 +17,22 @@ import org.springframework.web.filter.OncePerRequestFilter
 class RemoteAuthenticationFilter(
     private val jwtAuthProvider: JwtAuthProvider
 ) : OncePerRequestFilter() {
-
+    val publicUrls = listOf(
+        "/api/v1/store-locations"
+    )
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+
+        val isPublicUrl = publicUrls.any { request.requestURI.contains(it) }
+
+        if (request.method == "GET" && isPublicUrl) {
+            filterChain.doFilter(request, response)
+            return
+        }
+
         val bearerToken: String? = request.getHeader("Authorization")
         if (bearerToken.isNullOrBlank() || !bearerToken.startsWith("Bearer ")) {
             response.sendError(HttpStatus.UNAUTHORIZED.value(), "Authorization header is missing or invalid")

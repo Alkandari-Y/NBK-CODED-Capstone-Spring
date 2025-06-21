@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service
 @Service
 class FavCategoriesServiceImpl(
     private val favCategoryRepository: FavCategoryRepository
-) : FavCategoryService {
+) : FavCategoriesService {
     private val MAX_CATEGORIES = 5
 
     override fun findAllFavCategories(userId: Long): List<FavCategoryEntity> {
