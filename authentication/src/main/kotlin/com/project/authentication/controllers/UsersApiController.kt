@@ -5,7 +5,7 @@ import com.project.authentication.mappers.toEntity
 import com.project.authentication.services.RoleService
 import com.project.authentication.services.UserService
 import com.project.common.data.requests.users.RoleCreateRequest
-import com.project.common.data.responses.users.RolesAssignmentRequest
+import com.project.common.data.requests.users.RolesAssignmentRequest
 import com.project.common.exceptions.auth.UserNotFoundException
 import com.project.common.data.responses.authentication.UserInfoDto
 import jakarta.validation.Valid

@@ -1,4 +1,4 @@
-package com.project.common.data.responses.users
+package com.project.common.data.requests.users
 
 import jakarta.validation.constraints.Size
 

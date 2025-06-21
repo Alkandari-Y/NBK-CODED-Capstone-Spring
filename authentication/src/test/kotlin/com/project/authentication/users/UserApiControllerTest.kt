@@ -7,7 +7,7 @@ import com.project.authentication.entities.UserEntity
 import com.project.authentication.services.RoleService
 import com.project.authentication.services.UserService
 import com.project.common.data.requests.users.RoleCreateRequest
-import com.project.common.data.responses.users.RolesAssignmentRequest
+import com.project.common.data.requests.users.RolesAssignmentRequest
 import com.project.common.exceptions.auth.UserNotFoundException
 import io.mockk.Runs
 import io.mockk.every
