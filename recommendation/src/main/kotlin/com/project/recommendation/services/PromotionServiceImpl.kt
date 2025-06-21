@@ -1,34 +1,30 @@
 package com.project.recommendation.services
 
+import com.google.shopping.type.Price
 import com.project.banking.repositories.BusinessPartnerRepository
 import com.project.common.data.requests.promotions.CreatePromotionRequest
 import com.project.common.data.responses.promotions.PromotionResponse
 import com.project.common.exceptions.businessPartner.BusinessNotFoundException
 import com.project.recommendation.entities.PromotionEntity
+import com.project.recommendation.mappers.toEntity
 import com.project.recommendation.mappers.toResponse
+import com.project.recommendation.providers.BankServiceProvider
 import com.project.recommendation.repositories.PromotionRepository
+import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
 class PromotionServiceImpl(
     private val promotionRepository: PromotionRepository,
-//    private val businessPartnerRepository: BusinessPartnerRepository
+    private val bankServiceProvider: BankServiceProvider
 ) : PromotionService {
+    @Transactional
     override fun createPromotion(request: CreatePromotionRequest): PromotionResponse {
-//        val businessPartner = businessPartnerRepository.findByIdOrNull(request.businessPartnerId)
-//            ?: throw BusinessNotFoundException()
+        val businessPartner = bankServiceProvider.getBusinessPartner(request.businessPartnerId)
 
-        val promotion = PromotionEntity(
-            name = request.name,
-            businessPartnerId = request.businessPartnerId,
-            type = request.type,
-            startDate = request.startDate,
-            endDate = request.endDate,
-            description = request.description,
-            storeId = request.storeId,
-            xp = request.xp
-        )
+        val promotion = request.toEntity(businessPartner.id)
+
         return promotionRepository.save(promotion).toResponse()
     }
 
@@ -37,10 +33,8 @@ class PromotionServiceImpl(
     }
 
     override fun getAllPromotionsByBusinessId(businessId: Long): List<PromotionResponse> {
-//        val businessPartner = businessPartnerRepository.findByIdOrNull(businessId)
-//            ?: throw BusinessNotFoundException()
-
-        return promotionRepository.findAllByBusinessPartnerId(businessId)
+        val businessPartner = bankServiceProvider.getBusinessPartner(businessId)
+        return promotionRepository.findAllByBusinessPartnerId(businessPartner.id)
             .map { it.toResponse() }
     }
 }
