@@ -43,14 +43,13 @@ CREATE TABLE IF NOT EXISTS "account_products"(
     "min_balance_required" DECIMAL(9, 3) NULL,
     "credit_limit"  DECIMAL(9, 3) NULL,
     "annual_fee"    DECIMAL(9, 3) NULL,
-    "min_salary"    BIGINT NULL,
+    "min_salary"    DECIMAL(9, 3) NULL,
     "image"         VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS "accounts"
 (
     "id"                    SERIAL PRIMARY KEY,
-    "name"                  VARCHAR(255)  NOT NULL,
     "balance"               DECIMAL(9, 3) NOT NULL,
     "is_active"             BOOLEAN       NOT NULL,
     "account_number"        VARCHAR(255)  NOT NULL UNIQUE,

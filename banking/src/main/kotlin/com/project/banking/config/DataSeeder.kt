@@ -26,6 +26,9 @@ class DataSeeder(
     @EventListener(ApplicationReadyEvent::class)
     @Transactional
     fun seedInitialData() {
+        println("Delaying data seeding for 5 seconds...")
+        Thread.sleep(5000)
+        println("Starting data seeding...")
         val categories = seedCategories()
         val accountProducts = seedAccountProducts()
 

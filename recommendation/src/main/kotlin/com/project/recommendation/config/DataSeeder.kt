@@ -15,7 +15,10 @@ class DataSeeder(
     @EventListener(ApplicationReadyEvent::class)
     @Transactional
     fun seedInitialData() {
-        seedStoreLocations()
+        println("Delaying data seeding for 5 seconds...")
+        Thread.sleep(8000)
+        println("Starting data seeding...")
+//        seedStoreLocations()
 
     }
 
