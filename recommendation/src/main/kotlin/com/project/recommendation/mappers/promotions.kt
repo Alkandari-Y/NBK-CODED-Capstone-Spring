@@ -17,13 +17,13 @@ fun CreatePromotionRequest.toEntity() = PromotionEntity(
 )
 
 fun PromotionEntity.toResponse() = PromotionResponse(
-    id = id,
+    id = id!!,
     name = name,
-    businessPartnerId = businessPartnerId,
-    type = type,
-    startDate = startDate,
-    endDate = endDate,
+    businessPartnerId = businessPartnerId!!,
+    type = type!!,
+    startDate = startDate!!,
+    endDate = endDate!!,
     description = description,
     storeId = storeId,
-    xp = xp
+    xp = xp!!
 )
