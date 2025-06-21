@@ -13,15 +13,15 @@ import org.springframework.stereotype.Service
 @Service
 class PromotionServiceImpl(
     private val promotionRepository: PromotionRepository,
-    private val businessPartnerRepository: BusinessPartnerRepository
+//    private val businessPartnerRepository: BusinessPartnerRepository
 ) : PromotionService {
     override fun createPromotion(request: CreatePromotionRequest): PromotionResponse {
-        val businessPartner = businessPartnerRepository.findByIdOrNull(request.businessPartnerId)
-            ?: throw BusinessNotFoundException()
+//        val businessPartner = businessPartnerRepository.findByIdOrNull(request.businessPartnerId)
+//            ?: throw BusinessNotFoundException()
 
         val promotion = PromotionEntity(
             name = request.name,
-            businessPartnerId = businessPartner.id,
+            businessPartnerId = request.businessPartnerId,
             type = request.type,
             startDate = request.startDate,
             endDate = request.endDate,
@@ -37,10 +37,10 @@ class PromotionServiceImpl(
     }
 
     override fun getAllPromotionsByBusinessId(businessId: Long): List<PromotionResponse> {
-        val businessPartner = businessPartnerRepository.findByIdOrNull(businessId)
-            ?: throw BusinessNotFoundException()
+//        val businessPartner = businessPartnerRepository.findByIdOrNull(businessId)
+//            ?: throw BusinessNotFoundException()
 
-        return promotionRepository.findAllByBusinessPartnerId(businessPartner.id!!)
+        return promotionRepository.findAllByBusinessPartnerId(businessId)
             .map { it.toResponse() }
     }
 }
