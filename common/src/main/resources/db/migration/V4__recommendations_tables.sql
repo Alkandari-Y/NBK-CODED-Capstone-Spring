@@ -22,8 +22,9 @@ CREATE TABLE IF NOT EXISTS "fav_categories"(
      "id"                   SERIAL PRIMARY KEY,
      "user_id"              BIGINT NOT NULL,
      "category_id"          BIGINT NOT NULL,
+     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
      CONSTRAINT "unique_fav_categories"
-     UNIQUE ("user_id", "category_id")
+        UNIQUE ("user_id", "category_id")
 );
 
 CREATE TABLE IF NOT EXISTS "promotion_categories"( -- UPDATED!!!

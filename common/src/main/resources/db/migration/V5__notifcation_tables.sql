@@ -16,7 +16,6 @@ CREATE TABLE IF NOT EXISTS "notification_settings"(
    "id" SERIAL PRIMARY KEY,
    "delivery_type" INT NOT NULL,
    "user_id" BIGINT NOT NULL,
-   "reward_type" INT NOT NULL,
    "active" BOOLEAN NOT NULL
 );
 
