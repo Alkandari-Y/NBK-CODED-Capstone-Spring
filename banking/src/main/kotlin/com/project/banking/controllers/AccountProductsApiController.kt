@@ -2,8 +2,11 @@ package com.project.banking.controllers
 
 import com.project.banking.entities.AccountProductEntity
 import com.project.banking.entities.PerkEntity
+import com.project.banking.mappers.toDto
+import com.project.banking.projections.AccountProductView
 import com.project.banking.services.AccountProductService
 import com.project.banking.services.PerkService
+import com.project.common.data.responses.accountProducts.AccountProductDto
 import com.project.common.data.responses.perks.PerkDto
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
 import com.project.common.exceptions.perk.PerkNotFoundException
@@ -22,9 +25,9 @@ class AccountProductsApiController(
 ) {
 
     @GetMapping
-    fun getAccountProducts(): ResponseEntity<List<AccountProductEntity>> =
+    fun getAccountProducts(): ResponseEntity<List<AccountProductDto>> =
         ResponseEntity(
-            accountProductService.getAllAccountProducts(),
+            accountProductService.getAllAccountProducts().toDto(),
             HttpStatus.OK
         )
 
@@ -32,10 +35,10 @@ class AccountProductsApiController(
     @GetMapping("/{productId}")
     fun getAccountProductDetails(
         @PathVariable("productId") productId: Long
-    ): ResponseEntity<AccountProductEntity> {
+    ): ResponseEntity<AccountProductDto> {
         val accountProduct = accountProductService.getAccountProductById(productId)
             ?: throw AccountProductNotFoundException()
-        return ResponseEntity(accountProduct, HttpStatus.OK)
+        return ResponseEntity(accountProduct.toDto(), HttpStatus.OK)
     }
 
 

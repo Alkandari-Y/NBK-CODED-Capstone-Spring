@@ -1,5 +1,6 @@
 package com.project.banking.entities
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import com.project.common.enums.RewardType
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -41,13 +42,14 @@ data class PerkEntity (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_product_id", nullable = false)
+    @JsonBackReference
     var accountProduct: AccountProductEntity? = null,
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.MERGE])
     @JoinTable(
-    name = "perk_categories",
-    joinColumns = [JoinColumn(name = "perk_id")],
-    inverseJoinColumns = [JoinColumn(name = "category_id")]
-)
-    var categories: MutableSet<CategoryEntity> = mutableSetOf()
+        name = "perk_categories",
+        joinColumns = [JoinColumn(name = "perk_id")],
+        inverseJoinColumns = [JoinColumn(name = "category_id")]
+    )
+    var categories: MutableList<CategoryEntity> = mutableListOf()
 )

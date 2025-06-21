@@ -12,5 +12,5 @@ data class PerkDto(
     val perkAmount: BigDecimal,
     val minPayment: BigDecimal?,
     val accountProductId: Long,
-    val categories: List<CategoryDto>?
+    val categories: List<CategoryDto>
 )

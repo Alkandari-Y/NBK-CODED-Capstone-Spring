@@ -1,5 +1,6 @@
 package com.project.banking.entities
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import com.project.common.enums.AccountType
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -47,6 +48,11 @@ data class AccountProductEntity (
     @Column(name = "image")
      var image: String? = null,
 
-//    @OneToMany(mappedBy = "account_products", cascade = [CascadeType.MERGE])
-//    var perks: MutableSet<PerkEntity> = mutableSetOf()
+    @OneToMany(
+        mappedBy = "accountProduct",
+        cascade = [CascadeType.MERGE],
+        fetch = FetchType.LAZY
+    )
+    @JsonManagedReference
+    var perks: MutableList<PerkEntity> = mutableListOf()
 )
