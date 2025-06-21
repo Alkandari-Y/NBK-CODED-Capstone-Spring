@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 class TransactionServiceImpl(
     private val transactionRepository: TransactionRepository,
     private val accountRepository: AccountRepository,
-    private val categoryService: CategoryService
+    private val categoryService: CategoryService,
 ): TransactionService {
 
     @Transactional
@@ -80,15 +80,23 @@ class TransactionServiceImpl(
         return TransactionDetails(
             transactionId = transaction.id!!,
             amount = newTransaction.amount.setScale(3),
-            category = category?.name!!,
+            category = category.name!!,
             sourceAccountNumber = updatedSourceAccount.accountNumber,
             destinationAccountNumber = updatedDestinationAccount.accountNumber,
             createdAt = LocalDateTime.now(),
         )
     }
 
-    override fun getTransactionsByAccount(accountNumber: String): List<TransactionDetails> {
-        return transactionRepository.findRelatedTransactions(accountNumber)
+    override fun getTransactionsByAccount(accountId: Long?, accountNumber: String?): List<TransactionDetails> {
+        if ((accountId == null && accountNumber == null) || (accountId != null && accountNumber != null)) {
+            throw IllegalArgumentException("Provide either accountId or accountNumber, but not both.")
+        }
+
+        return when {
+            accountId != null -> transactionRepository.findRelatedTransactionsByAccountId(accountId)
+            accountNumber != null -> transactionRepository.findRelatedTransactionsByAccountNumber(accountNumber)
+            else -> emptyList()
+        }
     }
 
     override fun getAllTransactionByUserId(

@@ -27,10 +27,9 @@ interface TransactionRepository: JpaRepository<TransactionEntity, Long> {
         WHERE sa.accountNumber = :accountNumber
             OR da.accountNumber= :accountNumber  
      """)
-    fun findRelatedTransactions(
+    fun findRelatedTransactionsByAccountNumber(
         @Param("accountNumber") accountNumber: String,
     ): List<TransactionDetails>
-
 
     @Query("""
         SELECT NEW com.project.common.data.responses.transactions.TransactionDetails(
@@ -48,4 +47,23 @@ interface TransactionRepository: JpaRepository<TransactionEntity, Long> {
         WHERE sa.ownerId = :userId OR da.ownerId = :userId
     """)
     fun findAllByUserId(@Param("userId") userId: Long): List<TransactionDetails>
+
+    @Query("""
+        SELECT NEW com.project.common.data.responses.transactions.TransactionDetails(
+            te.id,
+            sa.accountNumber,
+            da.accountNumber,
+            te.amount,
+            te.createdAt,
+            c.name
+        )
+        FROM TransactionEntity te
+            JOIN te.sourceAccount sa
+            JOIN te.destinationAccount da
+            JOIN te.category c
+        WHERE sa.id = :accountId OR da.id = :accountId
+    """)
+    fun findRelatedTransactionsByAccountId(
+        @Param("accountId") accountId: Long
+    ): List<TransactionDetails>
 }

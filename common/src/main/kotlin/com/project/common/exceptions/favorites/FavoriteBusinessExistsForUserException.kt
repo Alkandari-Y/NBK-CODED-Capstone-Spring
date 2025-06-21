@@ -1,4 +1,4 @@
-package com.project.common.exceptions.businessPartners
+package com.project.common.exceptions.favorites
 
 import com.project.common.enums.ErrorCode
 import com.project.common.exceptions.APIException

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus
 
 data class XpTierNameTakenException(
     override val message: String = "XP tier name taken",
-    override val code: ErrorCode = ErrorCode.PERK_NOT_FOUND,
+    override val code: ErrorCode = ErrorCode.XP_TIER_NAME_TAKEN,
     override val httpStatus: HttpStatus = HttpStatus.NOT_FOUND,
     override val cause: Throwable? = null
 ) : APIException(message, httpStatus, code, cause)

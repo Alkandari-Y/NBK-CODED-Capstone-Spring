@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -22,17 +23,25 @@ class TransactionsAPIController(
 ){
 
 
-    @GetMapping("/account/{accountNumber}")
-    fun getAllTransactionsByAccountNumber(
-        @PathVariable("accountNumber") accountNumber: String,
-        @AuthenticationPrincipal user: RemoteUserPrincipal
+    @GetMapping("/account")
+    fun getAllTransactionsByAccount(
+        @AuthenticationPrincipal user: RemoteUserPrincipal,
+        @RequestParam(required = false) accountId: Long?,
+        @RequestParam(required = false) accountNumber: String?
     ): ResponseEntity<List<TransactionDetails>> {
-        val account = accountService.getByAccountNumber(accountNumber)
-            ?: throw AccountNotFoundException()
+        if ((accountId == null && accountNumber == null) || (accountId != null && accountNumber != null)) {
+            return ResponseEntity.badRequest().build()
+        }
+
+        val account = when {
+            accountId != null -> accountService.getAccountById(accountId)
+            accountNumber != null -> accountService.getByAccountNumber(accountNumber)
+            else -> null
+        } ?: throw AccountNotFoundException()
 
         hasAccountPermission(account, user)
 
-        val transactions = transactionService.getTransactionsByAccount(accountNumber)
+        val transactions = transactionService.getTransactionsByAccount(accountId, accountNumber)
         return ResponseEntity(transactions, HttpStatus.OK)
     }
 
