@@ -18,7 +18,8 @@ class RemoteAuthenticationFilter(
     private val jwtAuthProvider: JwtAuthProvider
 ) : OncePerRequestFilter() {
     val publicUrls = listOf(
-        "/api/v1/store-locations"
+        "/api/v1/store-locations",
+        "/api/v1/promotions"
     )
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -26,9 +27,9 @@ class RemoteAuthenticationFilter(
         filterChain: FilterChain
     ) {
 
-        val isPublicUrl = publicUrls.any { request.requestURI.contains(it) }
+        val isPublicUrl = request.method == "GET" && publicUrls.any { request.requestURI.startsWith(it) }
 
-        if (request.method == "GET" && isPublicUrl) {
+        if (isPublicUrl) {
             filterChain.doFilter(request, response)
             return
         }

@@ -23,7 +23,7 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it.requestMatchers(
                         HttpMethod.GET,
-                    "/api/v1/store-locations"
+                    "/api/v1/store-locations", "/api/v1/promotions/**"
                 ).permitAll()
                 .anyRequest().authenticated()
             }
