@@ -2,6 +2,7 @@ package com.project.banking.services
 
 import com.project.banking.entities.AccountProductEntity
 import com.project.banking.mappers.toEntity
+import com.project.banking.projections.AccountProductView
 import com.project.banking.repositories.AccountProductRepository
 import com.project.common.data.requests.accountProducts.CreateAccountProductRequest
 import com.project.common.enums.AccountType

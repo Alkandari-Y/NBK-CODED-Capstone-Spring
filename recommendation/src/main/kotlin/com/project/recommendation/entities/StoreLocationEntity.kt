@@ -16,11 +16,11 @@ data class StoreLocationEntity(
     @Column(name = "partner_id", nullable = false)
     var partnerId: Long? = null,
 
-    @Column(name = "longitude", nullable = false)
-    var longitude: Double? = null,
+    @Column(name = "longitude", nullable = false, precision = 10, scale = 8)
+    var longitude: BigDecimal = BigDecimal.ZERO,
 
-    @Column(name = "latitude", nullable = false)
-    var latitude: Double? = null,
+    @Column(name = "latitude", nullable = false, precision = 11, scale = 8)
+    var latitude: BigDecimal = BigDecimal.ZERO,
 
     @Column(name = "google_map_url", nullable = false)
     var googleMapUrl: String,

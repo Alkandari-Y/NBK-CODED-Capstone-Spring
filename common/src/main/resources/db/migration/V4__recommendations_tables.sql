@@ -65,8 +65,8 @@ CREATE TABLE IF NOT EXISTS "participating_partners"(
 CREATE TABLE IF NOT EXISTS "store_locations"(
    "id" SERIAL PRIMARY KEY,
    "partner_id" BIGINT NOT NULL,
-   longitude DOUBLE PRECISION NOT NULL,
-   latitude DOUBLE PRECISION NOT NULL,
+   longitude DECIMAL(10, 8) NOT NULL,
+   latitude DECIMAL(11, 8) NOT NULL,
     "google_map_url" VARCHAR(255) NOT NULL,
     "country" VARCHAR(255) NOT NULL,
     "address_line_1" VARCHAR(255) NOT NULL,
@@ -74,9 +74,9 @@ CREATE TABLE IF NOT EXISTS "store_locations"(
     "opens_at" TIME(0) WITHOUT TIME ZONE NOT NULL,
     "closes_at" TIME(0) WITHOUT TIME ZONE NOT NULL,
     "beacon_id" BIGINT NOT NULL,
-    "location" GEOGRAPHY(POINT, 4326) GENERATED ALWAYS AS (
-          ST_SetSRID(ST_MakePoint("longitude", "latitude"), 4326)
-    ) STORED
+   location GEOGRAPHY(POINT, 4326) GENERATED ALWAYS AS (
+       ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)
+       ) STORED
 );
 
 CREATE INDEX idx_store_locations_location

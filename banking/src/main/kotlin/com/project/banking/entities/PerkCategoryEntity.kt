@@ -1,5 +1,6 @@
 package com.project.banking.entities
 
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -21,9 +22,12 @@ data class PerkCategoryEntity (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "perk_id", nullable = false)
+    @JsonManagedReference
+
     var perk: PerkEntity? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
+    @JsonManagedReference
     var category: CategoryEntity? = null,
 )
