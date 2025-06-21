@@ -3,6 +3,8 @@ package com.project.banking.services
 import com.project.banking.entities.PerkCategoryEntity
 import com.project.banking.entities.PerkEntity
 import com.project.banking.mappers.toDto
+import com.project.banking.mappers.toEntity
+import com.project.banking.mappers.toResponse
 import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.BusinessPartnerRepository
 import com.project.banking.repositories.CategoryRepository
@@ -37,26 +39,9 @@ class PerkServiceImpl(
             ?: throw AccountProductNotFoundException()
         if (request.rewardsXp <= 0) { throw XPBelowMinException() }
 
-        val perk = PerkEntity(
-            type = request.type,
-            minPayment = request.minPayment,
-            rewardsXp = request.rewardsXp,
-            perkAmount = request.perkAmount,
-            isTierBased = request.isTierBased,
-            accountProduct = accountProduct
-        )
+        val perk = request.toEntity(accountProduct)
 
-        val savedPerk = perkRepository.save(perk)
-
-        return CreatePerkResponse(
-            id = savedPerk.id!!,
-            type = savedPerk.type!!,
-            isTierBased = savedPerk.isTierBased,
-            rewardsXp = savedPerk.rewardsXp!!,
-            perkAmount = savedPerk.perkAmount!!,
-            minPayment = savedPerk.minPayment,
-            accountProductId = savedPerk.accountProduct!!.id!!
-        )
+        return perkRepository.save(perk).toResponse()
     }
 
     override fun assignPerkCategory(perkId: Long, request: PerkCategoryRequest): PerkCategoryResponse {

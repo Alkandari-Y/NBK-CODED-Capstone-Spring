@@ -1,5 +1,6 @@
 package com.project.recommendation.entities
 
+import com.project.common.enums.RewardType
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -18,7 +19,7 @@ data class PromotionEntity(
     var businessPartnerId: Long? = null,
 
     @Column(name = "type", nullable = false)
-    var type: Long? = null,
+    var type: RewardType? = null,
 
     @Column(name = "start_date", nullable = true)
     var startDate: LocalDate? = null,

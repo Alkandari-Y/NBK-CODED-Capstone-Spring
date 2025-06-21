@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 
 @Named
@@ -21,13 +22,17 @@ class BankServiceProvider(
         }
 
         val request = HttpEntity<String>(null, headers)
-        val response = RestTemplate().exchange(
-            "$bankServiceURL/partners/$businessPartnerId",
-            HttpMethod.GET,
-            request,
-            object : ParameterizedTypeReference<BusinessPartnerDto>() {}
-        )
 
-        return response.body ?: throw BusinessNotFoundException()
+        return try {
+            val response = RestTemplate().exchange(
+                "$bankServiceURL/partners/$businessPartnerId",
+                HttpMethod.GET,
+                request,
+                object : ParameterizedTypeReference<BusinessPartnerDto>() {}
+            )
+            response.body ?: throw BusinessNotFoundException()
+        } catch (ex: HttpClientErrorException.NotFound) {
+            throw BusinessNotFoundException()
+        }
     }
 }
