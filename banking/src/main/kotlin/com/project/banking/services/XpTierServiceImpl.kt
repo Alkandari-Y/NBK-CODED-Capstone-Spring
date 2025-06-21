@@ -20,7 +20,7 @@ class XpTierServiceImpl(
         return tiers.map { it.toResponse() }
     }
 
-    override fun getXpTierById(id: Long): XpTierResponse? {
+    override fun getXpTierById(id: Long): XpTierResponse {
         return xpTierRepository.findByIdOrNull(id)?.toResponse()
             ?: throw XpTierNotFoundException()
     }
