@@ -1,12 +1,13 @@
 package com.project.recommendation.repositories
 
 import com.project.recommendation.entities.StoreLocationEntity
+import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 
 @Repository
-interface StoreLocationRepository {
+interface StoreLocationRepository: JpaRepository<StoreLocationEntity, Long> {
     @Query(
         value = """
         SELECT * FROM store_locations
@@ -19,4 +20,14 @@ interface StoreLocationRepository {
         @Param("lon") longitude: Double,
         @Param("lat") latitude: Double,
         @Param("radius") radiusInMeters: Double
-    ): List<StoreLocationEntity>}
+    ): List<StoreLocationEntity>
+
+    @Query(
+        """
+            SELECT ste 
+                FROM StoreLocationEntity ste
+            WHERE ste.partnerId = :partnerId
+        """
+    )
+    fun findStoresByPartnerId(@Param("partnerId") partnerId: Long): List<StoreLocationEntity>
+}

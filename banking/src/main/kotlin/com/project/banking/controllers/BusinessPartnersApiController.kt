@@ -1,6 +1,5 @@
 package com.project.banking.controllers
 
-import com.project.banking.entities.BusinessPartnerEntity
 import com.project.banking.services.BusinessPartnerService
 import com.project.banking.mappers.toDto
 import com.project.common.data.responses.businessPartners.BusinessPartnerDto
@@ -25,10 +24,10 @@ class BusinessPartnersApiController(
     @GetMapping("/{partnerId}")
     fun getPartnerById(
         @PathVariable("partnerId") id: Long
-    ): ResponseEntity<BusinessPartnerEntity> {
+    ): ResponseEntity<BusinessPartnerDto> {
         val businessPartner = businessPartnerService.getPartnerById(id)
             ?: throw BusinessPartnerNotFoundException()
 
-        return ResponseEntity(businessPartner, HttpStatus.OK)
+        return ResponseEntity(businessPartner.toDto(), HttpStatus.OK)
     }
 }

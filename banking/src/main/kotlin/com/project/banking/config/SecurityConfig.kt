@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher
 
 @Configuration
 @EnableWebSecurity
@@ -21,11 +23,10 @@ class SecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }
             .authorizeHttpRequests {
-                it
-                    .requestMatchers(
-                        HttpMethod.GET,
-                        "/api/v1/partners"
-                    ).permitAll()
+                it.requestMatchers(
+                    HttpMethod.GET,
+                    "/api/v1/partners/**", "/api/v1/categories"
+                ).permitAll()
                     .anyRequest().authenticated()
             }
             .sessionManagement {
