@@ -1,7 +1,10 @@
 package com.project.banking.controllers
 
 import com.project.banking.entities.CategoryEntity
+import com.project.banking.mappers.toDto
 import com.project.banking.mappers.toEntity
+import com.project.banking.repositories.CategoryWithPerksDto
+import com.project.banking.repositories.CategoryWithPerksView
 import com.project.banking.services.CategoryService
 import com.project.common.data.requests.categories.CategoryRequest
 import com.project.common.data.responses.categories.CategoriesResponse
@@ -23,14 +26,11 @@ class CategoriesApiController (
 ){
     @GetMapping
     fun getAllCategories()
-    : ResponseEntity<CategoriesResponse> = ResponseEntity(
-        CategoriesResponse(
-            categoryService.getCategories().map {
-                CategoryDto(id = it.id!!, it.name!!)
-            }
-        ),
-        HttpStatus.OK
-    )
+    : ResponseEntity<List<CategoryWithPerksView>> {
+        val categories = categoryService.getCategories()
+
+        return ResponseEntity(categories, HttpStatus.OK)
+    }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
