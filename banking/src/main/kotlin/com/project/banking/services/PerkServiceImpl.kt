@@ -1,7 +1,6 @@
 package com.project.banking.services
 
 import com.project.banking.entities.PerkCategoryEntity
-import com.project.banking.entities.PerkEntity
 import com.project.banking.mappers.toDto
 import com.project.banking.mappers.toEntity
 import com.project.banking.mappers.toResponse
@@ -16,11 +15,10 @@ import com.project.common.data.responses.perks.PerkCategoryResponse
 import com.project.common.data.responses.perks.CreatePerkResponse
 import com.project.common.data.responses.perks.PerkDto
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
-import com.project.common.exceptions.businessPartner.BusinessNotFoundException
 import com.project.common.exceptions.categories.CategoryNotFoundException
 import com.project.common.exceptions.perk.NoPerksFoundException
 import com.project.common.exceptions.perk.PerkNotFoundException
-import com.project.common.exceptions.xp.XPBelowMinException
+import com.project.common.exceptions.xp.XpBelowMinException
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -37,7 +35,7 @@ class PerkServiceImpl(
     override fun createPerk(productId: Long, request: CreatePerkRequest): CreatePerkResponse {
         val accountProduct = accountProductRepository.findByIdOrNull(productId)
             ?: throw AccountProductNotFoundException()
-        if (request.rewardsXp <= 0) { throw XPBelowMinException() }
+        if (request.rewardsXp <= 0) { throw XpBelowMinException() }
 
         val perk = request.toEntity(accountProduct)
 
