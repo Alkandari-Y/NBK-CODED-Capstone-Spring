@@ -9,11 +9,11 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(name = "transactions")
-data class TransactionEntity (
+data class TransactionEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-     var id: Long? = null,
+    var id: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_account", nullable = false)
@@ -26,15 +26,15 @@ data class TransactionEntity (
     val destinationAccount: AccountEntity?,
 
     @Column(name = "amount", nullable = false, precision = 9, scale = 3)
-     var amount: BigDecimal? = null,
+    var amount: BigDecimal? = null,
 
     @Column(name = "created_at", nullable = false)
-     var createdAt: LocalDateTime? = null,
+    var createdAt: LocalDateTime? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     var category: CategoryEntity? = null,
 
     @Column(name = "type", nullable = false)
-     var transactionType: TransactionType = TransactionType.TRANSFER,
+    var transactionType: TransactionType = TransactionType.TRANSFER,
 )

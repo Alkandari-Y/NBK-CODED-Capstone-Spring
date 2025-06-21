@@ -18,6 +18,6 @@ data class TransferCreateRequest(
         message = "amount must must be at least 1.00"
     )
     val amount: BigDecimal,
-
-    val type: TransactionType?
+    val type: TransactionType?,
+    val category: String?
 )
