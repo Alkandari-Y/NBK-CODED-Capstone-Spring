@@ -16,12 +16,12 @@ class PromotionApiController(
     @GetMapping("/{id}")
     fun getPromotionById(@PathVariable id: Long): ResponseEntity<PromotionResponse> {
         val body = promotionService.getPromotionById(id) ?: throw PromotionNotFoundException()
-        return ResponseEntity(body, HttpStatus.FOUND)
+        return ResponseEntity(body, HttpStatus.OK)
     }
 
     @GetMapping("/business/{businessId}")
     fun getPromotionsByBusiness(@PathVariable businessId: Long): ResponseEntity<List<PromotionResponse>> {
         val body = promotionService.getAllPromotionsByBusinessId(businessId)
-        return ResponseEntity(body, HttpStatus.FOUND)
+        return ResponseEntity(body, HttpStatus.OK)
     }
 }
