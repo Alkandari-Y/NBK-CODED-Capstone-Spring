@@ -2,8 +2,8 @@ package com.project.banking.services
 
 import com.project.banking.entities.CategoryEntity
 import com.project.common.exceptions.accounts.AccountNotFoundException
-import com.project.common.exceptions.accounts.InsufficientFundsException
-import com.project.common.exceptions.accounts.InvalidTransferException
+import com.project.common.exceptions.transactions.InsufficientFundsException
+import com.project.common.exceptions.transactions.InvalidTransferException
 import com.project.banking.entities.TransactionEntity
 import com.project.banking.repositories.AccountRepository
 import com.project.banking.repositories.BusinessPartnerRepository
@@ -13,6 +13,7 @@ import com.project.common.data.responses.transactions.PaymentDetails
 import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.enums.TransactionType
 import com.project.common.enums.ErrorCode
+import com.project.common.exceptions.transactions.AccountLookupException
 import com.project.common.exceptions.accounts.AccountNotActiveException
 import com.project.common.exceptions.auth.InvalidCredentialsException
 import jakarta.transaction.Transactional
@@ -24,7 +25,7 @@ import java.time.LocalDateTime
 class TransactionServiceImpl(
     private val transactionRepository: TransactionRepository,
     private val accountRepository: AccountRepository,
-    private val categoryService: CategoryService,
+    private val categoryService: CategoryService
 ): TransactionService {
 
     @Transactional
@@ -91,8 +92,19 @@ class TransactionServiceImpl(
         )
     }
 
-    override fun getTransactionsByAccount(accountNumber: String): List<TransactionDetails> {
-        return transactionRepository.findRelatedTransactions(accountNumber)
+    override fun getTransactionsByAccount(accountId: Long?, accountNumber: String?): List<TransactionDetails> {
+        if ((accountId == null && accountNumber == null) || (accountId != null && accountNumber != null)) {
+            throw AccountLookupException()
+        }
+
+        return when {
+            accountId != null -> {
+                val account = accountRepository.findById(accountId).orElseThrow { AccountNotFoundException() }
+                transactionRepository.findRelatedTransactionsByAccountNumber(account.accountNumber)
+            }
+            accountNumber != null -> transactionRepository.findRelatedTransactionsByAccountNumber(accountNumber)
+            else -> emptyList()
+        }
     }
 
     override fun getAllTransactionByUserId(userId: Long): List<TransactionDetails> {

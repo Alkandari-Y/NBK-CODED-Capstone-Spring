@@ -3,7 +3,7 @@ package com.project.banking.controllers
 import com.project.banking.services.BusinessPartnerService
 import com.project.banking.mappers.toDto
 import com.project.common.data.responses.businessPartners.BusinessPartnerDto
-import com.project.common.exceptions.businessPartners.BusinessPartnerNotFoundException
+import com.project.common.exceptions.businessPartner.BusinessNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -26,7 +26,7 @@ class BusinessPartnersApiController(
         @PathVariable("partnerId") id: Long
     ): ResponseEntity<BusinessPartnerDto> {
         val businessPartner = businessPartnerService.getPartnerById(id)
-            ?: throw BusinessPartnerNotFoundException()
+            ?: throw BusinessNotFoundException()
 
         return ResponseEntity(businessPartner.toDto(), HttpStatus.OK)
     }

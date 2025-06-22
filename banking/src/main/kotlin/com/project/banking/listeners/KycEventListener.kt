@@ -1,9 +1,9 @@
 package com.project.banking.listeners
 
-import com.project.banking.entities.AccountProductEntity
 import com.project.banking.events.KycCreatedEvent
 import com.project.banking.services.AccountProductService
 import com.project.banking.services.AccountService
+import com.project.banking.services.XpService
 import com.project.common.enums.AccountType
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component
 class KycEventListener(
     private val accountProductService: AccountProductService,
     private val accountService: AccountService,
+    private val xpService: XpService,
 ) {
 
     @EventListener
@@ -21,10 +22,12 @@ class KycEventListener(
         val cashBackAccountProduct = accountProductService.findAllByAccountType(AccountType.CASHBACK).firstOrNull()
             ?: return
 
+        val userId = event.kyc.userId!!
         accountService.createNewClientPackage(
-            event.kyc.userId!!,
+            userId,
             listOf(salaryAccountProduct, cashBackAccountProduct)
         )
-        println("Created new client package for ${event.kyc.userId}")
+        xpService.userXpInit(userId)
+        println("Created new client package for $userId")
     }
 }

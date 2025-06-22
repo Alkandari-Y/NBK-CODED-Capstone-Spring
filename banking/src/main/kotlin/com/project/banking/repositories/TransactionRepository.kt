@@ -27,10 +27,9 @@ interface TransactionRepository: JpaRepository<TransactionEntity, Long> {
         WHERE sa.accountNumber = :accountNumber
             OR da.accountNumber= :accountNumber  
      """)
-    fun findRelatedTransactions(
+    fun findRelatedTransactionsByAccountNumber(
         @Param("accountNumber") accountNumber: String,
     ): List<TransactionDetails>
-
 
     @Query("""
         SELECT NEW com.project.common.data.responses.transactions.TransactionDetails(
