@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.math.BigDecimal
 
 
 @Entity
@@ -27,7 +28,7 @@ data class XpTierEntity (
      var name: String? = null,
 
     @Column(name = "xp_perk_multiplier", nullable = false)
-     var xpPerkMultiplier: Long? = null,
+     var xpPerkMultiplier: BigDecimal? = null,
 
     @Column(name = "xp_per_notification", nullable = false)
      var xpPerNotification: Long? = null,

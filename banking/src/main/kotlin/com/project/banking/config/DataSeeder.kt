@@ -4,12 +4,17 @@ import com.project.banking.entities.AccountEntity
 import com.project.banking.entities.AccountProductEntity
 import com.project.banking.entities.BusinessPartnerEntity
 import com.project.banking.entities.CategoryEntity
+import com.project.banking.entities.PerkEntity
+import com.project.banking.entities.XpTierEntity
 import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.AccountRepository
 import com.project.banking.repositories.BusinessPartnerRepository
 import com.project.banking.repositories.CategoryRepository
+import com.project.banking.repositories.PerkRepository
+import com.project.banking.repositories.XpTierRepository
 import com.project.common.enums.AccountOwnerType
 import com.project.common.enums.AccountType
+import com.project.common.enums.RewardType
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
@@ -21,7 +26,9 @@ class DataSeeder(
     private val categoryRepository: CategoryRepository,
     private val accountProductRepository: AccountProductRepository,
     private val businessPartnerRepository: BusinessPartnerRepository,
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
+    private val xpTierRepository: XpTierRepository,
+    private val perkRepository: PerkRepository
 ) {
     @EventListener(ApplicationReadyEvent::class)
     @Transactional
@@ -33,10 +40,12 @@ class DataSeeder(
         val accountProducts = seedAccountProducts()
 
         seedBusinessPartners(categories, accountProducts)
+        seedXpTiers()
+        seedPerks(accountProducts, categories)
     }
 
 
-fun seedCategories(): List<CategoryEntity> {
+    fun seedCategories(): List<CategoryEntity> {
         if (categoryRepository.count() > 0L) {
             println("Categories already exist. Skipping seeding.")
             return categoryRepository.findAll()
@@ -59,7 +68,7 @@ fun seedCategories(): List<CategoryEntity> {
             println("Account products already exist. Skipping seeding.")
             return accountProducts
         }
-            // 1. Debit Card – No Credit, No Fees
+        // 1. Debit Card – No Credit, No Fees
         val debitAccount = AccountProductEntity(
             name = "Salary Account",
             accountType = AccountType.DEBIT,
@@ -131,7 +140,16 @@ fun seedCategories(): List<CategoryEntity> {
             image = "http://localhost:9000/capstone-public/fd4ac1cd-c88f-446a-846b-f23ecea8fe63"
         )
 
-        val accountProductEntities = accountProductRepository.saveAll(listOf(debitAccount, businessAccount, cashBackAccount, basicCreditCard, standardCreditCard, premiumCreditCard, ))
+        val accountProductEntities = accountProductRepository.saveAll(
+            listOf(
+                debitAccount,
+                businessAccount,
+                cashBackAccount,
+                basicCreditCard,
+                standardCreditCard,
+                premiumCreditCard,
+            )
+        )
         println("Seeded default account products.")
         return accountProductEntities
     }
@@ -181,5 +199,117 @@ fun seedCategories(): List<CategoryEntity> {
         businessPartnerRepository.saveAll(businessPartners)
 
         println("Seeded ${businessPartners.size} business partners.")
+    }
+
+    fun seedXpTiers() {
+        if (xpTierRepository.count() > 0L) {
+            println("XP Tiers already exist. Skipping seeding.")
+            return
+        }
+
+        val tiers = listOf(
+            XpTierEntity(
+                name = "Silver",
+                minXp = 0,
+                maxXp = 4999,
+                xpPerkMultiplier = BigDecimal(1.0),
+                xpPerNotification = 10,
+                xpPerPromotion = 20,
+                perkAmountPercentage = 50
+            ),
+            XpTierEntity(
+                name = "Gold",
+                minXp = 5000,
+                maxXp = 14999,
+                xpPerkMultiplier = BigDecimal(1.2),
+                xpPerNotification = 15,
+                xpPerPromotion = 25,
+                perkAmountPercentage = 75
+            ),
+            XpTierEntity(
+                name = "Platinum",
+                minXp = 15000,
+                maxXp = 999999,
+                xpPerkMultiplier = BigDecimal(1.5),
+                xpPerNotification = 20,
+                xpPerPromotion = 30,
+                perkAmountPercentage = 100
+            )
+        )
+        xpTierRepository.saveAll(tiers)
+        println("Seeded XP Tiers: ${tiers.joinToString { it.name.toString() }}.")
+    }
+
+
+    fun seedPerks(accountProducts: List<AccountProductEntity>, categories: List<CategoryEntity>) {
+        if (perkRepository.count() > 0L) {
+            println("Perks already exist. Skipping seeding.")
+            return
+        }
+
+        val perks = listOf(
+            // Basic Credit
+            PerkEntity(
+                type = RewardType.CASHBACK,
+                minPayment = BigDecimal("20.00"),
+                rewardsXp = 10,
+                perkAmount = BigDecimal("2.00"),
+                isTierBased = false,
+                accountProduct = accountProducts.first { it.name == "Basic Credit" },
+                categories = categories.filter { it.name in listOf("education", "retail") }.toMutableList()
+            ),
+            PerkEntity(
+                type = RewardType.DISCOUNT,
+                minPayment = BigDecimal("35.00"),
+                rewardsXp = 12,
+                perkAmount = BigDecimal("3.50"),
+                isTierBased = true,
+                accountProduct = accountProducts.first { it.name == "Basic Credit" },
+                categories = categories.filter { it.name in listOf("personal", "technology") }.toMutableList()
+            ),
+
+            // Standard Credit
+            PerkEntity(
+                type = RewardType.CASHBACK,
+                minPayment = BigDecimal("30.00"),
+                rewardsXp = 15,
+                perkAmount = BigDecimal("4.00"),
+                isTierBased = false,
+                accountProduct = accountProducts.first { it.name == "Standard Credit" },
+                categories = categories.filter { it.name in listOf("logistics", "healthcare") }.toMutableList()
+            ),
+            PerkEntity(
+                type = RewardType.DISCOUNT,
+                minPayment = BigDecimal("60.00"),
+                rewardsXp = 25,
+                perkAmount = BigDecimal("6.00"),
+                isTierBased = true,
+                accountProduct = accountProducts.first { it.name == "Standard Credit" },
+                categories = categories.filter { it.name in listOf("wholesale", "consulting") }.toMutableList()
+            ),
+
+            // Infinity
+            PerkEntity(
+                type = RewardType.CASHBACK,
+                minPayment = BigDecimal("100.00"),
+                rewardsXp = 30,
+                perkAmount = BigDecimal("10.00"),
+                isTierBased = true,
+                accountProduct = accountProducts.first { it.name == "Infinity" },
+                categories = categories.filter { it.name in listOf("hospitality", "real estate") }.toMutableList()
+            ),
+            PerkEntity(
+                type = RewardType.DISCOUNT,
+                minPayment = BigDecimal("80.00"),
+                rewardsXp = 28,
+                perkAmount = BigDecimal("12.00"),
+                isTierBased = true,
+                accountProduct = accountProducts.first { it.name == "Infinity" },
+                categories = categories.filter { it.name in listOf("automotive", "energy") }.toMutableList()
+            )
+        )
+
+        perkRepository.saveAll(perks)
+        println("Seeded sample perks.")
     }
 }

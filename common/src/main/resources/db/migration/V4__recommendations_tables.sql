@@ -27,10 +27,10 @@ CREATE TABLE IF NOT EXISTS "fav_categories"(
         UNIQUE ("user_id", "category_id")
 );
 
-CREATE TABLE IF NOT EXISTS "promotion_categories"( -- UPDATED!!!
+CREATE TABLE IF NOT EXISTS "promotion_categories"(
    "id"                     SERIAL PRIMARY KEY,
    "category_id"            BIGINT NOT NULL,
-   "promotion_id"               BIGINT NOT NULL -- UPDATED!!!
+   "promotion_id"               BIGINT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "promotions"(

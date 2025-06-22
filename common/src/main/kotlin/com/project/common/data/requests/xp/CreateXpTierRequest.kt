@@ -1,6 +1,7 @@
 package com.project.common.data.requests.xp
 
 import jakarta.validation.constraints.*
+import java.math.BigDecimal
 
 data class CreateXpTierRequest(
     @field:Min(0)
@@ -10,7 +11,7 @@ data class CreateXpTierRequest(
     @field:NotBlank
     val name: String,
     @field:Positive
-    val xpPerkMultiplier: Long,
+    val xpPerkMultiplier: BigDecimal,
     @field:Positive
     val xpPerNotification: Long,
     @field:Positive
