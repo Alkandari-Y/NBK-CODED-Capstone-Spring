@@ -109,8 +109,14 @@ CREATE TABLE IF NOT EXISTS "transactions"
     "category_id"         INT           NOT NULL,
     "transaction_type"                INT           NOT NULL,
     CONSTRAINT "transaction_category_id_foreign"
-        FOREIGN KEY ("category_id")
-            REFERENCES "categories" ("id"),
+            FOREIGN KEY ("category_id")
+                REFERENCES "categories" ("id"),
+        CONSTRAINT "transaction_source_account_foreign"
+            FOREIGN KEY("source_account_id")
+                REFERENCES "accounts"("id"),
+        CONSTRAINT "transaction_destination_account_foreign"
+            FOREIGN KEY("destination_account_id")
+                REFERENCES "accounts"("id")
 );
 
 CREATE TABLE IF NOT EXISTS "xp_history"(

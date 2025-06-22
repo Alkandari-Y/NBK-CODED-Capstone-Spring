@@ -29,12 +29,12 @@ data class TransactionEntity(
     var amount: BigDecimal? = null,
 
     @Column(name = "created_at", nullable = false)
-    var createdAt: LocalDateTime? = null,
+    var createdAt: LocalDateTime? = LocalDateTime.now(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     var category: CategoryEntity? = null,
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "transaction_type", nullable = false)
     var transactionType: TransactionType = TransactionType.TRANSFER,
 )

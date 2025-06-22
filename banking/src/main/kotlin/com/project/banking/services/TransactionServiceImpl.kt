@@ -42,23 +42,15 @@ class TransactionServiceImpl(
         }
 
         if (sourceAccount.isActive.not() || destinationAccount.isActive.not()) {
-            throw InvalidTransferException(
-                "Cannot transfer with inactive account.",
-                code = ErrorCode.INVALID_TRANSFER
-            )
+            throw InvalidTransferException("Cannot transfer with inactive account.")
         }
 
         if (sourceAccount.ownerId != userIdMakingTransfer) {
-            throw InvalidTransferException(
-                "Cannot transfer with another persons account.",
-                code = ErrorCode.INVALID_TRANSFER
-            )
+            throw InvalidTransferException("Cannot transfer with another persons account.")
         }
-        val category = categoryService.getCategoryByName("personal") ?: categoryService.createCategory(
-            CategoryEntity(
-                name = "personal"
-            )
-        )
+        val category = categoryService.getCategoryByName("personal")
+            ?: categoryService.createCategory(CategoryEntity( name = "personal"))
+
         val newSourceBalance = sourceAccount.balance.setScale(3).subtract(newTransaction.amount)
         val newDestinationBalance = destinationAccount.balance.setScale(3).add(newTransaction.amount)
 
