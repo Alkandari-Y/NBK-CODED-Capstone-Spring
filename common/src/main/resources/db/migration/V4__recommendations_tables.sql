@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS "promotion_categories"(
    "promotion_id"               BIGINT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "promotions"(
+CREATE TABLE IF NOT EXISTS "promotions"( -- UPDATED!!
     "id" SERIAL PRIMARY KEY,
     "name" VARCHAR(255) NOT NULL,
     "business_partner_id" BIGINT NOT NULL,
@@ -41,8 +41,7 @@ CREATE TABLE IF NOT EXISTS "promotions"(
     "start_date" DATE,
     "end_date" DATE,
     "description" VARCHAR(255) NOT NULL,
-    "store_id" BIGINT NULL,
-    "xp" BIGINT NOT NULL
+    "store_id" BIGINT NULL
 );
 
 
