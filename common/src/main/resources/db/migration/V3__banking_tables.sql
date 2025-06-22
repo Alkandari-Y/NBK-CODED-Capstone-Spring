@@ -102,8 +102,8 @@ CREATE TABLE IF NOT EXISTS "perk_categories"(
 CREATE TABLE IF NOT EXISTS "transactions"
 (
     "id"                  SERIAL PRIMARY KEY,
-    "source_account"      VARCHAR(255)           NOT NULL,
-    "destination_account" VARCHAR(255)           NOT NULL,
+    "source_account_id"      BIGINT           NOT NULL,
+    "destination_account_id" BIGINT           NOT NULL,
     "amount"              DECIMAL(9, 3) NOT NULL,
     "created_at"          TIMESTAMP     NOT NULL,
     "category_id"         INT           NOT NULL,
@@ -111,12 +111,6 @@ CREATE TABLE IF NOT EXISTS "transactions"
     CONSTRAINT "transaction_category_id_foreign"
         FOREIGN KEY ("category_id")
             REFERENCES "categories" ("id"),
-    CONSTRAINT "transaction_source_account_foreign"
-        FOREIGN KEY("source_account")
-            REFERENCES "accounts"("account_number"),
-    CONSTRAINT "transaction_destination_account_foreign"
-        FOREIGN KEY("destination_account")
-            REFERENCES "accounts"("account_number")
 );
 
 CREATE TABLE IF NOT EXISTS "xp_history"(

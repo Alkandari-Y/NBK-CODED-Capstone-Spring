@@ -16,12 +16,12 @@ data class TransactionEntity(
     var id: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "source_account", nullable = false)
+    @JoinColumn(name = "source_account_id", nullable = false)
     @JsonBackReference
     val sourceAccount: AccountEntity?,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "destination_account", nullable = false)
+    @JoinColumn(name = "destination_account_id", nullable = false)
     @JsonBackReference
     val destinationAccount: AccountEntity?,
 
