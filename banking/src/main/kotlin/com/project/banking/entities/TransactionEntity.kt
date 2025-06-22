@@ -16,12 +16,12 @@ data class TransactionEntity(
     var id: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "source_account", referencedColumnName = "account_number", nullable = false)
+    @JoinColumn(name = "source_account_id", nullable = false)
     @JsonBackReference
     val sourceAccount: AccountEntity?,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "destination_account", referencedColumnName = "account_number", nullable = false)
+    @JoinColumn(name = "destination_account_id", nullable = false)
     @JsonBackReference
     val destinationAccount: AccountEntity?,
 
@@ -29,12 +29,12 @@ data class TransactionEntity(
     var amount: BigDecimal? = null,
 
     @Column(name = "created_at", nullable = false)
-    var createdAt: LocalDateTime? = null,
+    var createdAt: LocalDateTime? = LocalDateTime.now(),
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     var category: CategoryEntity? = null,
 
-    @Column(name = "type", nullable = false)
+    @Column(name = "transaction_type", nullable = false)
     var transactionType: TransactionType = TransactionType.TRANSFER,
 )

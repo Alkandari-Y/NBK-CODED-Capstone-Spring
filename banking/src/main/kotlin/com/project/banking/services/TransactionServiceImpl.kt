@@ -6,12 +6,16 @@ import com.project.common.exceptions.transactions.InsufficientFundsException
 import com.project.common.exceptions.transactions.InvalidTransferException
 import com.project.banking.entities.TransactionEntity
 import com.project.banking.repositories.AccountRepository
+import com.project.banking.repositories.BusinessPartnerRepository
 import com.project.banking.repositories.TransactionRepository
 import com.project.common.data.requests.accounts.TransferCreateRequest
+import com.project.common.data.responses.transactions.PaymentDetails
 import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.enums.TransactionType
 import com.project.common.enums.ErrorCode
 import com.project.common.exceptions.transactions.AccountLookupException
+import com.project.common.exceptions.accounts.AccountNotActiveException
+import com.project.common.exceptions.auth.InvalidCredentialsException
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -21,7 +25,7 @@ import java.time.LocalDateTime
 class TransactionServiceImpl(
     private val transactionRepository: TransactionRepository,
     private val accountRepository: AccountRepository,
-    private val categoryService: CategoryService,
+    private val categoryService: CategoryService
 ): TransactionService {
 
     @Transactional
@@ -38,23 +42,15 @@ class TransactionServiceImpl(
         }
 
         if (sourceAccount.isActive.not() || destinationAccount.isActive.not()) {
-            throw InvalidTransferException(
-                "Cannot transfer with inactive account.",
-                code = ErrorCode.INVALID_TRANSFER
-            )
+            throw InvalidTransferException("Cannot transfer with inactive account.")
         }
 
         if (sourceAccount.ownerId != userIdMakingTransfer) {
-            throw InvalidTransferException(
-                "Cannot transfer with another persons account.",
-                code = ErrorCode.INVALID_TRANSFER
-            )
+            throw InvalidTransferException("Cannot transfer with another persons account.")
         }
-        val category = categoryService.getCategoryByName("personal") ?: categoryService.createCategory(
-            CategoryEntity(
-                name = "personal"
-            )
-        )
+        val category = categoryService.getCategoryByName("personal")
+            ?: categoryService.createCategory(CategoryEntity( name = "personal"))
+
         val newSourceBalance = sourceAccount.balance.setScale(3).subtract(newTransaction.amount)
         val newDestinationBalance = destinationAccount.balance.setScale(3).add(newTransaction.amount)
 
@@ -103,9 +99,46 @@ class TransactionServiceImpl(
         }
     }
 
-    override fun getAllTransactionByUserId(
-        userId: Long
-    ): List<TransactionDetails> {
+    override fun getAllTransactionByUserId(userId: Long): List<TransactionDetails> {
         return transactionRepository.findAllByUserId(userId)
+    }
+
+    override fun purchase(userId: Long, purchaseRequest: TransferCreateRequest): PaymentDetails {
+        val sourceAccount = accountRepository.findByAccountNumber(purchaseRequest.sourceAccountNumber)
+            ?: throw AccountNotFoundException("Source account not found")
+
+        if (!sourceAccount.isActive) {
+            throw AccountNotActiveException(sourceAccount.accountNumber)
+        }
+
+        if (sourceAccount.ownerId != userId) { throw InvalidCredentialsException() }
+
+        val newBalance = sourceAccount.balance.setScale(3).subtract(purchaseRequest.amount.setScale(3))
+        if (newBalance < BigDecimal.ZERO) { throw InsufficientFundsException() }
+
+        val category = categoryService.getCategoryByName(purchaseRequest.category!!)
+
+        val businessAccount = accountRepository.findByAccountNumber(purchaseRequest.destinationAccountNumber)
+
+        val transaction = transactionRepository.save(
+            TransactionEntity(
+                sourceAccount = sourceAccount,
+                destinationAccount = businessAccount,
+                amount = purchaseRequest.amount.setScale(3),
+                category = category,
+                transactionType = TransactionType.PAYMENT
+            )
+        )
+
+        accountRepository.save(sourceAccount.copy(balance = newBalance))
+
+        return PaymentDetails(
+            transactionId = transaction.id!!,
+            sourceAccountNumber = transaction.sourceAccount?.accountNumber!!,
+            destinationAccountNumber = transaction.destinationAccount?.accountNumber ?: purchaseRequest.destinationAccountNumber,
+            amount = transaction.amount!!,
+            category = category?.name!!,
+            createdAt = LocalDateTime.now()
+        )
     }
 }
