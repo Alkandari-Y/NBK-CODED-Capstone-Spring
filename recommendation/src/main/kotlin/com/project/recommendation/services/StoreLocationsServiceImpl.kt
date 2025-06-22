@@ -1,9 +1,12 @@
 package com.project.recommendation.services
 
+import com.project.common.data.requests.geofencing.GeoFenceEnterRequest
 import com.project.common.data.requests.storeLocations.StoreLocationCreateRequest
+import com.project.common.data.responses.storeLocations.StoreLocationResponse
 import com.project.common.exceptions.storeLocations.StoreLocationNotFoundException
 import com.project.recommendation.entities.StoreLocationEntity
 import com.project.recommendation.mappers.toEntity
+import com.project.recommendation.mappers.toResponse
 import com.project.recommendation.providers.BankServiceProvider
 import com.project.recommendation.repositories.StoreLocationRepository
 import org.springframework.data.repository.findByIdOrNull
@@ -38,5 +41,13 @@ class StoreLocationsServiceImpl(
 
     override fun deleteStoreLocationById(storeLocationId: Long) {
         storeLocationRepository.deleteById(storeLocationId)
+    }
+
+    override fun findNearbyStores(geofenceData: GeoFenceEnterRequest): List<StoreLocationResponse> {
+        return storeLocationRepository.findStoresWithinGeofence(
+            longitude = geofenceData.location.longitude,
+            latitude = geofenceData.location.latitude,
+            radius = geofenceData.radius
+        ).map { it.toResponse() }
     }
 }

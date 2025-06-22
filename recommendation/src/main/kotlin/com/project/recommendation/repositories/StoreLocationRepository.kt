@@ -30,4 +30,28 @@ interface StoreLocationRepository: JpaRepository<StoreLocationEntity, Long> {
         """
     )
     fun findStoresByPartnerId(@Param("partnerId") partnerId: Long): List<StoreLocationEntity>
+
+
+    @Query(
+        value = """
+            SELECT * 
+            FROM store_locations
+            WHERE ST_DWithin(
+                location,
+                ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography,
+                :radius
+            )
+            ORDER BY ST_Distance(
+                location,
+                ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography
+            )
+        """,
+        nativeQuery = true
+    )
+    fun findStoresWithinGeofence(
+        @Param("longitude") longitude: Double,
+        @Param("latitude") latitude: Double,
+        @Param("radius") radius: Float
+    ): List<StoreLocationEntity>
+
 }
