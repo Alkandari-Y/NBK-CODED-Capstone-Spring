@@ -18,6 +18,11 @@ class RemoteAuthenticationFilter(
     private val jwtAuthProvider: JwtAuthProvider
 ) : OncePerRequestFilter() {
 
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        // This tells the filter to skip authentication for the geofence event endpoint
+        return request.requestURI == "/api/v1/geofence/event"
+    }
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
