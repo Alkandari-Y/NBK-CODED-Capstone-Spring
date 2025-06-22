@@ -7,13 +7,12 @@ import com.project.common.exceptions.transactions.InsufficientFundsException
 import com.project.common.exceptions.transactions.InvalidTransferException
 import com.project.banking.entities.TransactionEntity
 import com.project.banking.repositories.AccountRepository
-import com.project.banking.repositories.BusinessPartnerRepository
 import com.project.banking.repositories.TransactionRepository
 import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.transactions.PaymentDetails
 import com.project.common.data.responses.transactions.TransactionDetails
+import com.project.common.enums.AccountType
 import com.project.common.enums.TransactionType
-import com.project.common.enums.ErrorCode
 import com.project.common.exceptions.transactions.AccountLookupException
 import com.project.common.exceptions.accounts.AccountNotActiveException
 import com.project.common.exceptions.auth.InvalidCredentialsException
@@ -63,6 +62,22 @@ class TransactionServiceImpl(
             throw InvalidTransferException("Cannot transfer to an account that does not belong to you")
         }
 
+        if (!destinationAccount.isActive) {
+            throw AccountNotActiveException(destinationAccount.accountNumber)
+        }
+
+        val sourceType = sourceAccount.accountProduct!!.accountType
+        val destinationType = destinationAccount.accountProduct!!.accountType
+
+        when {
+            sourceType == AccountType.CREDIT ->
+                throw InvalidTransferException("Cannot transfer from a credit account")
+            destinationType == AccountType.CASHBACK ->
+                throw InvalidTransferException("Cannot transfer to a cashback account")
+            sourceType == AccountType.CASHBACK && destinationType != AccountType.DEBIT ->
+                throw InvalidTransferException("Cashback can only transfer to debit")
+        }
+
         val category = categoryService.getCategoryByName("personal")
             ?: categoryService.createCategory(CategoryEntity( name = "personal"))
 
@@ -95,7 +110,9 @@ class TransactionServiceImpl(
         )
     }
 
-    @Transactional // THIS IS A WORK IN PROGRESS TODO: GIVE XP
+    @Transactional // THIS IS A WORK IN PROGRESS
+    // TODO: CALCULATE FROM PERK
+    // TODO: GIVE XP
     override fun purchase(userId: Long, purchaseRequest: TransferCreateRequest): PaymentDetails {
         val (sourceAccount, businessAccount) = validateAndFetchAccounts(
             purchaseRequest.sourceAccountNumber,
@@ -147,9 +164,7 @@ class TransactionServiceImpl(
             accountRepository.findByAccountNumber(it)
         }
 
-        if (!sourceAccount.isActive || (destinationAccount?.isActive == false)) {
-            throw InvalidTransferException("Cannot transfer with inactive account")
-        }
+        if (!sourceAccount.isActive) { throw AccountNotActiveException(sourceAccount.accountNumber) }
 
         if (sourceAccount.ownerId != userId) { throw InvalidCredentialsException() }
 
