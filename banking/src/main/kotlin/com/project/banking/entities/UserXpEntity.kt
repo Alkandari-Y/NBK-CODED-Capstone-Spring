@@ -14,11 +14,11 @@ data class UserXpEntity (
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private var id: Long? = null,
+    val id: Long? = null,
 
     @Column(name = "user_id", nullable = false)
-    private var userId: Long? = null,
+    val userId: Long,
 
     @Column(name = "amount", nullable = false)
-    private var amount: Long? = null,
+    val amount: Long
 )

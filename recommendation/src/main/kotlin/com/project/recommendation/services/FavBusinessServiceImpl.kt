@@ -2,8 +2,8 @@ package com.project.recommendation.services
 
 import com.project.common.data.requests.businessPartners.FavBusinessRequest
 import com.project.common.data.requests.businessPartners.FavBusinessesRequest
-import com.project.common.exceptions.FavBusinessPartnersLimitException
-import com.project.common.exceptions.businessPartners.FavoriteBusinessExistsForUserException
+import com.project.common.exceptions.favorites.FavBusinessPartnersLimitException
+import com.project.common.exceptions.favorites.FavoriteBusinessExistsForUserException
 import com.project.recommendation.entities.FavBusinessEntity
 import com.project.recommendation.mappers.toEntityList
 import com.project.recommendation.repositories.FavBusinessRepository

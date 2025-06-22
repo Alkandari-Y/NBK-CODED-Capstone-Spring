@@ -1,7 +1,7 @@
-package com.project.common.exceptions.accounts
+package com.project.common.exceptions.transactions
 
-import com.project.common.exceptions.APIException
 import com.project.common.enums.ErrorCode
+import com.project.common.exceptions.APIException
 import org.springframework.http.HttpStatus
 
 data class InvalidTransferException(

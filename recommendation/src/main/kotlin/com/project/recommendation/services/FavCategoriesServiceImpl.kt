@@ -2,8 +2,8 @@ package com.project.recommendation.services
 
 import com.project.common.data.requests.categories.FavCategoriesRequest
 import com.project.common.data.requests.categories.FavoriteCategoryRequest
-import com.project.common.exceptions.favoriteCategories.FavCategoriesLimitException
-import com.project.common.exceptions.favoriteCategories.FavoriteCategoryExistsForUserException
+import com.project.common.exceptions.favorites.FavCategoriesLimitException
+import com.project.common.exceptions.favorites.FavoriteCategoryExistsForUserException
 import com.project.recommendation.entities.FavCategoryEntity
 import com.project.recommendation.mappers.toEntityList
 import com.project.recommendation.repositories.FavCategoryRepository

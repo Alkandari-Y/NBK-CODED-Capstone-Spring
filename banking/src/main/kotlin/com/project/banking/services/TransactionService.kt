@@ -9,7 +9,7 @@ interface TransactionService {
         userIdMakingTransfer: Long
     ): TransactionDetails
 
-    fun getTransactionsByAccount(accountNumber: String): List<TransactionDetails>
+    fun getTransactionsByAccount(accountId: Long?, accountNumber: String?): List<TransactionDetails>
     fun getAllTransactionByUserId(
         userId: Long
     ): List<TransactionDetails>

@@ -36,8 +36,7 @@ class XpTierServiceImpl(
             (tier.minXp in it.minXp!!..it.maxXp!!) ||
             (tier.maxXp in it.minXp!!..it.maxXp!!) ||
             (it.minXp!! in tier.minXp..tier.maxXp) ||
-            (it.maxXp!! in tier.minXp..tier.maxXp)
-        }
+            (it.maxXp!! in tier.minXp..tier.maxXp) }
         if (overlaps) { throw XpMinMaxException("XP tier range overlaps with an existing tier") }
 
         val combined = existingTiers + tier.toEntity()
@@ -60,8 +59,7 @@ class XpTierServiceImpl(
     }
 
     override fun deleteXpTierById(id: Long) {
-        val tier = xpTierRepository.findByIdOrNull(id)
-            ?: throw XpTierNotFoundException()
-
-        xpTierRepository.delete(tier)    }
+        val tier = xpTierRepository.findByIdOrNull(id) ?: throw XpTierNotFoundException()
+        xpTierRepository.delete(tier)
+    }
 }
