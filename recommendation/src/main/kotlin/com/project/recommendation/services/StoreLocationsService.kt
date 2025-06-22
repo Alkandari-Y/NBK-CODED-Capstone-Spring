@@ -1,6 +1,8 @@
 package com.project.recommendation.services
 
+import com.project.common.data.requests.geofencing.GeoFenceEnterRequest
 import com.project.common.data.requests.storeLocations.StoreLocationCreateRequest
+import com.project.common.data.responses.storeLocations.StoreLocationResponse
 import com.project.recommendation.entities.StoreLocationEntity
 
 interface StoreLocationsService {
@@ -9,5 +11,5 @@ interface StoreLocationsService {
     fun findStoreLocationById(storeId: Long): StoreLocationEntity?
     fun createStoreLocation(newLocation: StoreLocationCreateRequest): StoreLocationEntity
     fun deleteStoreLocationById(storeLocationId: Long)
-
+    fun findNearbyStores(geofenceData: GeoFenceEnterRequest): List<StoreLocationResponse>
 }
