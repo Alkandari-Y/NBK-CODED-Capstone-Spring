@@ -26,9 +26,13 @@ class XpServiceImpl(
     }
 
     override fun getCurrentTier(userId: Long): XpTierResponse {
+        return xpTierService.getTierByXp(getCurrentXpAmount(userId))
+    }
+
+    override fun getCurrentXpAmount(userId: Long): Long {
         val entity = userXpRepository.findByUserId(userId)
             ?: throw UserNotFoundException()
 
-        return xpTierService.getTierByXp(entity.amount)
+        return entity.amount
     }
 }

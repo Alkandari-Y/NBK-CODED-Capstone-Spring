@@ -119,7 +119,6 @@ class TransactionServiceImpl(
     }
 
     @Transactional // THIS IS A WORK IN PROGRESS
-    // TODO: CALCULATE DISCOUNT OR CASHBACK FROM PERK
     override fun purchase(userId: Long, purchaseRequest: TransferCreateRequest): PaymentDetails {
         val (sourceAccount, businessAccount) = validateAndFetchAccounts(
             purchaseRequest.sourceAccountNumber,

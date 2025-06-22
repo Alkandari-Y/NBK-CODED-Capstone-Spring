@@ -6,4 +6,5 @@ interface XpService {
     fun userXpInit(userId: Long)
     fun earnXP(userId: Long, amount: Long)
     fun getCurrentTier(userId: Long): XpTierResponse
+    fun getCurrentXpAmount(userId: Long): Long
 }
