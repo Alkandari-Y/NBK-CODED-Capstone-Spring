@@ -20,5 +20,5 @@ data class UserXpEntity (
     val userId: Long,
 
     @Column(name = "amount", nullable = false)
-    val amount: Long
+    var amount: Long
 )

@@ -6,18 +6,23 @@ import com.project.common.exceptions.accounts.AccountNotFoundException
 import com.project.common.exceptions.transactions.InsufficientFundsException
 import com.project.common.exceptions.transactions.InvalidTransferException
 import com.project.banking.entities.TransactionEntity
+import com.project.banking.mappers.toEntity
+import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.AccountRepository
 import com.project.banking.repositories.TransactionRepository
 import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.transactions.PaymentDetails
 import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.enums.AccountType
+import com.project.common.enums.RewardType
 import com.project.common.enums.TransactionType
+import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
 import com.project.common.exceptions.transactions.AccountLookupException
 import com.project.common.exceptions.accounts.AccountNotActiveException
 import com.project.common.exceptions.auth.InvalidCredentialsException
 import com.project.common.exceptions.categories.CategoryNotFoundException
 import jakarta.transaction.Transactional
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -26,7 +31,10 @@ import java.time.LocalDateTime
 class TransactionServiceImpl(
     private val transactionRepository: TransactionRepository,
     private val accountRepository: AccountRepository,
-    private val categoryService: CategoryService
+    private val accountProductRepository: AccountProductRepository,
+    private val categoryService: CategoryService,
+    private val perkService: PerkService,
+    private val xpService: XpService
 ): TransactionService {
     override fun getTransactionsByAccount(accountId: Long?, accountNumber: String?): List<TransactionDetails> {
         if ((accountId == null && accountNumber == null) || (accountId != null && accountNumber != null)) {
@@ -111,8 +119,7 @@ class TransactionServiceImpl(
     }
 
     @Transactional // THIS IS A WORK IN PROGRESS
-    // TODO: CALCULATE FROM PERK
-    // TODO: GIVE XP
+    // TODO: CALCULATE DISCOUNT OR CASHBACK FROM PERK
     override fun purchase(userId: Long, purchaseRequest: TransferCreateRequest): PaymentDetails {
         val (sourceAccount, businessAccount) = validateAndFetchAccounts(
             purchaseRequest.sourceAccountNumber,
@@ -124,17 +131,49 @@ class TransactionServiceImpl(
         val category = categoryService.getCategoryByName(purchaseRequest.category!!)
             ?: throw CategoryNotFoundException() // or create the category?
 
+
+        val accountProduct = sourceAccount.accountProduct!!
+        val perks = perkService.getAllPerksByAccountProduct(accountProduct.id!!)
+
+        val matchedPerks = perks.filter { perk ->
+            perk.categories.any { it.name == category.name } &&
+                    purchaseRequest.amount >= (perk.minPayment ?: BigDecimal.ZERO)
+        }
+
+        var effectivePrice = purchaseRequest.amount.setScale(3)
+
+        var totalXp = 0L
+
+        if (matchedPerks.isNotEmpty()) {
+            val bestPerk = matchedPerks.maxByOrNull { it.perkAmount }
+            val perkAmount = bestPerk?.perkAmount ?: BigDecimal.ZERO
+
+            when (bestPerk?.type) {
+                RewardType.DISCOUNT -> effectivePrice = effectivePrice.subtract(perkAmount)
+                RewardType.CASHBACK -> awardCashback(userId, perkAmount)
+                else -> {} // no-op
+            }
+
+            val xpTier = xpService.getCurrentTier(sourceAccount.ownerId!!)
+            val multiplier = xpTier.xpPerkMultiplier
+
+            val baseXp = BigDecimal(bestPerk?.rewardsXp ?: 0)
+            totalXp += (multiplier * baseXp).toLong()
+        }
+
         val transaction = transactionRepository.save(
             TransactionEntity(
                 sourceAccount = sourceAccount,
                 destinationAccount = businessAccount,
-                amount = purchaseRequest.amount.setScale(3),
+                amount = effectivePrice,
                 category = category,
                 transactionType = TransactionType.PAYMENT
             )
         )
 
-        val newBalance = sourceAccount.balance.setScale(3).subtract(purchaseRequest.amount.setScale(3))
+        if (totalXp > 0L) { xpService.earnXP(transaction.sourceAccount!!.ownerId!!, totalXp) }
+
+        val newBalance = sourceAccount.balance.setScale(3).subtract(effectivePrice)
         accountRepository.save(sourceAccount.copy(balance = newBalance))
 
         return PaymentDetails(
@@ -176,5 +215,21 @@ class TransactionServiceImpl(
         if (newSourceBalance < BigDecimal.ZERO) { throw InsufficientFundsException() }
 
         return sourceAccount to destinationAccount
+    }
+
+    override fun awardCashback(userId: Long, amount: BigDecimal) {
+        val cashbackAccount = accountRepository.findAllByOwnerId(userId)
+            .firstOrNull { it.accountType == AccountType.CASHBACK }
+
+        if (cashbackAccount == null) {
+            throw AccountNotFoundException("No active cashback account found for user $userId")
+        }
+
+        val accountProduct = accountProductRepository.findByIdOrNull(cashbackAccount.accountProductId)
+            ?: throw AccountProductNotFoundException()
+
+        val newBalance = cashbackAccount.balance.setScale(3).add(amount.setScale(3))
+
+        accountRepository.save(cashbackAccount.copy(balance = newBalance).toEntity(accountProduct))
     }
 }

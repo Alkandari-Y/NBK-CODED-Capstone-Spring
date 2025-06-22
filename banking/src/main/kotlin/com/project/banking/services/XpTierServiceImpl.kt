@@ -25,6 +25,13 @@ class XpTierServiceImpl(
             ?: throw XpTierNotFoundException()
     }
 
+    override fun getTierByXp(amount: Long): XpTierResponse {
+        val tier = xpTierRepository.findAll()
+            .firstOrNull { amount in it.minXp!!..it.maxXp!! }
+
+        return tier!!.toResponse()
+    }
+
     override fun createXpTier(tier: CreateXpTierRequest): XpTierResponse {
         if (tier.minXp > tier.maxXp) { throw XpMinMaxException() }
 
