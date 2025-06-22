@@ -2,8 +2,8 @@ package com.project.banking.services
 
 import com.project.banking.entities.CategoryEntity
 import com.project.common.exceptions.accounts.AccountNotFoundException
-import com.project.common.exceptions.accounts.InsufficientFundsException
-import com.project.common.exceptions.accounts.InvalidTransferException
+import com.project.common.exceptions.transactions.InsufficientFundsException
+import com.project.common.exceptions.transactions.InvalidTransferException
 import com.project.banking.entities.TransactionEntity
 import com.project.banking.repositories.AccountRepository
 import com.project.banking.repositories.TransactionRepository
@@ -11,6 +11,7 @@ import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.enums.TransactionType
 import com.project.common.enums.ErrorCode
+import com.project.common.exceptions.transactions.AccountLookupException
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -89,11 +90,14 @@ class TransactionServiceImpl(
 
     override fun getTransactionsByAccount(accountId: Long?, accountNumber: String?): List<TransactionDetails> {
         if ((accountId == null && accountNumber == null) || (accountId != null && accountNumber != null)) {
-            throw IllegalArgumentException("Provide either accountId or accountNumber, but not both.")
+            throw AccountLookupException()
         }
 
         return when {
-            accountId != null -> transactionRepository.findRelatedTransactionsByAccountId(accountId)
+            accountId != null -> {
+                val account = accountRepository.findById(accountId).orElseThrow { AccountNotFoundException() }
+                transactionRepository.findRelatedTransactionsByAccountNumber(account.accountNumber)
+            }
             accountNumber != null -> transactionRepository.findRelatedTransactionsByAccountNumber(accountNumber)
             else -> emptyList()
         }
