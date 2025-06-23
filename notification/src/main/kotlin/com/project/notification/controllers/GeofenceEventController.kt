@@ -1,6 +1,6 @@
 package com.project.notification.controllers
 
-import com.project.notification.data.GeofenceEventRequest
+import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.notification.services.GeofenceEventService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity

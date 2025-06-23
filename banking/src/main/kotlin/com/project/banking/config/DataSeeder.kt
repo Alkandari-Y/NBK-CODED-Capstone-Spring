@@ -566,5 +566,4 @@ fun seedCategories(): List<CategoryEntity> {
         businessPartnerRepository.saveAll(businessPartners)
         println("Seeded ${businessPartners.size} business partners.")
     }
-
 }

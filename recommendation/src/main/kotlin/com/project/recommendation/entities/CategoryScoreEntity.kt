@@ -14,7 +14,7 @@ data class CategoryScoreEntity(
     var userId: Long? = null,
 
     @Column(name = "frequency", nullable = false)
-    var frequency: Long? = null,
+    var frequency: Long = 0L,
 
     @Column(name = "category_id", nullable = false)
     var categoryId: Long? = null,

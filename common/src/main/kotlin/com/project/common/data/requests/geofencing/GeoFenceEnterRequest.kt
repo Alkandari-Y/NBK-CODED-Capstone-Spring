@@ -1,28 +1,30 @@
 package com.project.common.data.requests.geofencing
 
-import com.project.common.enums.LocationType
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Positive
 
 
-data class GeoFenceEnterRequest(
+data class GeofenceEventRequest(
     @field:NotNull
     val id: String,
-
     @field:NotBlank
     val name: String,
-
     @field:NotNull
-    val location: LatLng,
-
+    val latitude: Double,
     @field:NotNull
-    val radius: Float = 300f,
-
+    val longitude: Double,
     @field:NotNull
-    val type: LocationType = LocationType.MALL,
+    val radius: Float,
     @field:NotBlank
-    val description: String = "",
+    val type: String,
 
-    val tags: List<String> = emptyList(),
-    var geofenceId: String?
+    val description: String?,
+    val tags: List<String>?,
+    @field:NotBlank
+    val transitionType: String, // "ENTER" or "EXIT"
+
+    @field:NotNull
+    @field:Positive
+    val userId: Long
 )

@@ -1,6 +1,6 @@
 package com.project.recommendation.services
 
-import com.project.common.data.requests.geofencing.GeoFenceEnterRequest
+import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.common.data.responses.accountProducts.AccountProductDto
 import com.project.common.data.responses.businessPartners.BusinessPartnerDto
 import com.project.common.data.responses.kyc.KYCResponse
@@ -26,15 +26,15 @@ import java.time.LocalDate
 class RecommendationServiceImpl(
     private val businessServiceProvider: BankServiceProvider,
     private val storeLocationsService: StoreLocationsService,
-    private val promotionRepository: PromotionRepository,
+    private val promotionService: PromotionService,
     private val favBusinessService: FavBusinessService,
     private val favCategoriesService: FavCategoriesService,
     private val recommendationRepository: RecommendationRepository,
+    private val categoryScoreService: CategoryScoreService
 ) : RecommendationService {
 
     override fun createGeofencingRecommendation(
-        userId: Long,
-        geofenceData: GeoFenceEnterRequest
+        geofenceData: GeofenceEventRequest
     ): RecommendationEntity? {
         // get userid or firebase token
         // call notification endpoint and check
@@ -44,11 +44,11 @@ class RecommendationServiceImpl(
         storeLocationsService.findNearbyStores(geofenceData)
 
         // get user fav partners
-        val favPartners = favBusinessService.findAllFavBusinesses(userId)
-        favCategoriesService.findAllFavCategories(userId)
+        val favPartners = favBusinessService.findAllFavBusinesses(geofenceData.userId)
+        favCategoriesService.findAllFavCategories(geofenceData.userId)
 
         if (favPartners.isNotEmpty()) {
-            getPromotionByBusiness(favPartners.map { it.partnerId!! })
+            promotionService.getPromotionForBusinesses(favPartners.map { it.partnerId!! })
         } else {
             emptyList()
         }
@@ -67,7 +67,7 @@ class RecommendationServiceImpl(
         )
         // if no promotions get partner by category and user cards
 
-        getUserBestPromotion(userId)
+        getUserBestPromotion(geofenceData.userId)
 
         return null
     }
@@ -104,6 +104,7 @@ class RecommendationServiceImpl(
             recType = RecommendationType.ONBOARDING
         )
         recommendationRepository.save(recommendation)
+        categoryScoreService.createUserCategoryScores(userId)
 
         return recommendedCard.copy(recommended = true)
     }
@@ -298,9 +299,7 @@ class RecommendationServiceImpl(
     }
 
 
-    private fun getPromotionByBusiness(businessIds: List<Long>): List<PromotionEntity> {
-        return promotionRepository.findActivePromotionsByBusinessPartnerId(businessIds, LocalDate.now())
-    }
+
 
     private fun getUserBestPromotion(userId: Long): PromotionEntity? {
         val favBusinesses = favBusinessService.findAllFavBusinesses(userId)
@@ -308,7 +307,7 @@ class RecommendationServiceImpl(
 
         if (businessIds.isEmpty()) return null
 
-        val activePromotions = getPromotionByBusiness(businessIds)
+        val activePromotions = promotionService.getPromotionForBusinesses(businessIds)
 
         return activePromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 }
     }

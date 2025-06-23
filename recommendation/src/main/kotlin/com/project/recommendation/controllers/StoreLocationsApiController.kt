@@ -1,7 +1,6 @@
 package com.project.recommendation.controllers
 
-import com.project.common.data.requests.geofencing.GeoFenceEnterRequest
-import com.project.common.data.requests.storeLocations.StoreLocationCreateRequest
+import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.common.data.responses.storeLocations.StoreLocationResponse
 import com.project.recommendation.mappers.toResponse
 import com.project.recommendation.repositories.StoreLocationRepository
@@ -35,7 +34,7 @@ class StoreLocationsApiController(
 
     @PostMapping("/near-me")
     fun findNearbyStores(
-        @Valid @RequestBody geofenceData: GeoFenceEnterRequest
+        @Valid @RequestBody geofenceData: GeofenceEventRequest
     ): List<StoreLocationResponse> {
         return storeLocationsService.findNearbyStores(geofenceData)
     }

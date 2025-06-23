@@ -1,6 +1,6 @@
 package com.project.recommendation.services
 
-import com.project.common.data.requests.geofencing.GeoFenceEnterRequest
+import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.common.data.requests.storeLocations.StoreLocationCreateRequest
 import com.project.common.data.responses.storeLocations.StoreLocationResponse
 import com.project.common.exceptions.storeLocations.StoreLocationNotFoundException
@@ -43,10 +43,10 @@ class StoreLocationsServiceImpl(
         storeLocationRepository.deleteById(storeLocationId)
     }
 
-    override fun findNearbyStores(geofenceData: GeoFenceEnterRequest): List<StoreLocationResponse> {
+    override fun findNearbyStores(geofenceData: GeofenceEventRequest): List<StoreLocationResponse> {
         return storeLocationRepository.findStoresWithinGeofence(
-            longitude = geofenceData.location.longitude,
-            latitude = geofenceData.location.latitude,
+            longitude = geofenceData.longitude,
+            latitude = geofenceData.latitude,
             radius = geofenceData.radius
         ).map { it.toResponse() }
     }

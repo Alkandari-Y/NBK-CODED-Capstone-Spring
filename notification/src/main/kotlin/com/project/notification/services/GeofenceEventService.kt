@@ -2,7 +2,7 @@ package com.project.notification.services
 
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
-import com.project.notification.data.GeofenceEventRequest
+import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.notification.repositories.UserDeviceRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
