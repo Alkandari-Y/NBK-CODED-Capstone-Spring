@@ -53,7 +53,8 @@ class KycApiController(
         )
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
+    // this is for other services
     @GetMapping(path = ["/client/{userId}"])
     fun getKYCByUserId(
         @PathVariable("userId") userId: Long

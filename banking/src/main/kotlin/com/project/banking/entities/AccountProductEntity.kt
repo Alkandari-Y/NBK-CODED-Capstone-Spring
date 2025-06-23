@@ -30,6 +30,9 @@ data class AccountProductEntity (
     @Column(name = "type", nullable = false)
      var accountType: AccountType = AccountType.DEBIT,
 
+    @Column(name="description", nullable = false)
+    var description: String = "",
+
     @Column(name = "interest_rate", precision = 9, scale = 3)
      var interestRate: BigDecimal = BigDecimal.ZERO,
 

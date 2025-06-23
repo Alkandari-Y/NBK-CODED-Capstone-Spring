@@ -1,5 +1,6 @@
 package com.project.banking.services
 
+import com.google.api.gax.rpc.ApiException
 import com.project.common.exceptions.accounts.AccountVerificationException
 import com.project.banking.entities.AccountEntity
 import com.project.banking.entities.AccountProductEntity
@@ -9,11 +10,17 @@ import com.project.banking.repositories.AccountRepository
 import com.project.common.data.requests.accounts.AccountCreateRequest
 import com.project.common.data.responses.accounts.AccountDto
 import com.project.common.data.responses.authentication.UserInfoDto
+import com.project.common.enums.AccountOwnerType
+import com.project.common.enums.AccountType
+import com.project.common.enums.ErrorCode
+import com.project.common.exceptions.APIException
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.CachePut
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import java.math.BigDecimal
 
 const val MAX_ACCOUNT_LIMIT = 3
 
@@ -24,12 +31,10 @@ class AccountServiceImpl(
     private val mailService: MailService,
 ): AccountService {
 
-    @CachePut(value = ["accountsByUserId"], key = "#userId")
     override fun getActiveAccountsByUserId(userId: Long): List<AccountDto> {
        return accountRepository.findByOwnerIdActive(userId)
     }
 
-    @CacheEvict(value = ["accountsByUserId"], key = "#userInfoDto.userId")
     override fun createClientAccount(
         accountRequest: AccountCreateRequest,
         userInfoDto: UserInfoDto
@@ -46,6 +51,51 @@ class AccountServiceImpl(
             username = userInfoDto.username,
             bodyText = "Your account has been successfully created."
         )
+
+        return account
+    }
+
+
+    override fun onBoardingCreateAccount(
+        accountRequest: AccountCreateRequest,
+        userInfoDto: UserInfoDto
+    ): AccountEntity {
+
+        val accountProduct = accountProductRepository.findByIdOrNull(accountRequest.accountProductId)
+            ?: throw AccountProductNotFoundException()
+
+        if (accountProduct.accountType != AccountType.CREDIT) {
+            throw APIException(
+                "Only credit accounts can be created through onboarding",
+                httpStatus = HttpStatus.BAD_REQUEST,
+                code = ErrorCode.INVALID_INPUT
+            )
+        }
+
+        val userAccounts = accountRepository.findAllByOwnerId(userInfoDto.userId)
+
+        val userCashBackAccount = accountRepository.findFirstByOwnerIdAndAccountTypeOrderByIdAsc(
+            userInfoDto.userId,
+            AccountType.CASHBACK
+        )
+
+
+        val hasSameProduct = userAccounts.any { it.accountProductId == accountProduct.id }
+
+        if (hasSameProduct){
+            throw APIException(
+                "User already has this product",
+                httpStatus = HttpStatus.BAD_REQUEST,
+                code = ErrorCode.INVALID_INPUT
+            )
+        }
+
+        if ( userCashBackAccount != null) {
+            val updated = userCashBackAccount.copy(balance = BigDecimal.valueOf(50))
+            accountRepository.save(updated)
+            // TODO: Add experience points and XP transaction record
+        }
+        val account = accountRepository.save(accountRequest.toEntity(userInfoDto.userId, accountProduct))
 
         return account
     }
