@@ -6,6 +6,7 @@ import java.math.BigDecimal
 data class AccountProductDto(
     val id: Long?,
     val name: String?,
+    val description: String?,
     val accountType: String,
     val interestRate: BigDecimal,
     val minBalanceRequired: BigDecimal,
@@ -15,5 +16,6 @@ data class AccountProductDto(
     val image: String?,
     val perks: List<PerkDto> = emptyList(),
     val categoryIds: Set<Long> = emptySet(),
-    val categoryNames: Set<String> = emptySet()
+    val categoryNames: Set<String> = emptySet(),
+    val recommended: Boolean = false
 )

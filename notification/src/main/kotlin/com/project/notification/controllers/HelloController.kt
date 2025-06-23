@@ -31,10 +31,16 @@ class HelloController(
                 .putData("title", "Test")
                 .putData("body", "Hello from Spring Boot")
                 .putData("customKey", "customValue")
+                .setNotification(
+                    Notification.builder()
+                        .setTitle("Test")
+                        .setBody("Hello from Spring Boot")
+                        .build()
+                )
                 .build()
 
             val response = firebaseMessaging.send(message)
-            return ResponseEntity.ok("Sent (dry run): $response")
+            return ResponseEntity.ok("Sent: $response")
     }
 }
 

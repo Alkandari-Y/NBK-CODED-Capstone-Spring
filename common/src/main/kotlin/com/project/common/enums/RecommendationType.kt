@@ -1,5 +1,5 @@
 package com.project.common.enums
 
 enum class RecommendationType {
-    ACCOUNT_PRODUCT, CASHBACK, DISCOUNT, PERK, PROMOTION
+    ACCOUNT_PRODUCT, BUSINESS_PARTNER, PROMOTION, ONBOARDING
 }

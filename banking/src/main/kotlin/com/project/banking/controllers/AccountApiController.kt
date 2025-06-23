@@ -55,6 +55,19 @@ class AccountApiController(
         return ResponseEntity(account, HttpStatus.CREATED)
     }
 
+    @PostMapping("/onboarding/create")
+    fun createOnBoardingAccount(
+        @Valid @RequestBody accountCreateRequestDto : AccountCreateRequest,
+        @RequestAttribute("authUser") authUser: UserInfoDto,
+    ) : ResponseEntity<AccountEntity>
+    {
+        val account = accountService.onBoardingCreateAccount(
+            accountCreateRequestDto,
+            authUser,
+        )
+        return ResponseEntity(account, HttpStatus.CREATED)
+    }
+
     @PostMapping(path=["/transfer"])
     fun transfer(
         @Valid @RequestBody transferCreateRequestDto: TransferCreateRequest,

@@ -96,14 +96,6 @@ services:
       - "1025:1025"    # SMTP port (your services will send mail to this)
     restart: always
 
-
-  redis:
-    image: redis:7
-    container_name: redis
-    ports:
-      - "6379:6379"
-    restart: always
-
 volumes:
   minio_data:
   maven_cache:

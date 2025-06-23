@@ -24,6 +24,7 @@ fun AccountProductEntity.toDto(): AccountProductDto {
     return AccountProductDto(
         id = this.id!!,
         name = this.name,
+        description = description,
         accountType = this.accountType.toString(),
         interestRate = this.interestRate,
         minBalanceRequired = this.minBalanceRequired,

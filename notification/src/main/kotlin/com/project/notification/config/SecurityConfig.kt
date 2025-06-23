@@ -20,7 +20,8 @@ class SecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }
             .authorizeHttpRequests {
-                it.anyRequest().authenticated()
+                it.requestMatchers("/api/v1/geofence/event").permitAll() // Allow geofence events without auth
+                    .anyRequest().authenticated()
             }
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

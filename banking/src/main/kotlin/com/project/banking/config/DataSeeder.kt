@@ -52,7 +52,7 @@ class DataSeeder(
         }
         val categories = listOf(
             "personal", "retail", "manufacturing", "healthcare", "financial services",
-            "real estate", "technology", "hospitality", "education", "logistics",
+            "real estate", "technology", "hospitality", "education", "logistics", "dining",
             "construction", "agriculture", "automotive", "consulting", "wholesale", "energy"
         ).map { name -> CategoryEntity(name = name) }
 
@@ -68,6 +68,8 @@ class DataSeeder(
             println("Account products already exist. Skipping seeding.")
             return accountProducts
         }
+        val description = "this card will give you a lot of perks and bonuses when used with our banking services and categories"
+
         // 1. Debit Card – No Credit, No Fees
         val debitAccount = AccountProductEntity(
             name = "Salary Account",
@@ -166,16 +168,31 @@ class DataSeeder(
         val businessAccountProduct = accountProducts.firstOrNull { it.name == "Business Account" }
             ?: throw IllegalStateException("Business Account product not found")
 
-        val businesses = listOf(
-            "TechNova", "GreenGrocers", "BuildSmart", "MediCare+", "LogiLink",
-            "AutoMax", "EduSphere", "HealthWare", "FinEdge", "UrbanScape"
+        val partnerToCategory = listOf(
+            "LuLu Hypermarket" to "retail",
+            "X-cite" to "retail",
+            "Co-op Societies" to "retail",
+            "The Sultan Center" to "retail",
+            "Souk Sharq" to "retail",
+            "Riva Fashion" to "fashion",
+            "6thStreet" to "fashion",
+            "H&M" to "fashion",
+            "GAP" to "fashion",
+            "Bloomingdale's" to "fashion",
+            "Sun & Sand Sports" to "fashion",
+            "Yelo! Pizza" to "dining",
+            "Chequer" to "dining",
+            "Teta's" to "dining",
+            "Rue 147" to "dining",
+            "Lina's & Dina's" to "dining",
+            "Tim Hortons" to "dining",
+            "Blink" to "technology",
         )
 
         val logoBase = "http://localhost:9000/capstone-public/"
 
-        val businessPartners = businesses.mapIndexed { i, name ->
-            val category = categories[i % categories.size]
-
+        val businessPartners = partnerToCategory.mapIndexed { i, (name, categoryName) ->
+            val category = categories.first { it.name == categoryName }
             val account = AccountEntity(
                 balance = BigDecimal.valueOf((1000..10000).random().toDouble()),
                 isActive = true,
@@ -184,20 +201,17 @@ class DataSeeder(
                 accountProduct = businessAccountProduct,
                 accountType = AccountType.DEBIT
             )
-
             BusinessPartnerEntity(
                 name = name,
                 adminUser = 1L,
                 account = account,
-                logoUrl = "$logoBase${name.lowercase()}.png",
+                logoUrl = "$logoBase${name.lowercase().replace(" ", "")}.png",
                 category = category
             )
         }
 
-        val accounts = businessPartners.map { it.account!! }
-        accountRepository.saveAll(accounts)
+        accountRepository.saveAll(businessPartners.map { it.account!! })
         businessPartnerRepository.saveAll(businessPartners)
-
         println("Seeded ${businessPartners.size} business partners.")
     }
 
