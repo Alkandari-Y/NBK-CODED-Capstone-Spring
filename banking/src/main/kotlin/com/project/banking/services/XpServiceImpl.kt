@@ -2,6 +2,7 @@ package com.project.banking.services
 
 import com.project.banking.entities.UserXpEntity
 import com.project.banking.entities.XpHistoryEntity
+import com.project.banking.mappers.toDto
 import com.project.banking.mappers.toResponse
 import com.project.banking.repositories.PerkRepository
 import com.project.banking.repositories.UserXpRepository
@@ -29,7 +30,7 @@ class XpServiceImpl(
 
     override fun earnXP(historyEntity: XpHistoryEntity) {
         val entity = userXpRepository.findByUserId(historyEntity.userXp!!.userId)
-            ?: throw UserNotFoundException()
+            ?: throw UserXpInfoNotFoundException()
 
         entity.amount += historyEntity.amount!!
 
@@ -45,5 +46,14 @@ class XpServiceImpl(
             ?: throw XpTierNotFoundException()
 
         return entity.toResponse(tier)
+    }
+
+    override fun getUserXpHistory(userId: Long): List<XpHistoryDto> {
+        val user = userXpRepository.findByUserId(userId)
+            ?: throw UserXpInfoNotFoundException()
+
+        val history = xpHistoryRepository.findAllByUserId(user.userId).map { it.toDto() }
+
+        return history
     }
 }

@@ -3,6 +3,7 @@ package com.project.common.data.requests.xp
 import com.project.common.enums.XpGainMethod
 
 data class XpHistoryDto(
+    val id: Long,
     val amount: Long,
     val gainMethod: XpGainMethod,
     val transactionId: Long,

@@ -2,6 +2,7 @@ package com.project.banking.controllers
 
 import com.project.banking.services.XpService
 import com.project.banking.services.XpTierService
+import com.project.common.data.requests.xp.XpHistoryDto
 import com.project.common.data.responses.xp.UserXpInfoResponse
 import com.project.common.data.responses.xp.XpTierResponse
 import com.project.common.security.RemoteUserPrincipal
@@ -36,6 +37,14 @@ class XpApiController(
         @AuthenticationPrincipal user: RemoteUserPrincipal
     ): ResponseEntity<UserXpInfoResponse> {
         val body = xpService.getCurrentXpInfo(user.getUserId())
+        return ResponseEntity(body, HttpStatus.OK)
+    }
+
+    @GetMapping("/history")
+    fun getUserXpHistory(
+        @AuthenticationPrincipal user: RemoteUserPrincipal
+    ): ResponseEntity<List<XpHistoryDto>>{
+        val body = xpService.getUserXpHistory(user.getUserId())
         return ResponseEntity(body, HttpStatus.OK)
     }
 }

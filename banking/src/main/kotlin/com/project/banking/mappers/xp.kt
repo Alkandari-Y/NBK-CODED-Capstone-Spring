@@ -41,6 +41,7 @@ fun XpTierEntity.toResponse() = XpTierResponse(
 )
 
 fun XpHistoryEntity.toDto() = XpHistoryDto(
+    id = id!!,
     amount = amount!!,
     gainMethod = gainMethod!!,
     transactionId = transaction!!.id!!,
