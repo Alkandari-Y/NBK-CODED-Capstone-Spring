@@ -212,7 +212,7 @@ class DataSeeder(
                 name = "Silver",
                 minXp = 0,
                 maxXp = 4999,
-                xpPerkMultiplier = BigDecimal(1.0),
+                xpPerkMultiplier = 1.0,
                 xpPerNotification = 10,
                 xpPerPromotion = 20,
                 perkAmountPercentage = 50
@@ -221,7 +221,7 @@ class DataSeeder(
                 name = "Gold",
                 minXp = 5000,
                 maxXp = 14999,
-                xpPerkMultiplier = BigDecimal(1.2),
+                xpPerkMultiplier = 1.2,
                 xpPerNotification = 15,
                 xpPerPromotion = 25,
                 perkAmountPercentage = 75
@@ -230,7 +230,7 @@ class DataSeeder(
                 name = "Platinum",
                 minXp = 15000,
                 maxXp = 999999,
-                xpPerkMultiplier = BigDecimal(1.5),
+                xpPerkMultiplier = 1.5,
                 xpPerNotification = 20,
                 xpPerPromotion = 30,
                 perkAmountPercentage = 100

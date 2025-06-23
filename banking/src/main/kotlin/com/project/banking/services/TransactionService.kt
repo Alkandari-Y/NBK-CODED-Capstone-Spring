@@ -1,5 +1,6 @@
 package com.project.banking.services
 
+import com.project.common.data.requests.accounts.PaymentCreateRequest
 import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.transactions.PaymentDetails
 import com.project.common.data.responses.transactions.TransactionDetails
@@ -14,6 +15,6 @@ interface TransactionService {
         userIdMakingTransfer: Long
     ): TransactionDetails
 
-    fun purchase(userId: Long, purchaseRequest: TransferCreateRequest): PaymentDetails
+    fun purchase(userId: Long, purchaseRequest: PaymentCreateRequest): PaymentDetails
     fun awardCashback(userId: Long, amount: BigDecimal)
 }

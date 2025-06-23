@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank
 import org.jetbrains.annotations.NotNull
 import java.math.BigDecimal
 
-data class TransferCreateRequest(
+data class PaymentCreateRequest(
     @field:NotBlank
     val sourceAccountNumber: String,
     @field:NotBlank
@@ -18,5 +18,5 @@ data class TransferCreateRequest(
         message = "amount must must be at least 1.00"
     )
     val amount: BigDecimal,
-    val type: TransactionType? = TransactionType.TRANSFER
+    val type: TransactionType? = TransactionType.PAYMENT,
 )

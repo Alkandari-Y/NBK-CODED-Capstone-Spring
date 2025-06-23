@@ -1,10 +1,10 @@
 package com.project.banking.services
 
-import com.project.common.data.responses.xp.XpTierResponse
+import com.project.banking.entities.XpHistoryEntity
+import com.project.common.data.responses.xp.UserXpInfoResponse
 
 interface XpService {
     fun userXpInit(userId: Long)
-    fun earnXP(userId: Long, amount: Long)
-    fun getCurrentTier(userId: Long): XpTierResponse
-    fun getCurrentXpAmount(userId: Long): Long
+    fun earnXP(historyEntity: XpHistoryEntity)
+    fun getCurrentXpInfo(userId: Long): UserXpInfoResponse?
 }

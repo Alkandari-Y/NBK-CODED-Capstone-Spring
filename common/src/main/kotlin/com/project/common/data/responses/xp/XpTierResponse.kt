@@ -7,7 +7,7 @@ data class XpTierResponse(
     val minXp: Long,
     val maxXp: Long,
     val name: String,
-    val xpPerkMultiplier: BigDecimal,
+    val xpPerkMultiplier: Double,
     val xpPerNotification: Long,
     val xpPerPromotion: Long,
     val perkAmountPercentage: Long

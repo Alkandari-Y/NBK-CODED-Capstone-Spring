@@ -35,9 +35,7 @@ class XpApiController(
     fun getUserXpInfo(
         @AuthenticationPrincipal user: RemoteUserPrincipal
     ): ResponseEntity<UserXpInfoResponse> {
-        val currentXp = xpService.getCurrentXpAmount(user.getUserId())
-        val currentTier = xpService.getCurrentTier(user.getUserId())
-        val body = UserXpInfoResponse(currentXp, currentTier)
+        val body = xpService.getCurrentXpInfo(user.getUserId())
         return ResponseEntity(body, HttpStatus.OK)
     }
 }

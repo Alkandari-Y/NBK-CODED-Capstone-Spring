@@ -5,9 +5,11 @@ import com.project.banking.mappers.toDto
 import com.project.banking.services.AccountService
 import com.project.banking.services.TransactionService
 import com.project.common.data.requests.accounts.AccountCreateRequest
+import com.project.common.data.requests.accounts.PaymentCreateRequest
 import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.accounts.AccountDto
 import com.project.common.data.responses.authentication.UserInfoDto
+import com.project.common.data.responses.transactions.PaymentDetails
 import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.enums.ErrorCode
 import com.project.common.exceptions.APIException
@@ -66,6 +68,15 @@ class AccountApiController(
                 result,
                 HttpStatus.OK
             )
+    }
+
+    @PostMapping("/purchase")
+    fun purchase(
+        @Valid @RequestBody purchaseRequest: PaymentCreateRequest,
+        @AuthenticationPrincipal user: RemoteUserPrincipal
+    ): ResponseEntity<PaymentDetails> {
+        val body = transactionService.purchase(user.getUserId(), purchaseRequest)
+        return ResponseEntity(body, HttpStatus.OK)
     }
 
     @DeleteMapping(path=["/close/{accountNumber}"])

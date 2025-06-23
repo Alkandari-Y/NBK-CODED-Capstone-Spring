@@ -1,5 +1,5 @@
 package com.project.common.enums
 
-enum class GainMethod {
+enum class XpGainMethod {
     NOTIFICATION, PERK, PROMOTION
 }

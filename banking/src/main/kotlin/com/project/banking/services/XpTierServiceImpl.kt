@@ -20,16 +20,17 @@ class XpTierServiceImpl(
         return tiers.map { it.toResponse() }
     }
 
-    override fun getXpTierById(id: Long): XpTierResponse {
+    override fun getXpTierById(id: Long): XpTierResponse? {
         return xpTierRepository.findByIdOrNull(id)?.toResponse()
             ?: throw XpTierNotFoundException()
     }
 
-    override fun getTierByXp(amount: Long): XpTierResponse {
+    override fun getTierByXp(amount: Long): XpTierResponse? {
         val tier = xpTierRepository.findAll()
             .firstOrNull { amount in it.minXp!!..it.maxXp!! }
+            ?: throw XpTierNotFoundException()
 
-        return tier!!.toResponse()
+        return tier.toResponse()
     }
 
     override fun createXpTier(tier: CreateXpTierRequest): XpTierResponse {

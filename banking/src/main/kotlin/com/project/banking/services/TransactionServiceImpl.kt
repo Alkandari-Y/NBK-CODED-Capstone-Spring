@@ -6,14 +6,20 @@ import com.project.common.exceptions.accounts.AccountNotFoundException
 import com.project.common.exceptions.transactions.InsufficientFundsException
 import com.project.common.exceptions.transactions.InvalidTransferException
 import com.project.banking.entities.TransactionEntity
+import com.project.banking.entities.XpHistoryEntity
+import com.project.banking.mappers.toDto
 import com.project.banking.mappers.toEntity
 import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.AccountRepository
+import com.project.banking.repositories.BusinessPartnerRepository
 import com.project.banking.repositories.TransactionRepository
+import com.project.banking.repositories.XpHistoryRepository
+import com.project.common.data.requests.accounts.PaymentCreateRequest
 import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.transactions.PaymentDetails
 import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.enums.AccountType
+import com.project.common.enums.XpGainMethod
 import com.project.common.enums.RewardType
 import com.project.common.enums.TransactionType
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
@@ -34,7 +40,8 @@ class TransactionServiceImpl(
     private val accountProductRepository: AccountProductRepository,
     private val categoryService: CategoryService,
     private val perkService: PerkService,
-    private val xpService: XpService
+    private val xpService: XpService,
+    private val businessPartnerRepository: BusinessPartnerRepository
 ): TransactionService {
     override fun getTransactionsByAccount(accountId: Long?, accountNumber: String?): List<TransactionDetails> {
         if ((accountId == null && accountNumber == null) || (accountId != null && accountNumber != null)) {
@@ -57,6 +64,10 @@ class TransactionServiceImpl(
 
     @Transactional
     override fun transfer(newTransaction: TransferCreateRequest, userIdMakingTransfer: Long): TransactionDetails {
+        if (newTransaction.type == TransactionType.PAYMENT) {
+            throw InvalidTransferException("This is the TRANSFER endpoint, not the payment endpoint.")
+        }
+
         val (sourceAccount, destinationAccount) = validateAndFetchAccounts(
             newTransaction.sourceAccountNumber,
             newTransaction.destinationAccountNumber,
@@ -64,14 +75,8 @@ class TransactionServiceImpl(
             newTransaction.amount
         )
 
-        if (destinationAccount == null) { throw AccountNotFoundException("Destination account not found") }
-
         if (destinationAccount.ownerId != userIdMakingTransfer) {
             throw InvalidTransferException("Cannot transfer to an account that does not belong to you")
-        }
-
-        if (!destinationAccount.isActive) {
-            throw AccountNotActiveException(destinationAccount.accountNumber)
         }
 
         val sourceType = sourceAccount.accountProduct!!.accountType
@@ -106,7 +111,7 @@ class TransactionServiceImpl(
             sourceAccount.copy(balance = newSourceBalance)
         )
         val updatedDestinationAccount = accountRepository.save(
-            destinationAccount!!.copy(balance = newDestinationBalance!!)
+            destinationAccount.copy(balance = newDestinationBalance)
         )
         return TransactionDetails(
             transactionId = transaction.id!!,
@@ -119,7 +124,15 @@ class TransactionServiceImpl(
     }
 
     @Transactional // THIS IS A WORK IN PROGRESS
-    override fun purchase(userId: Long, purchaseRequest: TransferCreateRequest): PaymentDetails {
+    // right now it checks for if your card has perks
+    // and assigns you the proper XP amount for it based on your tier
+    // TODO: check for promotion
+    // TODO: also check if notif was sent in last 24h
+    override fun purchase(userId: Long, purchaseRequest: PaymentCreateRequest): PaymentDetails {
+        if (purchaseRequest.type != TransactionType.PAYMENT) {
+            throw InvalidTransferException("This is the PAYMENT endpoint.")
+        }
+
         val (sourceAccount, businessAccount) = validateAndFetchAccounts(
             purchaseRequest.sourceAccountNumber,
             purchaseRequest.destinationAccountNumber,
@@ -127,9 +140,8 @@ class TransactionServiceImpl(
             purchaseRequest.amount
         )
 
-        val category = categoryService.getCategoryByName(purchaseRequest.category!!)
-            ?: throw CategoryNotFoundException() // or create the category?
-
+        val category = businessPartnerRepository.findByAccountId(businessAccount.id!!)?.category
+            ?: throw CategoryNotFoundException()
 
         val accountProduct = sourceAccount.accountProduct!!
         val perks = perkService.getAllPerksByAccountProduct(accountProduct.id!!)
@@ -140,23 +152,26 @@ class TransactionServiceImpl(
         }
 
         var effectivePrice = purchaseRequest.amount.setScale(3)
-
         var totalXp = 0L
+        var xpGainMethod: XpGainMethod? = null
+        var xpRecord: XpHistoryEntity? = null
 
+        // check for perks
         if (matchedPerks.isNotEmpty()) {
+            xpGainMethod = XpGainMethod.PERK
             val bestPerk = matchedPerks.maxByOrNull { it.perkAmount }
             val perkAmount = bestPerk?.perkAmount ?: BigDecimal.ZERO
 
             when (bestPerk?.type) {
                 RewardType.DISCOUNT -> effectivePrice = effectivePrice.subtract(perkAmount)
                 RewardType.CASHBACK -> awardCashback(userId, perkAmount)
-                else -> {} // no-op
+                else -> {} // no reward type, no reward, do nothing
             }
 
-            val xpTier = xpService.getCurrentTier(sourceAccount.ownerId!!)
-            val multiplier = xpTier.xpPerkMultiplier
+            val xpTier = xpService.getCurrentXpInfo(userId)!!.xpTier
+            val multiplier = xpTier!!.xpPerkMultiplier
 
-            val baseXp = BigDecimal(bestPerk?.rewardsXp ?: 0)
+            val baseXp = bestPerk?.rewardsXp ?: 0
             totalXp += (multiplier * baseXp).toLong()
         }
 
@@ -170,7 +185,22 @@ class TransactionServiceImpl(
             )
         )
 
-        if (totalXp > 0L) { xpService.earnXP(transaction.sourceAccount!!.ownerId!!, totalXp) }
+        // earn xp if it was awarded
+        if (totalXp > 0L) {
+            val xpInfo = xpService.getCurrentXpInfo(userId)!!
+
+            xpRecord = XpHistoryEntity(
+                amount = totalXp,
+                gainMethod = xpGainMethod!!,
+                transaction = transaction,
+                category = category,
+                xpTier = xpInfo.xpTier!!.toEntity(),
+                userXp = xpInfo.toEntity(userId),
+                account = sourceAccount,
+                accountProduct = accountProduct
+            )
+            xpService.earnXP(xpRecord)
+        }
 
         val newBalance = sourceAccount.balance.setScale(3).subtract(effectivePrice)
         accountRepository.save(sourceAccount.copy(balance = newBalance))
@@ -182,27 +212,33 @@ class TransactionServiceImpl(
                 ?: purchaseRequest.destinationAccountNumber,
             amount = transaction.amount!!,
             category = transaction.category!!.name!!,
-            createdAt = transaction.createdAt!!
+            createdAt = transaction.createdAt!!,
+            xpHistoryRecord = xpRecord?.toDto()
         )
     }
 
     private fun validateAndFetchAccounts(
         sourceAccountNumber: String,
-        destinationAccountNumber: String?,
+        destinationAccountNumber: String,
         userId: Long,
         amount: BigDecimal
-    ): Pair<AccountEntity, AccountEntity?> {
+    ): Pair<AccountEntity, AccountEntity> {
         if (sourceAccountNumber == destinationAccountNumber) {
             throw InvalidTransferException("Cannot transfer to the same account")
         }
 
         val sourceAccount = accountRepository.findByAccountNumber(sourceAccountNumber)
             ?: throw AccountNotFoundException("Source account not found")
-        val destinationAccount = destinationAccountNumber?.let {
-            accountRepository.findByAccountNumber(it)
+        val destinationAccount = accountRepository.findByAccountNumber(destinationAccountNumber)
+            ?: throw AccountNotFoundException("Destination account not found")
+
+        if (!sourceAccount.isActive) {
+            throw AccountNotActiveException(sourceAccount.accountNumber)
         }
 
-        if (!sourceAccount.isActive) { throw AccountNotActiveException(sourceAccount.accountNumber) }
+        if (!destinationAccount.isActive) {
+            throw AccountNotActiveException(destinationAccount.accountNumber)
+        }
 
         if (sourceAccount.ownerId != userId) { throw InvalidCredentialsException() }
 
