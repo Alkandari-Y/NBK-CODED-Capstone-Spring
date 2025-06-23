@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserXpRepository: JpaRepository<UserXpEntity, Long> {
+    fun findByUserId(userId: Long): UserXpEntity?
 }

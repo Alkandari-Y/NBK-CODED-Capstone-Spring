@@ -23,9 +23,9 @@ CREATE TABLE IF NOT EXISTS  "xp_tiers"(
     "min_xp" BIGINT NOT NULL,
     "max_xp" BIGINT NOT NULL,
     "name" VARCHAR(255) NOT NULL,
-    "xp_perk_multiplier" BIGINT NOT NULL,
-    "xp_per_notification" BIGINT NOT NULL, -- UPDATED!!! (there was a typo)
-    "xp_per_promotion" BIGINT NOT NULL, -- UPDATED!!!
+    "xp_perk_multiplier" DECIMAL NOT NULL, -- UPDATED!!
+    "xp_per_notification" BIGINT NOT NULL,
+    "xp_per_promotion" BIGINT NOT NULL,
     "perk_amount_percentage" BIGINT NOT NULL
 );
 

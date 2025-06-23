@@ -12,8 +12,7 @@ fun CreatePromotionRequest.toEntity() = PromotionEntity(
     startDate = startDate,
     endDate = endDate,
     description = description,
-    storeId = storeId,
-    xp = xp
+    storeId = storeId
 )
 
 fun PromotionEntity.toResponse() = PromotionResponse(
@@ -24,6 +23,5 @@ fun PromotionEntity.toResponse() = PromotionResponse(
     startDate = startDate!!,
     endDate = endDate!!,
     description = description,
-    storeId = storeId,
-    xp = xp!!
+    storeId = storeId
 )

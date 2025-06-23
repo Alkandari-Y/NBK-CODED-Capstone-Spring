@@ -29,8 +29,6 @@ class TransactionsAPIController(
         @RequestParam(required = false) accountId: Long?,
         @RequestParam(required = false) accountNumber: String?
     ): ResponseEntity<List<TransactionDetails>> {
-        println("accountId = $accountId (${accountId?.javaClass?.name})")
-        println("accountNumber = $accountNumber (${accountNumber?.javaClass?.name})")
         if ((accountId == null && accountNumber == null) || (accountId != null && accountNumber != null)) {
             return ResponseEntity.badRequest().build()
         }

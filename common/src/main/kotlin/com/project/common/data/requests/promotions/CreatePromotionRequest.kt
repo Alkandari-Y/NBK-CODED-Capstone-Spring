@@ -16,7 +16,5 @@ data class CreatePromotionRequest(
     val endDate: LocalDate?,
     @field:NotNull(message = "Description is required")
     val description: String,
-    val storeId: Long?,
-    @field:Positive(message = "Must give XP amount")
-    val xp: Long?,
+    val storeId: Long?
 )
