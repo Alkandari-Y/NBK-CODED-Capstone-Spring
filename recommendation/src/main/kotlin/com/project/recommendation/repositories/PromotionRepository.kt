@@ -9,6 +9,18 @@ import java.time.LocalDate
 interface PromotionRepository : JpaRepository<PromotionEntity, Long>{
     fun findAllByBusinessPartnerId(businessId: Long): List<PromotionEntity>
 
+
+    @Query("""
+    SELECT p FROM PromotionEntity p 
+        WHERE p.businessPartnerId = :businessId
+            AND :currentDate BETWEEN p.startDate AND p.endDate
+""")
+    fun findAllActivePromotionsByBusinessPartner(
+        @Param("businessId") businessId: Long,
+        @Param("currentDate") currentDate: LocalDate
+    ): List<PromotionEntity>
+
+
     @Query("""
     SELECT p FROM PromotionEntity p 
         WHERE p.businessPartnerId in :businessIds 
@@ -18,5 +30,4 @@ interface PromotionRepository : JpaRepository<PromotionEntity, Long>{
         @Param("businessIds") businessIds: List<Long>,
         @Param("currentDate") currentDate: LocalDate
     ): List<PromotionEntity>
-
 }
