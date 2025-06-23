@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 
-
 @Entity
 @Table(name = "xp_tiers")
 
@@ -27,7 +26,7 @@ data class XpTierEntity (
      var name: String? = null,
 
     @Column(name = "xp_perk_multiplier", nullable = false)
-     var xpPerkMultiplier: Long? = null,
+     var xpPerkMultiplier: Double? = null,
 
     @Column(name = "xp_per_notification", nullable = false)
      var xpPerNotification: Long? = null,

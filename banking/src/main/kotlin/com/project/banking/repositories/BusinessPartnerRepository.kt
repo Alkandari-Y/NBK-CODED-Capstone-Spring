@@ -19,4 +19,11 @@ interface BusinessPartnerRepository: JpaRepository<BusinessPartnerEntity, Long> 
     WHERE bp.category.id = :categoryId
 """)
     fun findByCategoryId(@Param("categoryId") categoryId: Long): List<BusinessPartnerEntity>
+
+
+    @Query("""
+    SELECT bp FROM BusinessPartnerEntity bp
+    WHERE bp.account.id = :accountId
+""")
+    fun findByAccountId(@Param(value = "accountId") accountId: Long): BusinessPartnerEntity?
 }

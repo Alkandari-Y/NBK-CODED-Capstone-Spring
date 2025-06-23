@@ -11,6 +11,5 @@ data class PromotionResponse(
     val startDate: LocalDate,
     val endDate: LocalDate,
     val description: String,
-    val storeId: Long?,
-    val xp: Long
+    val storeId: Long?
 )

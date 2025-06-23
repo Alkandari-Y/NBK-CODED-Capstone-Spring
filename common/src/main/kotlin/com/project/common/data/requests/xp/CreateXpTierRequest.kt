@@ -10,7 +10,7 @@ data class CreateXpTierRequest(
     @field:NotBlank
     val name: String,
     @field:Positive
-    val xpPerkMultiplier: Long,
+    val xpPerkMultiplier: Double,
     @field:Positive
     val xpPerNotification: Long,
     @field:Positive

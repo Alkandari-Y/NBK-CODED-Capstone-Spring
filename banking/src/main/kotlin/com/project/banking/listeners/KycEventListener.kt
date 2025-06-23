@@ -28,6 +28,6 @@ class KycEventListener(
             listOf(salaryAccountProduct, cashBackAccountProduct)
         )
         xpService.userXpInit(userId)
-        println("Created new client package for $userId")
+        println("Created new client package for $userId, starting at 0 XP.")
     }
 }

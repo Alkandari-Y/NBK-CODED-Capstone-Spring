@@ -31,8 +31,5 @@ data class PromotionEntity(
     var description: String = "",
 
     @Column(name = "store_id", nullable = true)
-    var storeId: Long? = null,
-
-    @Column(name = "xp", nullable = false)
-    var xp: Long? = null
+    var storeId: Long? = null
 )

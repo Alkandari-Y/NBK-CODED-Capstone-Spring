@@ -25,3 +25,14 @@ fun AccountCreateRequest.toEntity(ownerId: Long, accountProduct: AccountProductE
     ownerType = AccountOwnerType.CLIENT,
     accountType = accountProduct.accountType
 )
+
+fun AccountDto.toEntity(accountProduct: AccountProductEntity) = AccountEntity(
+    id = id,
+    balance = balance,
+    isActive = true,
+    accountNumber = accountNumber,
+    ownerId = ownerId,
+    ownerType = ownerType,
+    accountProduct = accountProduct,
+    accountType = accountType
+)
