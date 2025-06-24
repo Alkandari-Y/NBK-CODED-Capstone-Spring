@@ -1,6 +1,7 @@
 package com.project.recommendation.controllers
 
 import com.project.common.data.requests.accountProducts.AccountProductRecDto
+import com.project.common.data.requests.ble.BlueToothBeaconNotificationRequest
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.common.data.responses.accountProducts.AccountProductDto
 import com.project.common.security.RemoteUserPrincipal
@@ -40,11 +41,24 @@ class RecommendationApiController(
     @PostMapping("/geofence")
     fun geofenceNotificationTrigger(
         @Valid @RequestBody geoFenceRequest: GeofenceEventRequest
-//    ): ResponseEntity<List<StoreLocationResponse>> {
-//        val storesWithinFence = storeLocationsService.findNearbyStores(geoFenceRequest)
-//        return ResponseEntity(storesWithinFence, HttpStatus.OK)
     ): ResponseEntity<Unit> {
         recommendationService.createGeofencingRecommendation(geoFenceRequest)
          return ResponseEntity.ok().build()
+    }
+
+
+    @PostMapping("/bluetooth-beacon")
+    fun bluetoothBeaconNotificationTrigger(
+        @Valid @RequestBody request: BlueToothBeaconNotificationRequest
+    ) {
+        // TODO()
+    }
+
+    @PostMapping("/ble")
+    fun bleNotificationTrigger(
+        @Valid @RequestBody geoFenceRequest: GeofenceEventRequest
+    ): ResponseEntity<Unit> {
+        recommendationService.createGeofencingRecommendation(geoFenceRequest)
+        return ResponseEntity.ok().build()
     }
 }

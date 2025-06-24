@@ -2,11 +2,13 @@ package com.project.recommendation.services
 
 import com.project.common.data.requests.accountProducts.AccountProductRecDto
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
+import com.project.common.data.requests.notifications.NotificationDto
 import com.project.common.data.responses.accountProducts.AccountProductDto
 import com.project.common.data.responses.businessPartners.BusinessPartnerDto
 import com.project.common.data.responses.kyc.KYCResponse
 import com.project.common.enums.AccountType
 import com.project.common.enums.ErrorCode
+import com.project.common.enums.NotificationTriggerType
 import com.project.common.enums.RecommendationType
 import com.project.common.enums.RewardType
 import com.project.common.exceptions.APIException
@@ -14,62 +16,29 @@ import com.project.common.exceptions.kyc.KycNotFoundException
 import com.project.recommendation.entities.FavCategoryEntity
 import com.project.recommendation.entities.PromotionEntity
 import com.project.recommendation.entities.RecommendationEntity
+import com.project.recommendation.mappers.toRecommendation
 import com.project.recommendation.providers.BankServiceProvider
+import com.project.recommendation.providers.NotificationProvider
 import com.project.recommendation.repositories.RecommendationRepository
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.time.LocalDate
 
 @Service
 class RecommendationServiceImpl(
     private val businessServiceProvider: BankServiceProvider,
+    private val notificationProvider: NotificationProvider,
     private val storeLocationsService: StoreLocationsService,
     private val promotionService: PromotionService,
     private val favBusinessService: FavBusinessService,
     private val favCategoriesService: FavCategoriesService,
     private val recommendationRepository: RecommendationRepository,
-    private val categoryScoreService: CategoryScoreService
+    private val categoryScoreService: CategoryScoreService,
 ) : RecommendationService {
-
-    override fun createGeofencingRecommendation(
-        geofenceData: GeofenceEventRequest
-    ): RecommendationEntity? {
-        // get userid or firebase token
-        // call notification endpoint and check
-
-
-        // get storelocations by gps
-        storeLocationsService.findNearbyStores(geofenceData)
-
-        // get user fav partners
-        val favPartners = favBusinessService.findAllFavBusinesses(geofenceData.userId)
-        favCategoriesService.findAllFavCategories(geofenceData.userId)
-
-        if (favPartners.isNotEmpty()) {
-            promotionService.getPromotionForBusinesses(favPartners.map { it.partnerId!! })
-        } else {
-            emptyList()
-        }
-
-//        val selectedPromotion = getUserBestPromotion(userId)
-
-        // Placeholder for logic using the promotion
-//        println("Selected promotion for user $userId: ${selectedPromotion?.id}")
-
-        // if
-        // get user fav categories and businesses
-
-        // get
-        RecommendationEntity(
-
-        )
-        // if no promotions get partner by category and user cards
-
-        getUserBestPromotion(geofenceData.userId)
-
-        return null
-    }
+    private val logger = LoggerFactory.getLogger(NotificationDto::class.java)
 
     override fun onboardingRecommendedCard(userId: Long): AccountProductDto {
         val userKyc = businessServiceProvider.getUserKyc(userId) ?: throw KycNotFoundException(userId)
@@ -102,7 +71,6 @@ class RecommendationServiceImpl(
             recType = RecommendationType.ONBOARDING
         )
         recommendationRepository.save(recommendation)
-//        categoryScoreService.createUserCategoryScores(userId)
 
         return recommendedCard.copy(recommended = true)
     }
@@ -271,7 +239,7 @@ class RecommendationServiceImpl(
         return featureScore
     }
 
-    fun getTopRecommendations(
+    fun getTopProductRecommendations(
         userId: Long,
         limit: Int = 3
     ): List<AccountProductDto> {
@@ -297,22 +265,103 @@ class RecommendationServiceImpl(
     }
 
 
-    private fun getUserBestPromotion(userId: Long): PromotionEntity? {
-        val favBusinesses = favBusinessService.findAllFavBusinesses(userId)
-        val businessIds = favBusinesses.mapNotNull { it.partnerId }
+    override fun createGeofencingRecommendation(
+        geofenceData: GeofenceEventRequest,
+    ): RecommendationEntity? {
 
-        if (businessIds.isEmpty()) return null
+        val userId = geofenceData.userId
+        if (userId == 0L) return null
 
-        val activePromotions = promotionService.getPromotionForBusinesses(businessIds)
+        val nearbyStores = storeLocationsService.findNearbyStores(geofenceData)
+        if (nearbyStores.isEmpty()) return null
 
-        return activePromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 }
+        val nearbyPartnerIds = nearbyStores.mapNotNull { it.partnerId }.toSet()
+        val allPartners = businessServiceProvider.getAllBusinessPartners()
+
+        val favPartnerIds = favBusinessService.findAllFavBusinesses(userId).mapNotNull { it.partnerId }.toSet()
+        val favCategories = favCategoriesService.findAllFavCategories(userId).mapNotNull { it.categoryId }.toSet()
+        val categoryScores = categoryScoreService.findAllCategoryScores(userId)
+        val topScoredCategoryIds = categoryScores?.sortedByDescending { it.frequency }
+            ?.take(3)
+            ?.mapNotNull { it.categoryId }
+            ?.toSet()
+
+        val favNearbyBusinessIds = favPartnerIds.intersect(nearbyPartnerIds).toList()
+        val nearbyFavPromotions = promotionService.getPromotionForBusinesses(favNearbyBusinessIds)
+            .filter { isPromotionActive(it) }
+
+        if (nearbyFavPromotions.isNotEmpty()) {
+            val bestPromotion = nearbyFavPromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 } ?: return null
+            val recommendation = recommendationRepository.save(bestPromotion.toRecommendation(userId))
+            val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
+            sendGeoNotification(
+                promotion = bestPromotion,
+                recommendation = recommendation,
+                partner = partner,
+                geofenceData = geofenceData
+            )
+
+        }
+
+        val categoryMatchedPartners = allPartners.filter {
+            it.category.id in favCategories || topScoredCategoryIds?.contains(it.category.id) == true
+        }
+
+        val partnerIdsByCategory = categoryMatchedPartners.map { it.id }
+        val categoryBasedPromotions = promotionService.getPromotionForBusinesses(partnerIdsByCategory)
+            .filter { isPromotionActive(it) }
+
+        if (categoryBasedPromotions.isNotEmpty()) {
+            val bestPromotion = categoryBasedPromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 } ?: return null
+            val recommendation = recommendationRepository.save(bestPromotion.toRecommendation(userId))
+            val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
+            sendGeoNotification(
+                promotion = bestPromotion,
+                recommendation = recommendation,
+                partner = partner,
+                geofenceData = geofenceData
+            )
+        }
+
+        return null
     }
 
     override fun triggerAccountScoreNotif(request: AccountProductRecDto) {
         // TODO Handled later — right now just receives data
     }
+
+    private fun sendGeoNotification(
+        promotion: PromotionEntity,
+        recommendation: RecommendationEntity,
+        partner: BusinessPartnerDto,
+        geofenceData: GeofenceEventRequest
+    ) {
+
+        val intro = "${partner.name} has a promotion nearby" ?: "Enjoy promotions"
+        logger.info(intro)
+        notificationProvider.sendNotification(
+            NotificationDto(
+                userId = recommendation.userId!!,
+                message = "$intro at ${geofenceData.name}",
+                partnerId = promotion.businessPartnerId,
+                eventId = null,
+                recommendationId = recommendation.id!!,
+                promotionId = promotion.id!!,
+                triggerType = NotificationTriggerType.GPS,
+                geofenceEventRequest = geofenceData
+            )
+        )
+    }
+
+    private fun isPromotionActive(promotion: PromotionEntity): Boolean {
+        val today = LocalDate.now()
+        return (promotion.startDate == null || !promotion.startDate!!.isAfter(today)) &&
+                (promotion.endDate == null || !promotion.endDate!!.isBefore(today))
+    }
 }
 
+
+// For Internal uses within the service
 
 private data class CardScore(
     val card: AccountProductDto,

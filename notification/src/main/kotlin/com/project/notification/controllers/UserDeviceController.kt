@@ -23,24 +23,4 @@ class UserDeviceController(
             fbTokenRequest = request)
         return ResponseEntity.ok().build()
     }
-
-    // Add this new endpoint for the Android app's FCM token registration
-    @PostMapping("/fcm/register")
-    fun registerFCMToken(
-        @RequestAttribute("authUser") authUser: UserInfoDto,
-        @RequestBody request: FirebaseTokenRequest
-    ): ResponseEntity<Map<String, String>> {
-        val fbTokenRequest = UserDeviceFBTokenRequest(firebaseToken = request.token)
-        userDeviceService.registerFirebaseToken(
-            userId = authUser.userId,
-            fbTokenRequest = fbTokenRequest
-        )
-        return ResponseEntity.ok(mapOf("message" to "FCM token registered successfully"))
-    }
 }
-
-// Add this data class for the FCM registration
-data class FirebaseTokenRequest(
-    @field:NotBlank
-    val token: String
-)

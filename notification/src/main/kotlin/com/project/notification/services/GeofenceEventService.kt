@@ -2,7 +2,9 @@ package com.project.notification.services
 
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
+import com.google.firebase.messaging.Notification
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
+import com.project.common.data.requests.notifications.NotificationDto
 import com.project.notification.repositories.UserDeviceRepository
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -14,18 +16,15 @@ class GeofenceEventService(
 ) {
     private val logger = LoggerFactory.getLogger(GeofenceEventService::class.java)
 
-    fun processGeofenceEvent(event: GeofenceEventRequest) {
-        logger.info("Processing geofence event: ${event.name} - ${event.transitionType}")
+    fun processGeofenceEvent(event: NotificationDto) {
+        logger.info("Processing geofence event: ${event.message} - ${event.userId}")
         logger.info("[+]: ${event.userId}")
 
-        // TODO: Add your business logic here
-        // For example: log the visit, trigger recommendations, etc.
-        
-        // Send a notification to the user about the geofence event
+
         sendGeofenceNotification(event)
     }
 
-    private fun sendGeofenceNotification(event: GeofenceEventRequest) {
+    private fun sendGeofenceNotification(event: NotificationDto) {
         // For now, we'll send to all devices. In production, you'd filter by user
         val devices = userDeviceRepository.findAll()
         
@@ -33,11 +32,15 @@ class GeofenceEventService(
             try {
                 val message = Message.builder()
                     .setToken(device.firebaseToken)
-                    .putData("title", "Location Update")
-                    .putData("body", "You ${event.transitionType.lowercase()} ${event.name}")
-                    .putData("geofenceId", event.id.toString())
-                    .putData("transitionType", event.transitionType)
-                    .putData("mallName", event.name)
+                    .putData("title", "Promotions Nearby")
+                    .putData("body", event.message)
+                    .putData("customKey", "customValue")
+                    .setNotification(
+                        Notification.builder()
+                            .setTitle("Promotions Nearby")
+                            .setBody(event.message)
+                            .build()
+                    )
                     .build()
 
                 val response = firebaseMessaging.send(message)
