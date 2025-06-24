@@ -19,7 +19,7 @@ class RemoteAuthenticationFilter(
 ) : OncePerRequestFilter() {
     val publicUrls = listOf(
         "/api/v1/store-locations",
-        "/api/v1/promotions"
+        "/api/v1/promotions",
     )
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -28,8 +28,9 @@ class RemoteAuthenticationFilter(
     ) {
 
         val isPublicUrl = request.method == "GET" && publicUrls.any { request.requestURI.startsWith(it) }
+        val isPublicPost = request.method == "POST" && request.requestURI.startsWith("/api/v1/category-scores")
 
-        if (isPublicUrl) {
+        if (isPublicUrl || isPublicPost) {
             filterChain.doFilter(request, response)
             return
         }
