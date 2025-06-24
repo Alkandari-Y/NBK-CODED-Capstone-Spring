@@ -51,5 +51,6 @@ data class PerkEntity (
         joinColumns = [JoinColumn(name = "perk_id")],
         inverseJoinColumns = [JoinColumn(name = "category_id")]
     )
+    @JsonBackReference
     var categories: MutableList<CategoryEntity> = mutableListOf()
 )

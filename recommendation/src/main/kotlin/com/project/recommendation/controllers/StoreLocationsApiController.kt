@@ -3,7 +3,6 @@ package com.project.recommendation.controllers
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.common.data.responses.storeLocations.StoreLocationResponse
 import com.project.recommendation.mappers.toResponse
-import com.project.recommendation.repositories.StoreLocationRepository
 import com.project.recommendation.services.StoreLocationsService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/store-locations")
 class StoreLocationsApiController(
     private val storeLocationsService: StoreLocationsService,
-    private val storeLocationRepository: StoreLocationRepository,
 ) {
     @GetMapping
     fun getAllStoreLocations() = storeLocationsService.getAllStoreLocations().map { it.toResponse() }
