@@ -26,7 +26,7 @@ interface PromotionRepository : JpaRepository<PromotionEntity, Long>{
         WHERE p.businessPartnerId in :businessIds 
             AND :currentDate BETWEEN p.startDate AND p.endDate
 """)
-    fun findActivePromotionsByBusinessPartnerId(
+    fun findActivePromotionsByBusinessPartnerIds(
         @Param("businessIds") businessIds: List<Long>,
         @Param("currentDate") currentDate: LocalDate
     ): List<PromotionEntity>

@@ -2,7 +2,6 @@ package com.project.recommendation.controllers
 
 import com.project.common.data.requests.accountProducts.AccountProductRecDto
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
-import com.project.common.data.responses.RecommendationDto
 import com.project.common.data.responses.accountProducts.AccountProductDto
 import com.project.common.security.RemoteUserPrincipal
 import com.project.recommendation.services.RecommendationService
@@ -25,9 +24,10 @@ class RecommendationApiController(
 ) {
 
     @PostMapping("/account-score")
-    fun accountScoreRecommendationNotificationTrigger(request: AccountProductRecDto): RecommendationDto? {
+    fun accountScoreRecommendationNotificationTrigger(request: AccountProductRecDto): ResponseEntity<Void> {
         // TODO() hook up with notification service and create an empty service
-        return recommendationService.createAccountScoreRecommendation(request)
+        recommendationService.triggerAccountScoreNotif(request)
+        return ResponseEntity.ok().build()
     }
 
     @GetMapping("/onBoarding")

@@ -25,7 +25,11 @@ class SecurityConfig(
                         HttpMethod.GET,
                     "/api/v1/store-locations/**", "/api/v1/promotions/**",
                 ).permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/v1/category-scores/**").permitAll()
+                    .requestMatchers(
+                        HttpMethod.POST,
+                        "/api/v1/category-scores/**",
+                        "/api/v1/recommendations/account-score"
+                    ).permitAll()
                 .anyRequest().authenticated()
             }
             .sessionManagement {

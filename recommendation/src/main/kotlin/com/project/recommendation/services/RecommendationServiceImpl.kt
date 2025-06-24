@@ -2,7 +2,6 @@ package com.project.recommendation.services
 
 import com.project.common.data.requests.accountProducts.AccountProductRecDto
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
-import com.project.common.data.responses.RecommendationDto
 import com.project.common.data.responses.accountProducts.AccountProductDto
 import com.project.common.data.responses.businessPartners.BusinessPartnerDto
 import com.project.common.data.responses.kyc.KYCResponse
@@ -15,7 +14,6 @@ import com.project.common.exceptions.kyc.KycNotFoundException
 import com.project.recommendation.entities.FavCategoryEntity
 import com.project.recommendation.entities.PromotionEntity
 import com.project.recommendation.entities.RecommendationEntity
-import com.project.recommendation.mappers.toDto
 import com.project.recommendation.providers.BankServiceProvider
 import com.project.recommendation.repositories.RecommendationRepository
 import org.springframework.http.HttpStatus
@@ -72,18 +70,6 @@ class RecommendationServiceImpl(
 
         return null
     }
-
-    override fun createAccountScoreRecommendation(request: AccountProductRecDto): RecommendationDto? {
-        val recommendation = RecommendationEntity(
-            userId = request.userId,
-            recType = RecommendationType.ACCOUNT_PRODUCT
-        )
-
-        val entity = recommendationRepository.save(recommendation)
-
-        return entity.toDto()
-    }
-
 
     override fun onboardingRecommendedCard(userId: Long): AccountProductDto {
         val userKyc = businessServiceProvider.getUserKyc(userId) ?: throw KycNotFoundException(userId)
@@ -320,6 +306,10 @@ class RecommendationServiceImpl(
         val activePromotions = promotionService.getPromotionForBusinesses(businessIds)
 
         return activePromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 }
+    }
+
+    override fun triggerAccountScoreNotif(request: AccountProductRecDto) {
+        // TODO Handled later — right now just receives data
     }
 }
 

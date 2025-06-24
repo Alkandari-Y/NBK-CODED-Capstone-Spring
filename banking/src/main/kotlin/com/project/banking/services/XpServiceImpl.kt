@@ -13,6 +13,7 @@ import com.project.common.exceptions.auth.UserNotFoundException
 import com.project.common.exceptions.xp.UserXpInfoNotFoundException
 import com.project.common.exceptions.xp.XpTierNotFoundException
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class XpServiceImpl(
@@ -55,5 +56,13 @@ class XpServiceImpl(
         val history = xpHistoryRepository.findAllByUserId(user.userId).map { it.toDto() }
 
         return history
+    }
+
+    override fun countPerkXpEvents(userId: Long, accountProductId: Long, after: LocalDateTime): Int {
+        return xpHistoryRepository.countRecentXpEventsByAccountProduct(
+            userId = userId,
+            accountProductId = accountProductId,
+            after = after
+        )
     }
 }

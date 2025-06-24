@@ -28,7 +28,9 @@ class RemoteAuthenticationFilter(
     ) {
 
         val isPublicUrl = request.method == "GET" && publicUrls.any { request.requestURI.startsWith(it) }
-        val isPublicPost = request.method == "POST" && request.requestURI.startsWith("/api/v1/category-scores")
+        val isPublicPost = request.method == "POST" &&
+            (request.requestURI.startsWith("/api/v1/category-scores") ||
+             request.requestURI.startsWith("/api/v1/recommendations/account-score"))
 
         if (isPublicUrl || isPublicPost) {
             filterChain.doFilter(request, response)

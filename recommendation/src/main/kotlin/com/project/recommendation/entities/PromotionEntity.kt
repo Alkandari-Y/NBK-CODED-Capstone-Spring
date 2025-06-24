@@ -19,7 +19,7 @@ data class PromotionEntity(
     var businessPartnerId: Long? = null,
 
     @Column(name = "type", nullable = false)
-    var type: RewardType? = null,
+    var type: RewardType? = RewardType.DISCOUNT,
 
     @Column(name = "start_date", nullable = true)
     var startDate: LocalDate? = null,

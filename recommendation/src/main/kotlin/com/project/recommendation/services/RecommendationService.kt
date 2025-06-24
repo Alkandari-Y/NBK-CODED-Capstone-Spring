@@ -9,5 +9,5 @@ import com.project.recommendation.entities.RecommendationEntity
 interface RecommendationService {
     fun onboardingRecommendedCard(userId: Long): AccountProductDto
     fun createGeofencingRecommendation(geofenceData: GeofenceEventRequest): RecommendationEntity?
-    fun createAccountScoreRecommendation(request: AccountProductRecDto): RecommendationDto?
+    fun triggerAccountScoreNotif(request: AccountProductRecDto)
 }
