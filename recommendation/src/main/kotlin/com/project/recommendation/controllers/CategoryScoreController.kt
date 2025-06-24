@@ -4,6 +4,7 @@ import com.project.common.data.requests.categoryScores.IncrementCategoryScoreReq
 import com.project.common.data.requests.categoryScores.InitializeCategoryScores
 import com.project.recommendation.services.CategoryScoreService
 import jakarta.validation.Valid
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,7 +22,7 @@ class CategoryScoreController(
     }
 
     @PostMapping("/increment")
-    fun incrementCategoryScore(@Valid @RequestBody request: IncrementCategoryScoreRequest) {
-        categoryScoreService.incrementCategoryScore(request)
+    fun incrementCategoryFrequency(@Valid @RequestBody request: IncrementCategoryScoreRequest) {
+        categoryScoreService.incrementCategoryFrequency(request)
     }
 }

@@ -134,6 +134,10 @@ class AccountServiceImpl(
     }
 
     override fun createNewClientPackage(userId: Long, accountProducts: List<AccountProductEntity>) {
+        val existing = accountRepository.findFirstByOwnerIdAndAccountTypeOrderByIdAsc(
+            userId,
+            accountProducts.first().accountType)
+        if (existing != null) return
 
         accountRepository.saveAll(
             accountProducts.map { AccountEntity(

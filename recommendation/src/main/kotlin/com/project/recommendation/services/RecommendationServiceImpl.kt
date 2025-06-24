@@ -1,5 +1,6 @@
 package com.project.recommendation.services
 
+import com.project.common.data.requests.accountProducts.AccountProductRecDto
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.common.data.requests.notifications.NotificationDto
 import com.project.common.data.responses.accountProducts.AccountProductDto
@@ -280,10 +281,10 @@ class RecommendationServiceImpl(
         val favPartnerIds = favBusinessService.findAllFavBusinesses(userId).mapNotNull { it.partnerId }.toSet()
         val favCategories = favCategoriesService.findAllFavCategories(userId).mapNotNull { it.categoryId }.toSet()
         val categoryScores = categoryScoreService.findAllCategoryScores(userId)
-        val topScoredCategoryIds = categoryScores.sortedByDescending { it.frequency }
-            .take(3)
-            .mapNotNull { it.categoryId }
-            .toSet()
+        val topScoredCategoryIds = categoryScores?.sortedByDescending { it.frequency }
+            ?.take(3)
+            ?.mapNotNull { it.categoryId }
+            ?.toSet()
 
         val favNearbyBusinessIds = favPartnerIds.intersect(nearbyPartnerIds).toList()
         val nearbyFavPromotions = promotionService.getPromotionForBusinesses(favNearbyBusinessIds)
@@ -293,12 +294,17 @@ class RecommendationServiceImpl(
             val bestPromotion = nearbyFavPromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 } ?: return null
             val recommendation = recommendationRepository.save(bestPromotion.toRecommendation(userId))
             val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
-            sendGeoNotification(promotion = bestPromotion, recommendation = recommendation, partner = partner, geofenceData = geofenceData)
+            sendGeoNotification(
+                promotion = bestPromotion,
+                recommendation = recommendation,
+                partner = partner,
+                geofenceData = geofenceData
+            )
 
         }
 
         val categoryMatchedPartners = allPartners.filter {
-            it.category.id in favCategories || it.category.id in topScoredCategoryIds
+            it.category.id in favCategories || topScoredCategoryIds?.contains(it.category.id) == true
         }
 
         val partnerIdsByCategory = categoryMatchedPartners.map { it.id }
@@ -309,10 +315,19 @@ class RecommendationServiceImpl(
             val bestPromotion = categoryBasedPromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 } ?: return null
             val recommendation = recommendationRepository.save(bestPromotion.toRecommendation(userId))
             val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
-            sendGeoNotification(promotion = bestPromotion, recommendation = recommendation, partner = partner, geofenceData = geofenceData)
+            sendGeoNotification(
+                promotion = bestPromotion,
+                recommendation = recommendation,
+                partner = partner,
+                geofenceData = geofenceData
+            )
         }
 
         return null
+    }
+
+    override fun triggerAccountScoreNotif(request: AccountProductRecDto) {
+        // TODO Handled later — right now just receives data
     }
 
     private fun sendGeoNotification(
@@ -343,7 +358,6 @@ class RecommendationServiceImpl(
         return (promotion.startDate == null || !promotion.startDate!!.isAfter(today)) &&
                 (promotion.endDate == null || !promotion.endDate!!.isBefore(today))
     }
-
 }
 
 

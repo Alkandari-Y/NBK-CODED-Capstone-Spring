@@ -8,7 +8,6 @@ import com.project.recommendation.entities.PromotionEntity
 fun CreatePromotionRequest.toEntity() = PromotionEntity(
     name = name,
     businessPartnerId = businessPartnerId,
-    type = type,
     startDate = startDate,
     endDate = endDate,
     description = description,

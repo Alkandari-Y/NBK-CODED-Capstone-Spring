@@ -13,5 +13,5 @@ data class PaymentDetails(
     val createdAt: LocalDateTime,
     val category: String,
     var transactionType: TransactionType = TransactionType.PAYMENT,
-    val xpHistoryRecord: XpHistoryDto?
+    val xpHistoryRecord: List<XpHistoryDto>
 )

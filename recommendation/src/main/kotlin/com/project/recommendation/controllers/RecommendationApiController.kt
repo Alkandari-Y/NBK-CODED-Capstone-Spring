@@ -1,5 +1,6 @@
 package com.project.recommendation.controllers
 
+import com.project.common.data.requests.accountProducts.AccountProductRecDto
 import com.project.common.data.requests.ble.BlueToothBeaconNotificationRequest
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.common.data.responses.accountProducts.AccountProductDto
@@ -24,8 +25,10 @@ class RecommendationApiController(
 ) {
 
     @PostMapping("/account-score")
-    fun accountScoreRecommendationNotificationTrigger() {
+    fun accountScoreRecommendationNotificationTrigger(request: AccountProductRecDto): ResponseEntity<Void> {
         // TODO() hook up with notification service and create an empty service
+        recommendationService.triggerAccountScoreNotif(request)
+        return ResponseEntity.ok().build()
     }
 
     @GetMapping("/onBoarding")

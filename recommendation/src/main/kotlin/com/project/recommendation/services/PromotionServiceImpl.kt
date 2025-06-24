@@ -54,7 +54,7 @@ class PromotionServiceImpl(
     }
 
     override fun getPromotionForBusinesses(businessIds: List<Long>): List<PromotionEntity> {
-        return promotionRepository.findActivePromotionsByBusinessPartnerId(businessIds, LocalDate.now())
+        return promotionRepository.findActivePromotionsByBusinessPartnerIds(businessIds, LocalDate.now())
     }
 
     override fun getAllActivePromotionsByBusiness(businessId: Long): List<PromotionResponse> {
