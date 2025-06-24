@@ -102,7 +102,6 @@ class RecommendationServiceImpl(
             recType = RecommendationType.ONBOARDING
         )
         recommendationRepository.save(recommendation)
-        categoryScoreService.createUserCategoryScores(userId)
 
         return recommendedCard.copy(recommended = true)
     }
