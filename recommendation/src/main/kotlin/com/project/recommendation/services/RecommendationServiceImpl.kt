@@ -18,7 +18,7 @@ import com.project.recommendation.entities.PromotionEntity
 import com.project.recommendation.entities.RecommendationEntity
 import com.project.recommendation.mappers.toRecommendation
 import com.project.recommendation.providers.BankServiceProvider
-import com.project.recommendation.providers.NotificationProvider
+import com.project.recommendation.providers.NotificationServiceProvider
 import com.project.recommendation.repositories.RecommendationRepository
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -30,7 +30,7 @@ import java.time.LocalDate
 @Service
 class RecommendationServiceImpl(
     private val businessServiceProvider: BankServiceProvider,
-    private val notificationProvider: NotificationProvider,
+    private val notificationProvider: NotificationServiceProvider,
     private val storeLocationsService: StoreLocationsService,
     private val promotionService: PromotionService,
     private val favBusinessService: FavBusinessService,
@@ -74,6 +74,96 @@ class RecommendationServiceImpl(
 
         return recommendedCard.copy(recommended = true)
     }
+
+    override fun createGeofencingRecommendation(
+        geofenceData: GeofenceEventRequest,
+    ): RecommendationEntity? {
+
+        val userId = geofenceData.userId
+        if (userId == 0L) return null
+
+        val nearbyStores = storeLocationsService.findNearbyStores(geofenceData)
+        if (nearbyStores.isEmpty()) return null
+
+        val nearbyPartnerIds = nearbyStores.mapNotNull { it.partnerId }.toSet()
+        val allPartners = businessServiceProvider.getAllBusinessPartners()
+
+        val favPartnerIds = favBusinessService.findAllFavBusinesses(userId).mapNotNull { it.partnerId }.toSet()
+        val favCategories = favCategoriesService.findAllFavCategories(userId).mapNotNull { it.categoryId }.toSet()
+        val categoryScores = categoryScoreService.findAllCategoryScores(userId)
+        val topScoredCategoryIds = categoryScores?.sortedByDescending { it.frequency }
+            ?.take(3)
+            ?.mapNotNull { it.categoryId }
+            ?.toSet()
+
+        val favNearbyBusinessIds = favPartnerIds.intersect(nearbyPartnerIds).toList()
+        val nearbyFavPromotions = promotionService.getPromotionForBusinesses(favNearbyBusinessIds)
+            .filter { isPromotionActive(it) }
+
+        if (nearbyFavPromotions.isNotEmpty()) {
+            val bestPromotion = nearbyFavPromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 } ?: return null
+            val recommendation = recommendationRepository.save(bestPromotion.toRecommendation(userId))
+            val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
+            sendGeoNotification(
+                promotion = bestPromotion,
+                recommendation = recommendation,
+                partner = partner,
+                geofenceData = geofenceData
+            )
+
+        }
+
+        val categoryMatchedPartners = allPartners.filter {
+            it.category.id in favCategories || topScoredCategoryIds?.contains(it.category.id) == true
+        }
+
+        val partnerIdsByCategory = categoryMatchedPartners.map { it.id }
+        val categoryBasedPromotions = promotionService.getPromotionForBusinesses(partnerIdsByCategory)
+            .filter { isPromotionActive(it) }
+
+        if (categoryBasedPromotions.isNotEmpty()) {
+            val bestPromotion = categoryBasedPromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 } ?: return null
+            val recommendation = recommendationRepository.save(bestPromotion.toRecommendation(userId))
+            val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
+            sendGeoNotification(
+                promotion = bestPromotion,
+                recommendation = recommendation,
+                partner = partner,
+                geofenceData = geofenceData
+            )
+        }
+        return null
+    }
+
+    override fun triggerAccountScoreNotif(request: AccountProductRecDto) {
+        // TODO Handled later — right now just receives data
+    }
+
+    // TODO: gut like a fish and fix
+    override fun getTopProductRecommendations(userId: Long): List<AccountProductDto> {
+//        val userKyc = businessServiceProvider.getUserKyc(userId) ?: throw KycNotFoundException(userId)
+//        val businessPartners = businessServiceProvider.getAllBusinessPartners()
+//        val allProducts = businessServiceProvider.getAllAccountProducts()
+//
+//        val favCategories = favCategoriesService.findAllFavCategories(userId)
+//        val favBusinesses = favBusinessService.findAllFavBusinesses(userId)
+//
+//        val favoriteBusinessPartners = businessPartners.filter { partner ->
+//            partner.id in favBusinesses.map { it.partnerId }
+//        }
+//
+//        val creditCards = allProducts.filter { it.accountType == AccountType.CREDIT.toString() }
+//
+//        return recommendCreditCards(
+//            userKyc = userKyc,
+//            favoriteCategories = favCategories,
+//            favoriteBusinesses = favoriteBusinessPartners,
+//            allAccountProducts = creditCards,
+//        ).take(3).map { it.copy(recommended = true) }
+        return emptyList()
+    }
+
+    // helper functions:
 
     private fun recommendCreditCards(
         userKyc: KYCResponse,
@@ -237,97 +327,6 @@ class RecommendationServiceImpl(
         featureScore += maxOf(0.0, (30.0 - card.interestRate.toDouble())) * 2.0
 
         return featureScore
-    }
-
-    fun getTopProductRecommendations(
-        userId: Long,
-        limit: Int = 3
-    ): List<AccountProductDto> {
-        val userKyc = businessServiceProvider.getUserKyc(userId) ?: throw KycNotFoundException(userId)
-        val businessPartners = businessServiceProvider.getAllBusinessPartners()
-        val allProducts = businessServiceProvider.getAllAccountProducts()
-
-        val favCategories = favCategoriesService.findAllFavCategories(userId)
-        val favBusinesses = favBusinessService.findAllFavBusinesses(userId)
-
-        val favoriteBusinessPartners = businessPartners.filter { partner ->
-            partner.id in favBusinesses.map { it.partnerId }
-        }
-
-        val creditCards = allProducts.filter { it.accountType == AccountType.CREDIT.toString() }
-
-        return recommendCreditCards(
-            userKyc = userKyc,
-            favoriteCategories = favCategories,
-            favoriteBusinesses = favoriteBusinessPartners,
-            allAccountProducts = creditCards,
-        ).take(limit).map { it.copy(recommended = true) }
-    }
-
-
-    override fun createGeofencingRecommendation(
-        geofenceData: GeofenceEventRequest,
-    ): RecommendationEntity? {
-
-        val userId = geofenceData.userId
-        if (userId == 0L) return null
-
-        val nearbyStores = storeLocationsService.findNearbyStores(geofenceData)
-        if (nearbyStores.isEmpty()) return null
-
-        val nearbyPartnerIds = nearbyStores.mapNotNull { it.partnerId }.toSet()
-        val allPartners = businessServiceProvider.getAllBusinessPartners()
-
-        val favPartnerIds = favBusinessService.findAllFavBusinesses(userId).mapNotNull { it.partnerId }.toSet()
-        val favCategories = favCategoriesService.findAllFavCategories(userId).mapNotNull { it.categoryId }.toSet()
-        val categoryScores = categoryScoreService.findAllCategoryScores(userId)
-        val topScoredCategoryIds = categoryScores?.sortedByDescending { it.frequency }
-            ?.take(3)
-            ?.mapNotNull { it.categoryId }
-            ?.toSet()
-
-        val favNearbyBusinessIds = favPartnerIds.intersect(nearbyPartnerIds).toList()
-        val nearbyFavPromotions = promotionService.getPromotionForBusinesses(favNearbyBusinessIds)
-            .filter { isPromotionActive(it) }
-
-        if (nearbyFavPromotions.isNotEmpty()) {
-            val bestPromotion = nearbyFavPromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 } ?: return null
-            val recommendation = recommendationRepository.save(bestPromotion.toRecommendation(userId))
-            val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
-            sendGeoNotification(
-                promotion = bestPromotion,
-                recommendation = recommendation,
-                partner = partner,
-                geofenceData = geofenceData
-            )
-
-        }
-
-        val categoryMatchedPartners = allPartners.filter {
-            it.category.id in favCategories || topScoredCategoryIds?.contains(it.category.id) == true
-        }
-
-        val partnerIdsByCategory = categoryMatchedPartners.map { it.id }
-        val categoryBasedPromotions = promotionService.getPromotionForBusinesses(partnerIdsByCategory)
-            .filter { isPromotionActive(it) }
-
-        if (categoryBasedPromotions.isNotEmpty()) {
-            val bestPromotion = categoryBasedPromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 } ?: return null
-            val recommendation = recommendationRepository.save(bestPromotion.toRecommendation(userId))
-            val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
-            sendGeoNotification(
-                promotion = bestPromotion,
-                recommendation = recommendation,
-                partner = partner,
-                geofenceData = geofenceData
-            )
-        }
-
-        return null
-    }
-
-    override fun triggerAccountScoreNotif(request: AccountProductRecDto) {
-        // TODO Handled later — right now just receives data
     }
 
     private fun sendGeoNotification(

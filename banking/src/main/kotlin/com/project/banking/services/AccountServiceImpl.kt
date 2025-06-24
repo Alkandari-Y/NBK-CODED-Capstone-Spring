@@ -90,7 +90,7 @@ class AccountServiceImpl(
             )
         }
 
-        if ( userCashBackAccount != null) {
+        if (userCashBackAccount != null) {
             val updated = userCashBackAccount.copy(balance = BigDecimal.valueOf(50))
             accountRepository.save(updated)
             // TODO: Add experience points and XP transaction record

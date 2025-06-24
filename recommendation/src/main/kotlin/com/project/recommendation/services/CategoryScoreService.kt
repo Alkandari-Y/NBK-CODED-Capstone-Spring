@@ -9,4 +9,5 @@ interface CategoryScoreService {
     fun findAllCategoryScores(userId: Long): List<CategoryScoreEntity>?
     fun findCategoryScoreById(userId: Long, categoryId: Long): CategoryScoreEntity?
     fun calculateCategoryScore(userId: Long, categoryId: Long)
+    fun getTop3Categories(userId: Long): List<Long>
 }

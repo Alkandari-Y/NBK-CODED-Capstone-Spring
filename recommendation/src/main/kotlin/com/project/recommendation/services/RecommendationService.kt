@@ -10,4 +10,5 @@ interface RecommendationService {
     fun onboardingRecommendedCard(userId: Long): AccountProductDto
     fun createGeofencingRecommendation(geofenceData: GeofenceEventRequest): RecommendationEntity?
     fun triggerAccountScoreNotif(request: AccountProductRecDto)
+    fun getTopProductRecommendations(userId: Long): List<AccountProductDto>
 }

@@ -53,6 +53,10 @@ class CategoryScoreServiceImpl(
     }
 
     override fun calculateCategoryScore(userId: Long, categoryId: Long) {
+        TODO("Not yet implemented")
+    }
 
+    override fun getTop3Categories(userId: Long): List<Long> {
+        TODO("Not yet implemented")
     }
 }
