@@ -22,15 +22,20 @@ class RecommendationApiController(
     private val recommendationService: RecommendationService,
 ) {
 
+    @PostMapping("/account-score")
+    fun accountScoreRecommendationNotificationTrigger() {
+        // TODO() hook up with notification service and create an empty service
+    }
+
     @GetMapping("/onBoarding")
-    fun onboardingRecommendation(
+    fun onboardingRecommendationTrigger(
         @AuthenticationPrincipal user: RemoteUserPrincipal
     ): AccountProductDto {
         return recommendationService.onboardingRecommendedCard(user.getUserId())
     }
 
-    @PostMapping("/geofence") // triggers when user is within a geofenced area
-    fun geofenceTrigger(
+    @PostMapping("/geofence")
+    fun geofenceNotificationTrigger(
         @Valid @RequestBody geoFenceRequest: GeofenceEventRequest
 //    ): ResponseEntity<List<StoreLocationResponse>> {
 //        val storesWithinFence = storeLocationsService.findNearbyStores(geoFenceRequest)

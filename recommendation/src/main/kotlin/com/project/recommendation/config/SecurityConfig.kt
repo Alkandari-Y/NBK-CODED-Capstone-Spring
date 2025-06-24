@@ -23,8 +23,9 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it.requestMatchers(
                         HttpMethod.GET,
-                    "/api/v1/store-locations/**", "/api/v1/promotions/**"
+                    "/api/v1/store-locations/**", "/api/v1/promotions/**",
                 ).permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/category-scores/**").permitAll()
                 .anyRequest().authenticated()
             }
             .sessionManagement {

@@ -14,13 +14,11 @@ import com.project.recommendation.entities.FavCategoryEntity
 import com.project.recommendation.entities.PromotionEntity
 import com.project.recommendation.entities.RecommendationEntity
 import com.project.recommendation.providers.BankServiceProvider
-import com.project.recommendation.repositories.PromotionRepository
 import com.project.recommendation.repositories.RecommendationRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.time.LocalDate
 
 @Service
 class RecommendationServiceImpl(
@@ -297,8 +295,6 @@ class RecommendationServiceImpl(
             allAccountProducts = creditCards,
         ).take(limit).map { it.copy(recommended = true) }
     }
-
-
 
 
     private fun getUserBestPromotion(userId: Long): PromotionEntity? {
