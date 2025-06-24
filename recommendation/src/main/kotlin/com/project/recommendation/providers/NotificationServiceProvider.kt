@@ -1,20 +1,42 @@
 package com.project.recommendation.providers
 
-import com.project.common.enums.RecommendationType
+import com.project.common.data.requests.notifications.NotificationDto
+import com.project.common.exceptions.APIException
 import jakarta.inject.Named
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
+import org.springframework.http.MediaType
+import org.springframework.web.client.HttpClientErrorException
+import org.springframework.web.client.RestTemplate
 
-data class SendNotificationRequest(val title: String, val body: String, val userId: Long, val recType: RecommendationType)
 
 @Named
 class NotificationProvider(
     @Value("\${notificationServiceBase.url}") private val notificationServiceURL: String
 ) {
-    fun sendNotification(notification: String) {
-        println("Sending notification to $notificationServiceURL")
+    fun sendNotification(notification: NotificationDto) {
+        val headers = HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+        }
+
+        val request = HttpEntity<NotificationDto>(notification, headers)
+
+        try {
+            val response = RestTemplate().exchange(
+                "$notificationServiceURL/geofence/event",
+                HttpMethod.POST,
+                request,
+                Void::class.java
+            )
+        } catch (ex: HttpClientErrorException.NotFound) {
+            throw APIException("error fetching business partners")
+        }
     }
 
-    fun sendGeoFencedNotification(notification: SendNotificationRequest) {
+    fun sendGeoFencedNotification(notification: NotificationDto) {
         println("Sending geo fenced notification to $notificationServiceURL")
     }
 

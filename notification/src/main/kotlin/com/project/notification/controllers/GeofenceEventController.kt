@@ -1,6 +1,7 @@
 package com.project.notification.controllers
 
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
+import com.project.common.data.requests.notifications.NotificationDto
 import com.project.notification.services.GeofenceEventService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -16,7 +17,7 @@ class GeofenceEventController(
 ) {
 
     @PostMapping("/event")
-    fun handleGeofenceEvent(@Valid @RequestBody request: GeofenceEventRequest): ResponseEntity<Unit> {
+    fun handleGeofenceEvent(@Valid @RequestBody request: NotificationDto): ResponseEntity<Unit> {
         geofenceEventService.processGeofenceEvent(request)
         return ResponseEntity.ok().build()
     }
