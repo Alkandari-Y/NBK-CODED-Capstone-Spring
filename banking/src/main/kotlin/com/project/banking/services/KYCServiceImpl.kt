@@ -51,12 +51,12 @@ class KYCServiceImpl(
         val savedKyc = kycRepository.save(newKycEntity)
         publisher.publishEvent(KycCreatedEvent(this, savedKyc))
 
-        mailService.sendHtmlEmail(
-            to = user.email,
-            subject = "Account Activated",
-            username = user.username,
-            bodyText = "Your account has been activated! Please enjoy our services"
-        )
+//        mailService.sendHtmlEmail(
+//            to = user.email,
+//            subject = "Account Activated",
+//            username = user.username,
+//            bodyText = "Your account has been activated! Please enjoy our services"
+//        )
         return savedKyc
     }
 

@@ -34,7 +34,7 @@ class GeofenceEventService(
                     .setToken(device.firebaseToken)
                     .putData("title", "Promotions Nearby")
                     .putData("body", event.message)
-                    .putData("customKey", "customValue")
+                    .putData("someId", 1.toString())
                     .setNotification(
                         Notification.builder()
                             .setTitle("Promotions Nearby")
