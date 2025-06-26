@@ -72,15 +72,15 @@ class AccountApiController(
     fun transfer(
         @Valid @RequestBody transferCreateRequestDto: TransferCreateRequest,
         @RequestAttribute("authUser") authUser: UserInfoDto,
-        ): ResponseEntity<TransactionDetails> {
-            val result = transactionService.transfer(
-                transferCreateRequestDto,
-                userIdMakingTransfer = authUser.userId,
-            )
-            return ResponseEntity(
-                result,
-                HttpStatus.OK
-            )
+    ): ResponseEntity<TransactionDetails> {
+        val result = transactionService.transfer(
+            transferCreateRequestDto,
+            userIdMakingTransfer = authUser.userId,
+        )
+        return ResponseEntity(
+            result,
+            HttpStatus.OK
+        )
     }
 
     @PostMapping("/purchase")
@@ -96,7 +96,7 @@ class AccountApiController(
     fun closeAccount(
         @PathVariable accountNumber : String,
         @RequestAttribute("authUser") authUser: UserInfoDto,
-        ): ResponseEntity<Unit> {
+    ): ResponseEntity<Unit> {
         accountService.closeAccount(accountNumber, authUser)
         return ResponseEntity(HttpStatus.OK)
     }
