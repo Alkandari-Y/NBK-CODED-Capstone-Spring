@@ -51,9 +51,9 @@ fun seedCategories(): List<CategoryEntity> {
             return categoryRepository.findAll()
         }
         val categories = listOf(
-            "personal", "retail", "manufacturing", "healthcare", "financial services", "fashion",
-            "real estate", "technology", "hospitality", "education", "logistics", "dining", "entertainment",
-            "construction", "agriculture", "automotive", "consulting", "wholesale", "energy",  "travel"
+            "retail","travel", "dining", "fashion", "technology" , "hospitality", "education", "entertainment",
+            "personal care","wholesale", "manufacturing", "healthcare", "financial services", "real estate", "logistics", "construction",
+            "agriculture", "automotive", "personal","consulting", "energy",
         ).map { name -> CategoryEntity(name = name) }
 
         val categoryEntities = categoryRepository.saveAll(categories)
@@ -527,26 +527,24 @@ fun seedCategories(): List<CategoryEntity> {
         val categoriesMap = categories.associateBy { it.name }
 
         val partnerToCategory = listOf(
-            "LuLu Hypermarket" to categoriesMap.get("wholesale")!!,
-            "X-cite" to categoriesMap.get("technology")!!,
-            "Co-op Societies" to categoriesMap.get("wholesale")!!,
-            "The Sultan Center" to categoriesMap.get("wholesale")!!,
-            "Riva Fashion" to categoriesMap.get("technology")!!,
-            "6thStreet" to categoriesMap.get("fashion")!!,
+            "Jumeirah Hotels" to categoriesMap.get("hospitality")!!,
+            "Almosafer" to categoriesMap.get("travel")!!,
+            "Caribou Coffee" to categoriesMap.get("dining")!!,
+            "Shake Shack" to categoriesMap.get("dining")!!,
+            "KidZania Kuwait" to categoriesMap.get("education")!!,
+            "VOX Cinemas" to categoriesMap.get("entertainment")!!,
+            "Kuwait Airways" to categoriesMap.get("travel")!!,
+            "Xcite Electronics" to categoriesMap.get("technology")!!,
             "H&M" to categoriesMap.get("fashion")!!,
-            "GAP" to categoriesMap.get("fashion")!!,
-            "Bloomingdale's" to categoriesMap.get("fashion")!!,
-            "Sun & Sand Sports" to categoriesMap.get("fashion")!!,
-            "Yelo! Pizza" to categoriesMap.get("dining")!!,
-            "Chequer" to categoriesMap.get("dining")!!,
-            "Teta's" to categoriesMap.get("dining")!!,
-            "Rue 147" to categoriesMap.get("dining")!!,
-            "Lina's & Dina's" to categoriesMap.get("dining")!!,
-            "Tim Hortons" to categoriesMap.get("dining")!!,
-            "Blink" to categoriesMap.get("technology")!!,
+            "Safat Home" to categoriesMap.get("retail")!!,
+            "Spark Gym" to categoriesMap.get("personal care")!!,
+            "The Avenues Mall" to categoriesMap.get("retail")!!,
+            "360 Mall" to categoriesMap.get("retail")!!,
+            "The Sultan Center" to categoriesMap.get("wholesale")!!
         )
 
-        val logoBase = "http://localhost:9000/capstone-public/"
+
+       // val logisticsoBase = "http://localhost:9000/capstone-public/"
 
         val businessPartners = partnerToCategory.mapIndexed { i, (name, category) ->
             val account = AccountEntity(
@@ -561,7 +559,7 @@ fun seedCategories(): List<CategoryEntity> {
                 name = name,
                 adminUser = 1L,
                 account = account,
-                logoUrl = "$logoBase${name.lowercase().replace(" ", "")}.png",
+                logoUrl = "${name.lowercase().replace(" ", "_")}.png",
                 category = category
             )
         }
