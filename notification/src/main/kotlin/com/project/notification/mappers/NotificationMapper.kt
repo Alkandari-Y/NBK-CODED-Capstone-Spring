@@ -10,7 +10,6 @@ fun NotificationEntity.toResponseDto(): NotificationResponseDto {
         message = this.message,
         deliveryType = this.deliveryType,
         createdAt = this.createdAt,
-        deliveredAt = this.createdAt, // as delivery time
         delivered = this.delivered,
         partnerId = this.partnerId,
         eventId = this.eventId,
