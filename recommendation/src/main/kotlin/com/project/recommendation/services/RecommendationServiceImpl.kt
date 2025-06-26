@@ -1,5 +1,6 @@
 package com.project.recommendation.services
 
+import com.project.common.data.requests.accountProducts.AccountProductRecDto
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.common.data.requests.notifications.NotificationDto
 import com.project.common.data.responses.accountProducts.AccountProductDto
@@ -286,14 +287,15 @@ class RecommendationServiceImpl(
         logger.info("Found ${nearbyPartnerIds.size} nearby partners for userId: $userId")
 
         val allPartners = businessServiceProvider.getAllBusinessPartners()
+
         val favPartnerIds = favBusinessService.findAllFavBusinesses(userId).mapNotNull { it.partnerId }.toSet()
         val favCategories = favCategoriesService.findAllFavCategories(userId).mapNotNull { it.categoryId }.toSet()
         val categoryScores = categoryScoreService.findAllCategoryScores(userId)
 
-        val topScoredCategoryIds = categoryScores.sortedByDescending { it.frequency }
-            .take(3)
-            .mapNotNull { it.categoryId }
-            .toSet()
+        val topScoredCategoryIds = categoryScores?.sortedByDescending { it.frequency }
+            ?.take(3)
+            ?.mapNotNull { it.categoryId }
+            ?.toSet()
 
         logger.info("User $userId has ${favPartnerIds.size} favorite partners and ${favCategories.size} favorite categories")
         logger.info("Top scored categories for user $userId: $topScoredCategoryIds")
@@ -312,12 +314,17 @@ class RecommendationServiceImpl(
             val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
 
             logger.info("Sending promotion notification from favorite nearby business: ${partner.name}")
-            sendGeoNotification(promotion = bestPromotion, recommendation = recommendation, partner = partner, geofenceData = geofenceData)
+            sendGeoNotification(
+                promotion = bestPromotion,
+                recommendation = recommendation,
+                partner = partner,
+                geofenceData = geofenceData
+            )
             return recommendation
         }
 
         val categoryMatchedPartners = allPartners.filter {
-            it.category.id in favCategories || it.category.id in topScoredCategoryIds
+            it.category.id in favCategories || topScoredCategoryIds?.contains(it.category.id) == true
         }
 
         logger.info("Found ${categoryMatchedPartners.size} partners matching favorite or top scored categories")
@@ -332,6 +339,12 @@ class RecommendationServiceImpl(
             val bestPromotion = categoryBasedPromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 } ?: return null
             val recommendation = recommendationRepository.save(bestPromotion.toRecommendation(userId))
             val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
+            sendGeoNotification(
+                promotion = bestPromotion,
+                recommendation = recommendation,
+                partner = partner,
+                geofenceData = geofenceData
+            )
 
             logger.info("Sending promotion notification from category-matched partner: ${partner.name}")
             sendGeoNotification(promotion = bestPromotion, recommendation = recommendation, partner = partner, geofenceData = geofenceData)
@@ -348,12 +361,21 @@ class RecommendationServiceImpl(
             val partner = fallbackPartners.find { it.id == anyPromotion.businessPartnerId } ?: return null
 
             logger.info("Sending fallback promotion from partner: ${partner.name}")
-            sendGeoNotification(promotion = anyPromotion, recommendation = recommendation, partner = partner, geofenceData = geofenceData)
+            sendGeoNotification(
+                promotion = anyPromotion,
+                recommendation = recommendation,
+                partner = partner,
+                geofenceData = geofenceData
+            )
         } else {
             logger.error("No fallback promotions available to send")
         }
 
         return null
+    }
+
+    override fun triggerAccountScoreNotif(request: AccountProductRecDto) {
+        // TODO Handled later — right now just receives data
     }
 
     private fun sendGeoNotification(
@@ -384,7 +406,6 @@ class RecommendationServiceImpl(
         return (promotion.startDate == null || !promotion.startDate!!.isAfter(today)) &&
                 (promotion.endDate == null || !promotion.endDate!!.isBefore(today))
     }
-
 }
 
 

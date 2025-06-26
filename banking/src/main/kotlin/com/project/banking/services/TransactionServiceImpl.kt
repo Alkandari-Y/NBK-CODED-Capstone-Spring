@@ -9,11 +9,12 @@ import com.project.banking.entities.TransactionEntity
 import com.project.banking.entities.XpHistoryEntity
 import com.project.banking.mappers.toDto
 import com.project.banking.mappers.toEntity
+import com.project.banking.providers.RecommendationServiceProvider
 import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.AccountRepository
 import com.project.banking.repositories.BusinessPartnerRepository
 import com.project.banking.repositories.TransactionRepository
-import com.project.banking.repositories.XpHistoryRepository
+import com.project.common.data.requests.accountProducts.AccountProductRecDto
 import com.project.common.data.requests.accounts.PaymentCreateRequest
 import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.transactions.PaymentDetails
@@ -41,7 +42,8 @@ class TransactionServiceImpl(
     private val categoryService: CategoryService,
     private val perkService: PerkService,
     private val xpService: XpService,
-    private val businessPartnerRepository: BusinessPartnerRepository
+    private val businessPartnerRepository: BusinessPartnerRepository,
+    private val recommendationServiceProvider: RecommendationServiceProvider,
 ): TransactionService {
     override fun getTransactionsByAccount(accountId: Long?, accountNumber: String?): List<TransactionDetails> {
         if ((accountId == null && accountNumber == null) || (accountId != null && accountNumber != null)) {
@@ -124,10 +126,11 @@ class TransactionServiceImpl(
     }
 
     @Transactional // THIS IS A WORK IN PROGRESS
-    // right now it checks for if your card has perks
-    // and assigns you the proper XP amount for it based on your tier
-    // TODO: check for promotion
-    // TODO: also check if notif was sent in last 24h
+    // right now it checks for two things
+    // - if your card has perks, apply discount or cashback
+    // - if the business has an active promo
+    // and assigns you the proper XP amounts for both based on your tier
+    // TODO: check if notif was sent in last 24h
     override fun purchase(userId: Long, purchaseRequest: PaymentCreateRequest): PaymentDetails {
         if (purchaseRequest.type != TransactionType.PAYMENT) {
             throw InvalidTransferException("This is the PAYMENT endpoint.")
@@ -152,28 +155,27 @@ class TransactionServiceImpl(
         }
 
         var effectivePrice = purchaseRequest.amount.setScale(3)
-        var totalXp = 0L
-        var xpGainMethod: XpGainMethod? = null
-        var xpRecord: XpHistoryEntity? = null
+
+        // check for active promos
+        val businessPartner = businessPartnerRepository.findByAccountId(businessAccount.id!!)
+        val promotions = businessPartner?.id?.let {
+            recommendationServiceProvider.getActivePromotionsByBusiness(it)
+        } ?: emptyList()
+        val matchedPromo = promotions.firstOrNull()
 
         // check for perks
         if (matchedPerks.isNotEmpty()) {
-            xpGainMethod = XpGainMethod.PERK
             val bestPerk = matchedPerks.maxByOrNull { it.perkAmount }
             val perkAmount = bestPerk?.perkAmount ?: BigDecimal.ZERO
 
             when (bestPerk?.type) {
                 RewardType.DISCOUNT -> effectivePrice = effectivePrice.subtract(perkAmount)
-                RewardType.CASHBACK -> awardCashback(userId, perkAmount)
+                RewardType.CASHBACK -> awardCashback(businessAccount, userId, perkAmount)
                 else -> {} // no reward type, no reward, do nothing
             }
-
-            val xpTier = xpService.getCurrentXpInfo(userId)!!.xpTier
-            val multiplier = xpTier!!.xpPerkMultiplier
-
-            val baseXp = bestPerk?.rewardsXp ?: 0
-            totalXp += (multiplier * baseXp).toLong()
         }
+
+        recommendationServiceProvider.incrementCategoryFrequency(userId, category.id!!)
 
         val transaction = transactionRepository.save(
             TransactionEntity(
@@ -186,24 +188,74 @@ class TransactionServiceImpl(
         )
 
         // earn xp if it was awarded
-        if (totalXp > 0L) {
-            val xpInfo = xpService.getCurrentXpInfo(userId)!!
+        val earnedXpRecords = mutableListOf<XpHistoryEntity>()
+        val xpInfo = xpService.getCurrentXpInfo(userId)!!
+        val xpTier = xpInfo.xpTier!!.toEntity()
+        val userXp = xpInfo.toEntity(userId)
 
-            xpRecord = XpHistoryEntity(
-                amount = totalXp,
-                gainMethod = xpGainMethod!!,
+        if (matchedPromo != null) {
+            val promoXp = xpInfo.xpTier!!.xpPerPromotion
+            val promoXpRecord = XpHistoryEntity(
+                amount = promoXp,
+                gainMethod = XpGainMethod.PROMOTION,
                 transaction = transaction,
                 category = category,
-                xpTier = xpInfo.xpTier!!.toEntity(),
-                userXp = xpInfo.toEntity(userId),
+                xpTier = xpTier,
+                userXp = userXp,
                 account = sourceAccount,
                 accountProduct = accountProduct
             )
-            xpService.earnXP(xpRecord)
+            xpService.earnXP(promoXpRecord)
+            earnedXpRecords.add(promoXpRecord)
+        }
+
+        if (matchedPerks.isNotEmpty()) {
+            val bestPerk = matchedPerks.maxByOrNull { it.perkAmount }
+            val baseXp = bestPerk?.rewardsXp ?: 0
+            val multiplier = xpInfo.xpTier!!.xpPerkMultiplier
+            val perkXp = (multiplier * baseXp).toLong()
+
+            val perkXpRecord = XpHistoryEntity(
+                amount = perkXp,
+                gainMethod = XpGainMethod.PERK,
+                transaction = transaction,
+                category = category,
+                xpTier = xpTier,
+                userXp = userXp,
+                account = sourceAccount,
+                accountProduct = accountProduct
+            )
+            xpService.earnXP(perkXpRecord)
+            earnedXpRecords.add(perkXpRecord)
         }
 
         val newBalance = sourceAccount.balance.setScale(3).subtract(effectivePrice)
         accountRepository.save(sourceAccount.copy(balance = newBalance))
+
+        // calculate account score and trigger rec if too low
+        if (accountProduct.accountType != AccountType.CASHBACK) {
+            val (score, transactionCount, xpMatchCount) =
+                calculateAccountScore(userId, accountProduct.id!!)
+                    ?: Triple(0.0, 0, 0)
+
+            println("Account product score: $score")
+
+            if (score < 0.15) {
+                val usersUniqueCards = accountRepository.findByOwnerIdActive(userId).map { it.accountProductId }
+
+                val recDto = AccountProductRecDto(
+                    userId = sourceAccount.ownerId!!,
+                    totalNumTransactions = transactionCount,
+                    totalNumValidPerkPurchases = xpMatchCount,
+                    accountScore = score,
+                    currentAccountProductId = accountProduct.id!!,
+                    currentAccountId = sourceAccount.id!!,
+                    listOfOwnedUniqueAccountProductIds = usersUniqueCards
+                )
+
+                recommendationServiceProvider.triggerAccountScoreNotif(recDto)
+            }
+        }
 
         return PaymentDetails(
             transactionId = transaction.id!!,
@@ -213,7 +265,7 @@ class TransactionServiceImpl(
             amount = transaction.amount!!,
             category = transaction.category!!.name!!,
             createdAt = transaction.createdAt!!,
-            xpHistoryRecord = xpRecord?.toDto()
+            xpHistoryRecord = earnedXpRecords.map { it.toDto() }
         )
     }
 
@@ -252,9 +304,33 @@ class TransactionServiceImpl(
         return sourceAccount to destinationAccount
     }
 
-    override fun awardCashback(userId: Long, amount: BigDecimal) {
+    private fun calculateAccountScore(userId: Long, accountProductId: Long): Triple<Double, Int, Int>? {
+        val windowStart = LocalDateTime.now().minusDays(30)
+
+        val totalTransactions = transactionRepository.countRecentTransactionsByAccountProduct(
+            userId = userId,
+            accountProductId = accountProductId,
+            after = windowStart
+        )
+
+        val matchedXpEvents = xpService.countPerkXpEvents(
+            userId = userId,
+            accountProductId = accountProductId,
+            after = windowStart
+        )
+
+        if (totalTransactions == 0) return null // don't want zero division
+
+        val score = matchedXpEvents.toDouble() / totalTransactions
+        return Triple(
+            score.coerceIn(0.0, 1.0),
+            totalTransactions,
+            matchedXpEvents)
+    }
+
+    override fun awardCashback(source: AccountEntity, userId: Long, amount: BigDecimal) {
         val cashbackAccount = accountRepository.findAllByOwnerId(userId)
-            .firstOrNull { it.accountType == AccountType.CASHBACK }
+            ?.firstOrNull { it.accountType == AccountType.CASHBACK }
 
         if (cashbackAccount == null) {
             throw AccountNotFoundException("No active cashback account found for user $userId")
@@ -264,7 +340,20 @@ class TransactionServiceImpl(
             ?: throw AccountProductNotFoundException()
 
         val newBalance = cashbackAccount.balance.setScale(3).add(amount.setScale(3))
+        val category = categoryService.getCategoryByName("cashback")
+            ?: categoryService.createCategory(CategoryEntity( name = "cashback"))
 
-        accountRepository.save(cashbackAccount.copy(balance = newBalance).toEntity(accountProduct))
+        val destination = cashbackAccount.toEntity(accountProduct)
+
+        val transaction = transactionRepository.save(
+            TransactionEntity(
+                sourceAccount = source,
+                destinationAccount = destination,
+                amount = newBalance,
+                category = category,
+                transactionType = TransactionType.TRANSFER
+            )
+        )
+        accountRepository.save(destination.copy(balance = transaction.amount!!))
     }
 }

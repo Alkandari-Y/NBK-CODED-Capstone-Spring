@@ -10,8 +10,6 @@ data class CreatePromotionRequest(
     val name: String,
     @field:NotNull(message = "Business partner ID is required")
     val businessPartnerId: Long,
-    @field:NotNull(message = "CASHBACK or DISCOUNT?")
-    val type: RewardType,
     val startDate: LocalDate?,
     val endDate: LocalDate?,
     @field:NotNull(message = "Description is required")

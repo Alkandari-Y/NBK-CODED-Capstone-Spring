@@ -16,22 +16,29 @@ class CategoryScoreService(
     private val categoryScoreRepository: CategoryScoreRepository
 ) {
 
-    fun createUserCategoryScores(userId: Long, ): List<CategoryScoreEntity?> {
-        val categoryScores = bankServiceProvider.getAllCategories()
-            .map { category -> CategoryScoreEntity(
-                userId = userId,
-                categoryId = category.id,
-                frequency = 0L
-                )
-            }
-        return categoryScoreRepository.saveAll(categoryScores)
+    fun createUserCategoryScores(userId: Long) {
+        val allCategories = bankServiceProvider.getAllCategories()
+        val existingCategoryIds = categoryScoreRepository
+            .findAllByUserId(userId).map { it.categoryId }.toSet()
+
+        val newScores = allCategories
+            .filter { it.id !in existingCategoryIds }
+            .map { CategoryScoreEntity(
+                    userId = userId,
+                    categoryId = it.id,
+                    frequency = 0 ) }
+
+        if (newScores.isEmpty()) return
+
+        categoryScoreRepository.saveAll(newScores)
     }
 
-fun incrementCategoryScore(request: IncrementCategoryScoreRequest) {
+fun incrementCategoryFrequency(request: IncrementCategoryScoreRequest) {
         val categoryScore = categoryScoreRepository.findByCategoryIdAndUserId(
             userId = request.userId,
             categoryId = request.categoryId
-        ) ?: throw APIException("category score not found for user ${request.userId} and category ${request.categoryId}",
+        ) ?: throw APIException(
+            "category score not found for user ${request.userId} and category ${request.categoryId}",
             httpStatus = HttpStatus.NOT_FOUND,
             ErrorCode.CATEGORY_SCORE_NOT_FOUND
             )
@@ -39,11 +46,15 @@ fun incrementCategoryScore(request: IncrementCategoryScoreRequest) {
             categoryScore.copy(frequency = categoryScore.frequency + 1))
     }
 
-    fun findAllCategoryScores(userId: Long): List<CategoryScoreEntity> {
+    fun findAllCategoryScores(userId: Long): List<CategoryScoreEntity>? {
         return categoryScoreRepository.findAllByUserId(userId)
     }
 
     fun findCategoryScoreById(userId: Long, categoryId: Long): CategoryScoreEntity? {
         return categoryScoreRepository.findByCategoryIdAndUserId(userId, categoryId)
+    }
+
+    fun calculateCategoryScore(userId: Long, categoryId: Long) {
+
     }
 }

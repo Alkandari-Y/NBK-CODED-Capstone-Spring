@@ -5,11 +5,13 @@ import com.project.banking.entities.AccountProductEntity
 import com.project.banking.entities.BusinessPartnerEntity
 import com.project.banking.entities.CategoryEntity
 import com.project.banking.entities.PerkEntity
+import com.project.banking.entities.XpTierEntity
 import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.AccountRepository
 import com.project.banking.repositories.BusinessPartnerRepository
 import com.project.banking.repositories.CategoryRepository
 import com.project.banking.repositories.PerkRepository
+import com.project.banking.repositories.XpTierRepository
 import com.project.common.enums.AccountOwnerType
 import com.project.common.enums.AccountType
 import com.project.common.enums.RewardType
@@ -26,6 +28,7 @@ class DataSeeder(
     private val businessPartnerRepository: BusinessPartnerRepository,
     private val accountRepository: AccountRepository,
     private val perkRepository: PerkRepository,
+    private val xpTierRepository: XpTierRepository,
 ) {
     @EventListener(ApplicationReadyEvent::class)
     @Transactional
@@ -38,6 +41,7 @@ class DataSeeder(
 
         seedBusinessPartners(categories, accountProducts)
         seedPerks(accountProducts, categories)
+        seedTiers()
     }
 
 
@@ -565,5 +569,43 @@ fun seedCategories(): List<CategoryEntity> {
         accountRepository.saveAll(businessPartners.map { it.account!! })
         businessPartnerRepository.saveAll(businessPartners)
         println("Seeded ${businessPartners.size} business partners.")
+    }
+
+    fun seedTiers() {
+        if (xpTierRepository.count() > 0L) {
+            println("Perks already exist. Skipping seeding.")
+            return
+        }
+        val tiers = listOf(
+            XpTierEntity(
+                name = "Silver",
+                minXp = 0,
+                maxXp = 999,
+                xpPerkMultiplier = 1.0,
+                xpPerNotification = 10,
+                xpPerPromotion = 20,
+                perkAmountPercentage = 5
+            ),
+            XpTierEntity(
+                name = "Gold",
+                minXp = 1000,
+                maxXp = 4999,
+                xpPerkMultiplier = 1.2,
+                xpPerNotification = 15,
+                xpPerPromotion = 25,
+                perkAmountPercentage = 10
+            ),
+            XpTierEntity(
+                name = "Platinum",
+                minXp = 5000,
+                maxXp = 999999,
+                xpPerkMultiplier = 1.5,
+                xpPerNotification = 20,
+                xpPerPromotion = 30,
+                perkAmountPercentage = 15
+            )
+        )
+        xpTierRepository.saveAll(tiers)
+        println("Seeded XP Tiers: ${tiers.joinToString { it.name.toString() }}.")
     }
 }
