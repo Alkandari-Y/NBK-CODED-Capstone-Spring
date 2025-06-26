@@ -18,6 +18,7 @@ import com.project.recommendation.entities.RecommendationEntity
 import com.project.recommendation.mappers.toRecommendation
 import com.project.recommendation.providers.BankServiceProvider
 import com.project.recommendation.providers.NotificationProvider
+import com.project.recommendation.repositories.PromotionRepository
 import com.project.recommendation.repositories.RecommendationRepository
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -36,6 +37,7 @@ class RecommendationServiceImpl(
     private val favCategoriesService: FavCategoriesService,
     private val recommendationRepository: RecommendationRepository,
     private val categoryScoreService: CategoryScoreService,
+    private val promotionRepository: PromotionRepository,
 ) : RecommendationService {
     private val logger = LoggerFactory.getLogger(NotificationDto::class.java)
 
@@ -269,47 +271,86 @@ class RecommendationServiceImpl(
     ): RecommendationEntity? {
 
         val userId = geofenceData.userId
-        if (userId == 0L) return null
+        if (userId == 0L) {
+            logger.warn("Geofence event received with invalid userId: $userId")
+        }
+
+        logger.info("Processing geofence event for userId: $userId at location: ${geofenceData.name}")
 
         val nearbyStores = storeLocationsService.findNearbyStores(geofenceData)
-        if (nearbyStores.isEmpty()) return null
+        if (nearbyStores.isEmpty()) {
+            logger.info("No nearby stores found for userId: $userId")
+        }
 
         val nearbyPartnerIds = nearbyStores.mapNotNull { it.partnerId }.toSet()
-        val allPartners = businessServiceProvider.getAllBusinessPartners()
+        logger.info("Found ${nearbyPartnerIds.size} nearby partners for userId: $userId")
 
+        val allPartners = businessServiceProvider.getAllBusinessPartners()
         val favPartnerIds = favBusinessService.findAllFavBusinesses(userId).mapNotNull { it.partnerId }.toSet()
         val favCategories = favCategoriesService.findAllFavCategories(userId).mapNotNull { it.categoryId }.toSet()
         val categoryScores = categoryScoreService.findAllCategoryScores(userId)
+
         val topScoredCategoryIds = categoryScores.sortedByDescending { it.frequency }
             .take(3)
             .mapNotNull { it.categoryId }
             .toSet()
 
+        logger.info("User $userId has ${favPartnerIds.size} favorite partners and ${favCategories.size} favorite categories")
+        logger.info("Top scored categories for user $userId: $topScoredCategoryIds")
+
         val favNearbyBusinessIds = favPartnerIds.intersect(nearbyPartnerIds).toList()
+        logger.info("Found ${favNearbyBusinessIds.size} nearby favorite businesses for userId: $userId")
+
         val nearbyFavPromotions = promotionService.getPromotionForBusinesses(favNearbyBusinessIds)
             .filter { isPromotionActive(it) }
 
         if (nearbyFavPromotions.isNotEmpty()) {
+            logger.info("Found ${nearbyFavPromotions.size} active promotions for favorite nearby businesses")
+
             val bestPromotion = nearbyFavPromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 } ?: return null
             val recommendation = recommendationRepository.save(bestPromotion.toRecommendation(userId))
             val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
-            sendGeoNotification(promotion = bestPromotion, recommendation = recommendation, partner = partner, geofenceData = geofenceData)
 
+            logger.info("Sending promotion notification from favorite nearby business: ${partner.name}")
+            sendGeoNotification(promotion = bestPromotion, recommendation = recommendation, partner = partner, geofenceData = geofenceData)
+            return recommendation
         }
 
         val categoryMatchedPartners = allPartners.filter {
             it.category.id in favCategories || it.category.id in topScoredCategoryIds
         }
 
+        logger.info("Found ${categoryMatchedPartners.size} partners matching favorite or top scored categories")
+
         val partnerIdsByCategory = categoryMatchedPartners.map { it.id }
         val categoryBasedPromotions = promotionService.getPromotionForBusinesses(partnerIdsByCategory)
             .filter { isPromotionActive(it) }
 
         if (categoryBasedPromotions.isNotEmpty()) {
+            logger.info("Found ${categoryBasedPromotions.size} active promotions for category-matched partners")
+
             val bestPromotion = categoryBasedPromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 } ?: return null
             val recommendation = recommendationRepository.save(bestPromotion.toRecommendation(userId))
             val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
+
+            logger.info("Sending promotion notification from category-matched partner: ${partner.name}")
             sendGeoNotification(promotion = bestPromotion, recommendation = recommendation, partner = partner, geofenceData = geofenceData)
+            return recommendation
+        }
+
+        logger.warn("No personalized promotions found. Sending fallback notification.")
+
+        val fallbackPartners = businessServiceProvider.getAllBusinessPartners()
+        val anyPromotion = promotionRepository.findAll().firstOrNull()
+
+        if (anyPromotion != null) {
+            val recommendation = recommendationRepository.save(anyPromotion.toRecommendation(userId))
+            val partner = fallbackPartners.find { it.id == anyPromotion.businessPartnerId } ?: return null
+
+            logger.info("Sending fallback promotion from partner: ${partner.name}")
+            sendGeoNotification(promotion = anyPromotion, recommendation = recommendation, partner = partner, geofenceData = geofenceData)
+        } else {
+            logger.error("No fallback promotions available to send")
         }
 
         return null
@@ -322,7 +363,7 @@ class RecommendationServiceImpl(
         geofenceData: GeofenceEventRequest
     ) {
 
-        val intro = "${partner.name} has a promotion nearby" ?: "Enjoy promotions"
+        val intro = "[-----------]${partner.name} has a promotion nearby" ?: "Enjoy promotions"
         logger.info(intro)
         notificationProvider.sendNotification(
             NotificationDto(
