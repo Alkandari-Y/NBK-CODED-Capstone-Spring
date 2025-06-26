@@ -538,9 +538,11 @@ fun seedCategories(): List<CategoryEntity> {
             "H&M" to categoriesMap.get("fashion")!!,
             "Safat Home" to categoriesMap.get("retail")!!,
             "Spark Gym" to categoriesMap.get("personal care")!!,
-            "The Avenues Mall" to categoriesMap.get("retail")!!,
-            "360 Mall" to categoriesMap.get("retail")!!,
-            "The Sultan Center" to categoriesMap.get("wholesale")!!
+            "Pick" to categoriesMap.get("dining")!!,
+            "OFK" to categoriesMap.get("dining")!!,
+            "Grand Cinemas" to categoriesMap.get("entertainment")!!,
+            "Chips Store" to categoriesMap.get("technology")!!,
+            "Sultan Center" to categoriesMap.get("wholesale")!!
         )
 
 
