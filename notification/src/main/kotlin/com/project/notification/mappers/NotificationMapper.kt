@@ -10,7 +10,7 @@ fun NotificationEntity.toResponseDto(): NotificationResponseDto {
         message = this.message,
         deliveryType = this.deliveryType,
         createdAt = this.createdAt,
-        deliveredAt = this.createdAt, // used for delivery time
+        deliveredAt = this.createdAt, // as delivery time
         delivered = this.delivered,
         partnerId = this.partnerId,
         eventId = this.eventId,
@@ -18,8 +18,4 @@ fun NotificationEntity.toResponseDto(): NotificationResponseDto {
         promotionId = this.promotionId,
         triggerType = this.triggerType
     )
-}
-
-fun List<NotificationEntity>.toResponseDto(): List<NotificationResponseDto> {
-    return this.map { it.toResponseDto() }
 }

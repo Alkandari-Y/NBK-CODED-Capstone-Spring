@@ -10,7 +10,7 @@ data class NotificationResponseDto(
     val message: String,
     val deliveryType: NotificationDeliveryType,
     val createdAt: LocalDateTime,
-    val deliveredAt: LocalDateTime,
+    val deliveredAt: LocalDateTime, // as delivery time
     val delivered: Boolean,
     val partnerId: Long? = null,
     val eventId: Long? = null,
