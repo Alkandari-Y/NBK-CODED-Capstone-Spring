@@ -13,7 +13,7 @@ interface NotificationRepository : JpaRepository<NotificationEntity, Long> {
     // all notifications ordered by creation date
     fun findByUserIdOrderByCreatedAtDesc(userId: Long): List<NotificationEntity>
 
-    // unread notifications for a user
+    // notifications filtered by read status (false for unread,true for read)
     fun findByUserIdAndDeliveredOrderByCreatedAtDesc(
         userId: Long,
         delivered: Boolean
