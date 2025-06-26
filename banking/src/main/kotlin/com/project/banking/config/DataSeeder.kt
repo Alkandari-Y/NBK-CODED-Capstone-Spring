@@ -45,21 +45,18 @@ class DataSeeder(
     }
 
 
-fun seedCategories(): List<CategoryEntity> {
-        if (categoryRepository.count() > 0L) {
-            println("Categories already exist. Skipping seeding.")
-            return categoryRepository.findAll()
-        }
-        val categories = listOf(
-            "retail","travel", "dining", "fashion", "technology" , "hospitality", "education", "entertainment",
-            "personal care","wholesale", "manufacturing", "healthcare", "financial services", "real estate", "logistics", "construction",
-            "agriculture", "automotive", "personal","consulting", "energy",
-        ).map { name -> CategoryEntity(name = name) }
+    fun seedCategories(): List<CategoryEntity> {
+        val existing = categoryRepository.findAll().associateBy { it.name }
 
-        val categoryEntities = categoryRepository.saveAll(categories)
-        println("Seeded default categories.")
+        val categoriesToSave = listOf(
+            "retail", "travel", "dining", "fashion", "technology", "hospitality", "education", "entertainment",
+            "personal care", "wholesale", "manufacturing", "healthcare", "financial services", "real estate",
+            "logistics", "construction", "agriculture", "automotive", "personal", "consulting", "energy", "cashback",
+        ).map { name -> existing[name] ?: CategoryEntity(name = name) }
 
-        return categoryEntities
+        val saved = categoryRepository.saveAll(categoriesToSave)
+        println("Upserted ${saved.size} categories.")
+        return saved
     }
 
     fun seedAccountProducts(): List<AccountProductEntity> {
@@ -527,22 +524,22 @@ fun seedCategories(): List<CategoryEntity> {
         val categoriesMap = categories.associateBy { it.name }
 
         val partnerToCategory = listOf(
-            "Jumeirah Hotels" to categoriesMap.get("hospitality")!!,
-            "Almosafer" to categoriesMap.get("travel")!!,
-            "Caribou Coffee" to categoriesMap.get("dining")!!,
-            "Shake Shack" to categoriesMap.get("dining")!!,
-            "KidZania Kuwait" to categoriesMap.get("education")!!,
-            "VOX Cinemas" to categoriesMap.get("entertainment")!!,
-            "Kuwait Airways" to categoriesMap.get("travel")!!,
-            "Xcite Electronics" to categoriesMap.get("technology")!!,
-            "H&M" to categoriesMap.get("fashion")!!,
-            "Safat Home" to categoriesMap.get("retail")!!,
-            "Spark Gym" to categoriesMap.get("personal care")!!,
-            "The Avenues Mall" to categoriesMap.get("retail")!!,
-            "360 Mall" to categoriesMap.get("retail")!!,
-            "The Sultan Center" to categoriesMap.get("wholesale")!!
+            "National Bank of Kuwait"   to categoriesMap    ["financial services"]!!,
+            "Jumeirah Hotels"           to categoriesMap    ["hospitality"]!!,
+            "Almosafer"                 to categoriesMap    ["travel"]!!,
+            "Caribou Coffee"            to categoriesMap    ["dining"]!!,
+            "Shake Shack"               to categoriesMap    ["dining"]!!,
+            "KidZania Kuwait"           to categoriesMap    ["education"]!!,
+            "VOX Cinemas"               to categoriesMap    ["entertainment"]!!,
+            "Kuwait Airways"            to categoriesMap    ["travel"]!!,
+            "Xcite Electronics"         to categoriesMap    ["technology"]!!,
+            "H&M"                       to categoriesMap    ["fashion"]!!,
+            "Safat Home"                to categoriesMap    ["retail"]!!,
+            "Spark Gym"                 to categoriesMap    ["personal care"]!!,
+            "The Avenues Mall"          to categoriesMap    ["retail"]!!,
+            "360 Mall"                  to categoriesMap    ["retail"]!!,
+            "The Sultan Center"         to categoriesMap    ["wholesale"]!!
         )
-
 
        // val logisticsoBase = "http://localhost:9000/capstone-public/"
 

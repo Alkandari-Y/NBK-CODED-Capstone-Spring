@@ -10,11 +10,10 @@ import org.springframework.stereotype.Service
 interface AccountService {
     fun getActiveAccountsByUserId(userId: Long): List<AccountDto>
     fun createClientAccount(accountRequest: AccountCreateRequest, userInfoDto: UserInfoDto): AccountEntity
-
     fun onBoardingCreateAccount(accountRequest: AccountCreateRequest, userInfoDto: UserInfoDto): AccountEntity
     fun closeAccount(accountNumber: String, user: UserInfoDto): Unit
     fun getAccountById(accountId: Long): AccountEntity?
     fun getByAccountNumber(accountNumber: String): AccountEntity?
     fun getAllAccountsByUserId(userId: Long): List<AccountDto>
-    fun createNewClientPackage(userId: Long, accountProducts: List<AccountProductEntity>): Unit
+    fun createNewClientPackage(userId: Long, accountProducts: List<AccountProductEntity>)
 }

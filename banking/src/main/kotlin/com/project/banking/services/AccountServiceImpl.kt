@@ -1,34 +1,38 @@
 package com.project.banking.services
 
-import com.google.api.gax.rpc.ApiException
 import com.project.common.exceptions.accounts.AccountVerificationException
 import com.project.banking.entities.AccountEntity
 import com.project.banking.entities.AccountProductEntity
+import com.project.banking.entities.CategoryEntity
+import com.project.banking.entities.XpHistoryEntity
 import com.project.banking.mappers.toEntity
 import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.AccountRepository
+import com.project.banking.repositories.BusinessPartnerRepository
 import com.project.common.data.requests.accounts.AccountCreateRequest
 import com.project.common.data.responses.accounts.AccountDto
 import com.project.common.data.responses.authentication.UserInfoDto
 import com.project.common.enums.AccountOwnerType
 import com.project.common.enums.AccountType
 import com.project.common.enums.ErrorCode
+import com.project.common.enums.XpGainMethod
 import com.project.common.exceptions.APIException
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.CachePut
+import com.project.common.exceptions.accountProducts.MultipleCashbackException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
-
-const val MAX_ACCOUNT_LIMIT = 3
 
 @Service
 class AccountServiceImpl(
     private val accountProductRepository: AccountProductRepository,
     private val accountRepository: AccountRepository,
     private val mailService: MailService,
+    private val transactionService: TransactionService,
+    private val xpService: XpService,
+    private val categoryService: CategoryService,
+    private val businessPartnerRepository: BusinessPartnerRepository
 ): AccountService {
 
     override fun getActiveAccountsByUserId(userId: Long): List<AccountDto> {
@@ -38,11 +42,12 @@ class AccountServiceImpl(
     override fun createClientAccount(
         accountRequest: AccountCreateRequest,
         userInfoDto: UserInfoDto
-    )
-    : AccountEntity {
+    ): AccountEntity {
 
         val accountProduct = accountProductRepository.findByIdOrNull(accountRequest.accountProductId)
             ?: throw AccountProductNotFoundException()
+
+        if (accountProduct.accountType == AccountType.CASHBACK) { throw MultipleCashbackException() }
 
         val account = accountRepository.save(accountRequest.toEntity(userInfoDto.userId, accountProduct))
         mailService.sendHtmlEmail(
@@ -51,7 +56,6 @@ class AccountServiceImpl(
             username = userInfoDto.username,
             bodyText = "Your account has been successfully created."
         )
-
         return account
     }
 
@@ -91,10 +95,35 @@ class AccountServiceImpl(
         }
 
         if (userCashBackAccount != null) {
-            val updated = userCashBackAccount.copy(balance = BigDecimal.valueOf(50))
-            accountRepository.save(updated)
-            // TODO: Add experience points and XP transaction record
+            val nbkAccount = businessPartnerRepository
+                .findAll().firstOrNull { it.name == "National Bank of Kuwait" }!!.account!!
+
+            val transaction = transactionService.awardCashback(
+                source = nbkAccount,
+                userId = userInfoDto.userId,
+                amount = BigDecimal(10)
+            )
+
+            val category = categoryService.getCategoryByName("cashback")
+                ?: categoryService.createCategory(CategoryEntity( name = "cashback"))
+
+            val xpInfo = xpService.getCurrentXpInfo(userInfoDto.userId)!!
+            val xpTier = xpInfo.xpTier!!.toEntity()
+            val userXp = xpInfo.toEntity(userInfoDto.userId)
+
+            val xpRecord = XpHistoryEntity(
+                amount = 50L,
+                gainMethod = XpGainMethod.ONBOARDING,
+                transaction = transaction,
+                category = category,
+                xpTier = xpTier,
+                userXp = userXp,
+                account = transaction.sourceAccount,
+                accountProduct = userCashBackAccount.accountProduct
+            )
+            xpService.earnXP(xpRecord)
         }
+
         val account = accountRepository.save(accountRequest.toEntity(userInfoDto.userId, accountProduct))
 
         return account
@@ -134,10 +163,7 @@ class AccountServiceImpl(
     }
 
     override fun createNewClientPackage(userId: Long, accountProducts: List<AccountProductEntity>) {
-        val existing = accountRepository.findFirstByOwnerIdAndAccountTypeOrderByIdAsc(
-            userId,
-            accountProducts.first().accountType)
-        if (existing != null) return
+        if (accountRepository.existsByOwnerId(userId)) return
 
         accountRepository.saveAll(
             accountProducts.map { AccountEntity(

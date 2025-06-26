@@ -30,4 +30,12 @@ class BusinessPartnersApiController(
 
         return ResponseEntity(businessPartner.toDto(), HttpStatus.OK)
     }
+
+    @GetMapping("/by-category/{categoryId}")
+    fun getPartnersByCategory(
+        @PathVariable categoryId: Long
+    ): ResponseEntity<List<BusinessPartnerDto>> {
+        val partners = businessPartnerService.allPartnersByCategoryId(categoryId).map { it.toDto() }
+        return ResponseEntity.ok(partners)
+    }
 }

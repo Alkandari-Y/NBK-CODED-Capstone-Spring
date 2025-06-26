@@ -19,6 +19,7 @@ import com.project.common.data.requests.accounts.PaymentCreateRequest
 import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.transactions.PaymentDetails
 import com.project.common.data.responses.transactions.TransactionDetails
+import com.project.common.enums.AccountOwnerType
 import com.project.common.enums.AccountType
 import com.project.common.enums.XpGainMethod
 import com.project.common.enums.RewardType
@@ -110,11 +111,11 @@ class TransactionServiceImpl(
         )
 
         val updatedSourceAccount = accountRepository.save(
-            sourceAccount.copy(balance = newSourceBalance)
-        )
+            sourceAccount.copy(balance = newSourceBalance))
+
         val updatedDestinationAccount = accountRepository.save(
-            destinationAccount.copy(balance = newDestinationBalance)
-        )
+            destinationAccount.copy(balance = newDestinationBalance))
+
         return TransactionDetails(
             transactionId = transaction.id!!,
             amount = newTransaction.amount.setScale(3),
@@ -125,11 +126,7 @@ class TransactionServiceImpl(
         )
     }
 
-    @Transactional // THIS IS A WORK IN PROGRESS
-    // right now it checks for two things
-    // - if your card has perks, apply discount or cashback
-    // - if the business has an active promo
-    // and assigns you the proper XP amounts for both based on your tier
+    @Transactional
     // TODO: check if notif was sent in last 24h
     override fun purchase(userId: Long, purchaseRequest: PaymentCreateRequest): PaymentDetails {
         if (purchaseRequest.type != TransactionType.PAYMENT) {
@@ -241,7 +238,8 @@ class TransactionServiceImpl(
             println("Account product score: $score")
 
             if (score < 0.15) {
-                val usersUniqueCards = accountRepository.findByOwnerIdActive(userId).map { it.accountProductId }
+                val usersUniqueCards = accountRepository.findByOwnerIdActive(userId)
+                    .map { it.accountProductId }.distinct()
 
                 val recDto = AccountProductRecDto(
                     userId = sourceAccount.ownerId!!,
@@ -328,9 +326,9 @@ class TransactionServiceImpl(
             matchedXpEvents)
     }
 
-    override fun awardCashback(source: AccountEntity, userId: Long, amount: BigDecimal) {
+    override fun awardCashback(source: AccountEntity, userId: Long, amount: BigDecimal): TransactionEntity {
         val cashbackAccount = accountRepository.findAllByOwnerId(userId)
-            ?.firstOrNull { it.accountType == AccountType.CASHBACK }
+            .firstOrNull { it.accountType == AccountType.CASHBACK }
 
         if (cashbackAccount == null) {
             throw AccountNotFoundException("No active cashback account found for user $userId")
@@ -352,8 +350,10 @@ class TransactionServiceImpl(
                 amount = newBalance,
                 category = category,
                 transactionType = TransactionType.TRANSFER
-            )
-        )
+            ))
+
         accountRepository.save(destination.copy(balance = transaction.amount!!))
+
+        return transaction
     }
 }

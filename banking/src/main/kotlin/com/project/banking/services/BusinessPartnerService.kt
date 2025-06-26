@@ -3,6 +3,7 @@ package com.project.banking.services
 import com.project.banking.entities.BusinessPartnerEntity
 import com.project.common.data.requests.businessPartners.CreateBusinessPartnerRequest
 import com.project.common.data.responses.authentication.UserInfoDto
+import com.project.common.data.responses.businessPartners.PartnerAccountResponse
 
 interface BusinessPartnerService {
 
@@ -14,4 +15,5 @@ interface BusinessPartnerService {
     ): BusinessPartnerEntity
     fun deletePartnerById(id: Long)
     fun allPartnersByCategoryId(categoryId: Long): List<BusinessPartnerEntity>
+    fun getPartnerAccount(partnerId: Long): PartnerAccountResponse
 }
