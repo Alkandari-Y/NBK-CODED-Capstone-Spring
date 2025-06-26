@@ -13,6 +13,7 @@ fun KYCRequest.toEntity(userId: Long) = KycEntity(
     dateOfBirth = LocalDate.parse(dateOfBirth, dateFormatter),
     salary = salary,
     nationality = nationality,
+    civilId = civilId,
     mobileNumber = mobileNumber
 )
 
