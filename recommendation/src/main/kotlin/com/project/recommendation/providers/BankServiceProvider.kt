@@ -1,6 +1,8 @@
 package com.project.recommendation.providers
 
+import com.project.common.data.requests.ble.BleStoreLocationRecommendationDataRequest
 import com.project.common.data.responses.accountProducts.AccountProductDto
+import com.project.common.data.responses.ble.BleUserRecommendationInput
 import com.project.common.data.responses.businessPartners.BusinessPartnerDto
 import com.project.common.data.responses.categories.CategoryDto
 import com.project.common.data.responses.categories.CategoryWithPerksDto
@@ -120,6 +122,27 @@ class BankServiceProvider(
             response.body ?: throw KycNotFoundException(userId)
         } catch (ex: HttpClientErrorException.NotFound) {
             throw KycNotFoundException(userId)
+        }
+    }
+
+    fun gettUserBleRecommendationDaaInput(userId: Long, businessPartnerId: Long): BleUserRecommendationInput {
+        val headers = HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+        }
+        val dataRequest = BleStoreLocationRecommendationDataRequest(userId, businessPartnerId)
+
+        val request = HttpEntity<BleStoreLocationRecommendationDataRequest>(dataRequest, headers)
+
+        return try {
+            val response = RestTemplate().exchange(
+                "$bankServiceURL/accounts/clients/products",
+                HttpMethod.POST,
+                request,
+                object : ParameterizedTypeReference<BleUserRecommendationInput>() {}
+            )
+            response.body ?: throw APIException("unable to fetch required data", HttpStatus.NOT_FOUND)
+        } catch (ex: HttpClientErrorException.NotFound) {
+            throw APIException(ex.message ?: "error fetching user data", HttpStatus.INTERNAL_SERVER_ERROR)
         }
     }
 }

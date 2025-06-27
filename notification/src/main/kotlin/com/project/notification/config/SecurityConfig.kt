@@ -3,6 +3,7 @@ package com.project.notification.config
 import com.project.notification.filters.RemoteAuthenticationFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -20,7 +21,8 @@ class SecurityConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf { it.disable() }
             .authorizeHttpRequests {
-                it.requestMatchers("/api/v1/geofence/event").permitAll() // Allow geofence events without auth
+                it.requestMatchers(
+                    HttpMethod.POST, "/api/v1/notifications/**").permitAll() // Allow geofence events without auth
                     .anyRequest().authenticated()
             }
             .sessionManagement {
