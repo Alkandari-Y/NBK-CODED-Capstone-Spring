@@ -24,4 +24,5 @@ interface AccountProductRepository : JpaRepository<AccountProductEntity, Long> {
 
     @Query("SELECT a FROM AccountProductEntity a WHERE a.id = :id")
     fun findProjectedById(@Param("id") id: Long): AccountProductView?
+
 }

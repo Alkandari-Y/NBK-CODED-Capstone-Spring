@@ -3,6 +3,7 @@ package com.project.banking.mappers
 import com.project.banking.entities.AccountProductEntity
 import com.project.common.data.requests.accountProducts.CreateAccountProductRequest
 import com.project.common.data.responses.accountProducts.AccountProductDto
+import com.project.common.data.responses.accountProducts.AccountProductSummaryDto
 
 fun CreateAccountProductRequest.toEntity(imageUrl: String): AccountProductEntity {
     return AccountProductEntity(
@@ -42,4 +43,17 @@ fun AccountProductEntity.toDto(): AccountProductDto {
 
 fun List<AccountProductEntity>.toDto(): List<AccountProductDto> {
     return this.map { it.toDto() }
+}
+
+fun AccountProductEntity.toSummaryDto(): AccountProductSummaryDto {
+    val perks = this.perks
+    val perkIds = perks.mapNotNull { it.id }.distinct()
+    val affectedCategories = perks.flatMap { it.categories }.mapNotNull { it.id }.distinct()
+    return AccountProductSummaryDto(
+        id = this.id!!,
+        name = this.name!!,
+        accountType = this.accountType,
+        perkIds = perkIds,
+        categoryIds = affectedCategories
+    )
 }

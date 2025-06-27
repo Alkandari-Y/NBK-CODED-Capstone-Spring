@@ -50,15 +50,8 @@ class RecommendationApiController(
     @PostMapping("/bluetooth-beacon")
     fun bluetoothBeaconNotificationTrigger(
         @Valid @RequestBody request: BlueToothBeaconNotificationRequest
-    ) {
-        // TODO()
-    }
-
-    @PostMapping("/ble")
-    fun bleNotificationTrigger(
-        @Valid @RequestBody geoFenceRequest: GeofenceEventRequest
     ): ResponseEntity<Unit> {
-        recommendationService.createGeofencingRecommendation(geoFenceRequest)
+        recommendationService.triggerBluetoothBeaconNotification(request)
         return ResponseEntity.ok().build()
     }
 }

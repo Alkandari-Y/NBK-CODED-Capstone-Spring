@@ -22,7 +22,8 @@ class RemoteAuthenticationFilter(
         "/api/v1/partners",
         "/api/v1/categories",
         "/api/v1/products",
-        "/api/v1/kyc/client"
+        "/api/v1/kyc/client",
+        "/api/v1/accounts/clients/"
     )
 
     override fun doFilterInternal(
@@ -31,9 +32,9 @@ class RemoteAuthenticationFilter(
         filterChain: FilterChain
     ) {
 
-        val isPublicUrl = publicUrls.any { request.requestURI.contains(it) }
-
-        if (request.method == "GET" && isPublicUrl) {
+        val isPublicUrl = request.method == "GET" && publicUrls.any { request.requestURI.contains(it) }
+        val isPublicPost = request.method == "POST" && (request.requestURI.startsWith("/api/v1/accounts/clients/products"))
+        if (isPublicUrl || isPublicPost) {
             filterChain.doFilter(request, response)
             return
         }

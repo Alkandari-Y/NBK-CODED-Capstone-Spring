@@ -7,8 +7,11 @@ import com.project.banking.services.TransactionService
 import com.project.common.data.requests.accounts.AccountCreateRequest
 import com.project.common.data.requests.accounts.PaymentCreateRequest
 import com.project.common.data.requests.accounts.TransferCreateRequest
+import com.project.common.data.requests.ble.BleStoreLocationRecommendationDataRequest
+import com.project.common.data.responses.accounts.UniqueUserProductsAndAllProducts
 import com.project.common.data.responses.accounts.AccountDto
 import com.project.common.data.responses.authentication.UserInfoDto
+import com.project.common.data.responses.ble.BleUserRecommendationInput
 import com.project.common.data.responses.transactions.PaymentDetails
 import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.enums.ErrorCode
@@ -137,5 +140,16 @@ class AccountApiController(
         }
 
         return ResponseEntity(account.toDto(), HttpStatus.OK)
+    }
+
+    // used for ble recommendation fetching
+    @PostMapping("/clients/products")
+    fun getClientUniqueProductsAndAccountProducts(
+        @Valid @RequestBody request: BleStoreLocationRecommendationDataRequest
+    ): ResponseEntity<BleUserRecommendationInput> {
+        return ResponseEntity(
+            accountService.getClientUniqueProductsAndAccountProducts(request),
+            HttpStatus.OK
+        )
     }
 }

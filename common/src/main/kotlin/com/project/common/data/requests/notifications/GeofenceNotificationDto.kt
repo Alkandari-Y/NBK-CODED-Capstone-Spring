@@ -3,7 +3,7 @@ package com.project.common.data.requests.notifications
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.common.enums.NotificationTriggerType
 
-data class NotificationDto(
+data class GeofenceNotificationDto(
     var userId: Long,
     var message: String,
     var partnerId: Long? = null,

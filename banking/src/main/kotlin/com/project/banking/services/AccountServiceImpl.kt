@@ -4,17 +4,24 @@ import com.google.api.gax.rpc.ApiException
 import com.project.common.exceptions.accounts.AccountVerificationException
 import com.project.banking.entities.AccountEntity
 import com.project.banking.entities.AccountProductEntity
+import com.project.banking.mappers.toDto
 import com.project.banking.mappers.toEntity
+import com.project.banking.mappers.toSummaryDto
 import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.AccountRepository
+import com.project.banking.repositories.BusinessPartnerRepository
 import com.project.common.data.requests.accounts.AccountCreateRequest
+import com.project.common.data.requests.ble.BleStoreLocationRecommendationDataRequest
+import com.project.common.data.responses.accounts.UniqueUserProductsAndAllProducts
 import com.project.common.data.responses.accounts.AccountDto
 import com.project.common.data.responses.authentication.UserInfoDto
+import com.project.common.data.responses.ble.BleUserRecommendationInput
 import com.project.common.enums.AccountOwnerType
 import com.project.common.enums.AccountType
 import com.project.common.enums.ErrorCode
 import com.project.common.exceptions.APIException
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
+import com.project.common.exceptions.businessPartner.BusinessNotFoundException
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.CachePut
 import org.springframework.data.repository.findByIdOrNull
@@ -29,6 +36,7 @@ class AccountServiceImpl(
     private val accountProductRepository: AccountProductRepository,
     private val accountRepository: AccountRepository,
     private val mailService: MailService,
+    private val businessPartnerRepository: BusinessPartnerRepository,
 ): AccountService {
 
     override fun getActiveAccountsByUserId(userId: Long): List<AccountDto> {
@@ -146,6 +154,24 @@ class AccountServiceImpl(
                 accountProduct = it
                 )
             }
+        )
+    }
+
+    override fun getClientUniqueProductsAndAccountProducts(request: BleStoreLocationRecommendationDataRequest): BleUserRecommendationInput {
+        val uniqueUserProductIds = UniqueUserProductsAndAllProducts(
+            accountRepository.getAllUniqueAccountProductIdsByUserId(request.userId)
+        )
+
+        val accountProducts = accountProductRepository.findAll()
+        val businessPartners = businessPartnerRepository.findByIdOrNull(request.businessPartnerId)
+            ?: throw BusinessNotFoundException()
+
+        return BleUserRecommendationInput(
+            userData = uniqueUserProductIds,
+            allProducts = accountProducts
+                .filter { uniqueUserProductIds.uniqueUserProducts.contains(it.id) }
+                .map { it.toSummaryDto() },
+            relatedPartnerSummary = businessPartners.toSummaryDto()
         )
     }
 }

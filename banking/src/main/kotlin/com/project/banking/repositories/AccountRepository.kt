@@ -68,4 +68,15 @@
 
         fun findFirstByOwnerIdAndAccountTypeOrderByIdAsc(ownerId: Long, accountType: AccountType): AccountEntity?
 
+
+        @Query("""
+            SELECT DISTINCT ap.id 
+                FROM AccountEntity a 
+                JOIN AccountProductEntity ap ON ap = a.accountProduct
+            WHERE a.ownerId = :userId AND a.isActive = true AND a.accountType = :accountType
+        """)
+        fun getAllUniqueAccountProductIdsByUserId(
+            @Param("userId") userId: Long,
+            @Param("accountType") accountType: AccountType = AccountType.CREDIT
+        ): List<Long>
     }

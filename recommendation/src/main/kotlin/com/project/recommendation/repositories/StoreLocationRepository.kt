@@ -54,4 +54,6 @@ interface StoreLocationRepository: JpaRepository<StoreLocationEntity, Long> {
         @Param("radius") radius: Float
     ): List<StoreLocationEntity>
 
+
+    fun findByBeaconId(beaconId: Long): StoreLocationEntity?
 }
