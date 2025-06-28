@@ -21,13 +21,12 @@ class DataSeeder(
         println("Delaying data seeding for 5 seconds...")
         Thread.sleep(8000)
         println("Starting data seeding...")
-//        seedStoreLocations()
-
+        seedStoreLocations()
     }
 
     fun seedStoreLocations() {
         if (storeLocationRepository.count() > 0L) {
-            println("Business partners already exist. Skipping seeding.")
+            println("Business locations already exist. Skipping seeding.")
             return
         }
 
