@@ -20,8 +20,9 @@ class RemoteAuthenticationFilter(
 
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
         // This tells the filter to skip authentication for the geofence event endpoint
-        return request.requestURI == "/api/v1/geofence/event"
+        return request.requestURI.startsWith("/api/v1/notifications") && request.method == "POST"
     }
+
 
     override fun doFilterInternal(
         request: HttpServletRequest,

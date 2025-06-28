@@ -1,6 +1,7 @@
 package com.project.recommendation.services
 
 import com.project.common.data.requests.accountProducts.AccountProductRecDto
+import com.project.common.data.requests.ble.BlueToothBeaconNotificationRequest
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.common.data.responses.RecommendationDto
 import com.project.common.data.responses.accountProducts.AccountProductDto
@@ -11,4 +12,5 @@ interface RecommendationService {
     fun createGeofencingRecommendation(geofenceData: GeofenceEventRequest): RecommendationEntity?
     fun triggerAccountScoreNotif(request: AccountProductRecDto)
     fun getTopProductRecommendations(userId: Long): List<AccountProductDto>
+    fun triggerBluetoothBeaconNotification(request: BlueToothBeaconNotificationRequest)
 }

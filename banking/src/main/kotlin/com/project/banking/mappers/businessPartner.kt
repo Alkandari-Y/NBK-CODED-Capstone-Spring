@@ -5,6 +5,7 @@ import com.project.banking.entities.BusinessPartnerEntity
 import com.project.banking.entities.CategoryEntity
 import com.project.common.data.requests.businessPartners.CreateBusinessPartnerRequest
 import com.project.common.data.responses.businessPartners.BusinessPartnerDto
+import com.project.common.data.responses.businessPartners.BusinessPartnerSummaryDto
 import com.project.common.data.responses.categories.CategoryDto
 
 fun CreateBusinessPartnerRequest.toEntity(
@@ -30,3 +31,12 @@ fun BusinessPartnerEntity.toDto() = BusinessPartnerDto(
         name = category?.name!!
     ),
 )
+
+fun BusinessPartnerEntity.toSummaryDto() = BusinessPartnerSummaryDto(
+    id = this.id!!,
+    name = this.name,
+    logoUrl = this.logoUrl!!,
+    categoryId = this.category?.id!!
+)
+
+fun List<BusinessPartnerEntity>.toSummaryDto() = this.map { it.toSummaryDto() }

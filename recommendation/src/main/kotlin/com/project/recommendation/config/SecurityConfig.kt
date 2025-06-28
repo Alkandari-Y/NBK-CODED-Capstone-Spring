@@ -28,7 +28,8 @@ class SecurityConfig(
                     .requestMatchers(
                         HttpMethod.POST,
                         "/api/v1/category-scores/**",
-                        "/api/v1/recommendations/account-score"
+                        "/api/v1/recommendations/account-score",
+                        "/api/v1/recommendations/bluetooth-beacon"
                     ).permitAll()
                 .anyRequest().authenticated()
             }

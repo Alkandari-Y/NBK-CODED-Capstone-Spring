@@ -1,10 +1,10 @@
 package com.project.recommendation.providers
 
-import com.project.common.data.requests.notifications.NotificationDto
+import com.project.common.data.requests.notifications.BleBeaconNotificationDto
+import com.project.common.data.requests.notifications.GeofenceNotificationDto
 import com.project.common.exceptions.APIException
 import jakarta.inject.Named
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -17,27 +17,41 @@ import org.springframework.web.client.RestTemplate
 class NotificationServiceProvider(
     @Value("\${notificationServiceBase.url}") private val notificationServiceURL: String
 ) {
-    fun sendNotification(notification: NotificationDto) {
+    fun sendGeoFencedNotification(notification: GeofenceNotificationDto) {
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
         }
 
-        val request = HttpEntity<NotificationDto>(notification, headers)
+        val request = HttpEntity<GeofenceNotificationDto>(notification, headers)
 
         try {
             val response = RestTemplate().exchange(
-                "$notificationServiceURL/geofence/event",
+                "$notificationServiceURL/notifications/geofence/entered",
                 HttpMethod.POST,
                 request,
                 Void::class.java
             )
         } catch (ex: HttpClientErrorException.NotFound) {
-            throw APIException("error fetching business partners")
+            throw APIException("error fetching sending notification")
         }
     }
 
-    fun sendGeoFencedNotification(notification: NotificationDto) {
-        println("Sending geo fenced notification to $notificationServiceURL")
-    }
+    fun sendBledNotification(notification: BleBeaconNotificationDto) {
+        val headers = HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+        }
 
+        val request = HttpEntity<BleBeaconNotificationDto>(notification, headers)
+
+        try {
+            val response = RestTemplate().exchange(
+                "$notificationServiceURL/notifications/ble",
+                HttpMethod.POST,
+                request,
+                Void::class.java
+            )
+        } catch (ex: HttpClientErrorException.NotFound) {
+            throw APIException("error fetching sending notification")
+        }
+    }
 }

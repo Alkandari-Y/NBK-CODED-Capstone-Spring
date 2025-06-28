@@ -1,11 +1,14 @@
 package com.project.recommendation.services
 
 import com.project.common.data.requests.accountProducts.AccountProductRecDto
+import com.project.common.data.requests.ble.BlueToothBeaconNotificationRequest
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
-import com.project.common.data.requests.notifications.NotificationDto
+import com.project.common.data.requests.notifications.BleBeaconNotificationDto
+import com.project.common.data.requests.notifications.GeofenceNotificationDto
 import com.project.common.data.responses.accountProducts.AccountProductDto
 import com.project.common.data.responses.businessPartners.BusinessPartnerDto
 import com.project.common.data.responses.kyc.KYCResponse
+import com.project.common.data.responses.perks.PerkDto
 import com.project.common.enums.AccountType
 import com.project.common.enums.ErrorCode
 import com.project.common.enums.NotificationTriggerType
@@ -13,6 +16,7 @@ import com.project.common.enums.RecommendationType
 import com.project.common.enums.RewardType
 import com.project.common.exceptions.APIException
 import com.project.common.exceptions.kyc.KycNotFoundException
+import com.project.common.exceptions.storeLocations.StoreLocationNotFoundException
 import com.project.recommendation.entities.FavCategoryEntity
 import com.project.recommendation.entities.PromotionEntity
 import com.project.recommendation.entities.RecommendationEntity
@@ -21,6 +25,7 @@ import com.project.recommendation.providers.BankServiceProvider
 import com.project.recommendation.providers.NotificationServiceProvider
 import com.project.recommendation.repositories.PromotionRepository
 import com.project.recommendation.repositories.RecommendationRepository
+import com.project.recommendation.repositories.StoreLocationRepository
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -39,8 +44,10 @@ class RecommendationServiceImpl(
     private val recommendationRepository: RecommendationRepository,
     private val categoryScoreService: CategoryScoreService,
     private val promotionRepository: PromotionRepository,
+    private val storeLocationRepository: StoreLocationRepository,
+    private val bankServiceProvider: BankServiceProvider,
 ) : RecommendationService {
-    private val logger = LoggerFactory.getLogger(NotificationDto::class.java)
+    private val logger = LoggerFactory.getLogger(GeofenceNotificationDto::class.java)
 
     override fun onboardingRecommendedCard(userId: Long): AccountProductDto {
         val userKyc = businessServiceProvider.getUserKyc(userId) ?: throw KycNotFoundException(userId)
@@ -377,6 +384,159 @@ class RecommendationServiceImpl(
         // TODO Handled later — right now just receives data
     }
 
+    override fun triggerBluetoothBeaconNotification(
+        request: BlueToothBeaconNotificationRequest
+    ) {
+        logger.info("Received bluetooth beacon notification for userId: ${request.userId} and beaconId: ${request.beaconId}")
+
+        val storeLocation = storeLocationRepository.findByBeaconId(request.beaconId)
+            ?: throw StoreLocationNotFoundException()
+        logger.info("Found store location: $storeLocation for beaconId: ${request.beaconId}")
+
+        val response = bankServiceProvider.gettUserBleRecommendationDaaInput(
+            userId = request.userId,
+            businessPartnerId = storeLocation.partnerId
+                ?: throw APIException("No partnerId found for store location: $storeLocation", HttpStatus.BAD_REQUEST)
+        )
+        logger.info("Received BLE recommendation data for userId: ${request.userId}, partnerId: ${storeLocation.partnerId}")
+
+        val userUniqueAccountProductIds = response.userData.uniqueUserProducts
+        val businessPartner = response.relatedPartnerSummary
+
+        if (storeLocation.partnerId != businessPartner.id) {
+            throw APIException(
+                "PartnerId mismatch for store location: $storeLocation with businessPartner: $businessPartner",
+                HttpStatus.BAD_REQUEST
+            )
+        }
+        logger.info("PartnerId validation passed for storeLocation: ${storeLocation.id} and businessPartner: ${businessPartner.id}")
+
+        val allAccountProducts = bankServiceProvider.getAllAccountProducts()
+        logger.info("Retrieved ${allAccountProducts.size} total account products")
+
+        val partnerPromotions = promotionRepository.findAllActivePromotionsByBusinessPartner(
+            businessId = businessPartner.id,
+            currentDate = LocalDate.now(),
+        )
+        logger.info("Found ${partnerPromotions.size} active promotions for businessPartnerId: ${businessPartner.id}")
+
+        if (partnerPromotions.isNotEmpty()) {
+            val promotion = partnerPromotions.find { it.storeId == businessPartner.id } ?: partnerPromotions.first()
+            logger.info("Triggering BLE notification for promotionId: ${promotion.id} for userId: ${request.userId}")
+
+            val recommendation = RecommendationEntity(
+                genericIdRef = promotion.id!!,
+                userId = request.userId,
+                recType = RecommendationType.PROMOTION
+            )
+
+            notificationProvider.sendBledNotification(
+                notification = BleBeaconNotificationDto(
+                    userId = request.userId,
+                    message = "${businessPartner.name} has a promotion nearby.",
+                    partnerId = businessPartner.id,
+                    recommendationId = recommendation.id,
+                    promotionId = promotion.id,
+                    triggerType = NotificationTriggerType.BEACON,
+                )
+            )
+            logger.info("Sent BLE promotion notification for userId: ${request.userId} with promotionId: ${promotion.id}")
+        } else {
+            logger.info("No active promotions found; attempting account product BLE recommendation")
+            val filteredRelatedAccountProducts = response.allProducts.filter { product ->
+                product.categoryIds.contains(businessPartner.categoryId)
+            }
+            logger.info("Filtered to ${filteredRelatedAccountProducts.size} related account products matching business category")
+
+            if (filteredRelatedAccountProducts.isEmpty()) {
+                logger.info("No user products match the business category; skipping BLE recommendation")
+                return
+            }
+
+            val bestUserCard = findBestUserCardForBusinessCategory(
+                userOwnedAccountProducts = userUniqueAccountProductIds,
+                allAccountProducts = allAccountProducts,
+                businessCategoryId = businessPartner.categoryId
+            )
+
+            if (bestUserCard != null) {
+                logger.info("Best user card determined: id=${bestUserCard.id}, name=${bestUserCard.name}")
+
+                val recommendation = RecommendationEntity(
+                    genericIdRef = bestUserCard.id!!,
+                    userId = request.userId,
+                    recType = RecommendationType.ACCOUNT_PRODUCT
+                )
+                notificationProvider.sendBledNotification(
+                    notification = BleBeaconNotificationDto(
+                        userId = request.userId,
+                        message = "Use your ${bestUserCard.name} to earn cashback or discounts at ${businessPartner.name}.",
+                        partnerId = businessPartner.id,
+                        recommendationId = recommendation.id,
+                        promotionId = null,
+                        triggerType = NotificationTriggerType.BEACON,
+                    )
+                )
+                logger.info("Sent BLE account product notification for userId: ${request.userId} with accountProductId: ${bestUserCard.id}")
+            } else {
+                logger.info("No suitable user card found for BLE recommendation at ${businessPartner.name}")
+            }
+        }
+    }
+
+
+    private fun findBestUserCardForBusinessCategory(
+        userOwnedAccountProducts: List<Long>,
+        allAccountProducts: List<AccountProductDto>,
+        businessCategoryId: Long
+    ): AccountProductDto? {
+        logger.debug("Finding best user card for businessCategoryId: $businessCategoryId with userOwnedProductIds: $userOwnedAccountProducts")
+
+        val userProducts = allAccountProducts.filter { it.id != null && userOwnedAccountProducts.contains(it.id) }
+        logger.debug("Filtered ${userProducts.size} user-owned products from allAccountProducts")
+
+        val relevantProducts = userProducts.filter { it.categoryIds.contains(businessCategoryId) }
+        logger.debug("Filtered ${relevantProducts.size} relevant products matching business category $businessCategoryId")
+
+        if (relevantProducts.isEmpty()) {
+            logger.debug("No relevant user-owned account products found for business category $businessCategoryId")
+            return null
+        }
+
+        val prioritizedProduct = relevantProducts
+            .map { product ->
+                val cashbackPerks = product.perks.filter {
+                    it.type == RewardType.CASHBACK &&
+                            it.categories.any { category -> category.id == businessCategoryId }
+                }
+                val discountPerks = product.perks.filter {
+                    it.type == RewardType.DISCOUNT &&
+                            it.categories.any { category -> category.id == businessCategoryId }
+                }
+
+                val highestCashback = cashbackPerks.maxByOrNull { it.perkAmount }
+                val highestDiscount = discountPerks.maxByOrNull { it.perkAmount }
+
+                logger.debug("Product id=${product.id} name=${product.name} has cashbackPerks=${cashbackPerks.size}, discountPerks=${discountPerks.size}, highestCashback=${highestCashback?.perkAmount}, highestDiscount=${highestDiscount?.perkAmount}")
+
+                Triple(product, highestCashback, highestDiscount)
+            }
+            .sortedWith(
+                compareByDescending<Triple<AccountProductDto, PerkDto?, PerkDto?>> { it.second != null }
+                    .thenByDescending { it.second?.perkAmount ?: BigDecimal.ZERO }
+                    .thenByDescending { it.third != null }
+                    .thenByDescending { it.third?.perkAmount ?: BigDecimal.ZERO }
+            )
+            .firstOrNull()
+
+        prioritizedProduct?.let {
+            logger.debug("Selected product id=${it.first.id}, name=${it.first.name} for BLE notification")
+        } ?: logger.debug("No prioritized product found for BLE recommendation")
+
+        return prioritizedProduct?.first
+    }
+
+
     private fun sendGeoNotification(
         promotion: PromotionEntity,
         recommendation: RecommendationEntity,
@@ -384,10 +544,10 @@ class RecommendationServiceImpl(
         geofenceData: GeofenceEventRequest
     ) {
 
-        val intro = "[-----------]${partner.name} has a promotion nearby" ?: "Enjoy promotions"
+        val intro = "${partner.name} has a promotion nearby" ?: "Enjoy promotions"
         logger.info(intro)
-        notificationProvider.sendNotification(
-            NotificationDto(
+        notificationProvider.sendGeoFencedNotification(
+            GeofenceNotificationDto(
                 userId = recommendation.userId!!,
                 message = "$intro at ${geofenceData.name}",
                 partnerId = promotion.businessPartnerId,
