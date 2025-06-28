@@ -24,12 +24,12 @@ class RecommendationApiController(
     private val recommendationService: RecommendationService,
 ) {
 
-    @PostMapping("/account-score")
-    fun accountScoreRecommendationNotificationTrigger(request: AccountProductRecDto): ResponseEntity<Void> {
-        // TODO() hook up with notification service and create an empty service
-        recommendationService.triggerAccountScoreNotif(request)
-        return ResponseEntity.ok().build()
-    }
+//    @PostMapping("/account-score")
+//    fun accountScoreRecommendationNotificationTrigger(request: AccountProductRecDto): ResponseEntity<Void> {
+//        // TODO() hook up with notification service and create an empty service
+//        recommendationService.triggerAccountScoreNotif(request)
+//        return ResponseEntity.ok().build()
+//    }
 
     @GetMapping("/onBoarding")
     fun onboardingRecommendationTrigger(
@@ -45,7 +45,6 @@ class RecommendationApiController(
         recommendationService.createGeofencingRecommendation(geoFenceRequest)
          return ResponseEntity.ok().build()
     }
-
 
     @PostMapping("/bluetooth-beacon")
     fun bluetoothBeaconNotificationTrigger(

@@ -568,7 +568,7 @@ class DataSeeder(
 
     fun seedTiers() {
         if (xpTierRepository.count() > 0L) {
-            println("Perks already exist. Skipping seeding.")
+            println("XP Tiers already exist. Skipping seeding.")
             return
         }
         val tiers = listOf(

@@ -24,6 +24,7 @@ import com.project.common.enums.XpGainMethod
 import com.project.common.exceptions.APIException
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
 import com.project.common.exceptions.accountProducts.MultipleCashbackException
+import com.project.common.exceptions.accounts.AccountLimitException
 import com.project.common.exceptions.businessPartner.BusinessNotFoundException
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.CachePut
@@ -51,6 +52,10 @@ class AccountServiceImpl(
         accountRequest: AccountCreateRequest,
         userInfoDto: UserInfoDto
     ): AccountEntity {
+
+        val accountsOwnedCount = accountRepository.findByOwnerIdActive(userInfoDto.userId).size
+
+        if (accountsOwnedCount == 6) { throw AccountLimitException() }
 
         val accountProduct = accountProductRepository.findByIdOrNull(accountRequest.accountProductId)
             ?: throw AccountProductNotFoundException()
