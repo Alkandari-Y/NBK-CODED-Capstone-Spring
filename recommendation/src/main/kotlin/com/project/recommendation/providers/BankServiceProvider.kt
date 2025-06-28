@@ -2,11 +2,12 @@ package com.project.recommendation.providers
 
 import com.project.common.data.requests.ble.BleStoreLocationRecommendationDataRequest
 import com.project.common.data.responses.accountProducts.AccountProductDto
+import com.project.common.data.responses.accounts.AccountWithProductResponse
 import com.project.common.data.responses.ble.BleUserRecommendationInput
 import com.project.common.data.responses.businessPartners.BusinessPartnerDto
-import com.project.common.data.responses.categories.CategoryDto
 import com.project.common.data.responses.categories.CategoryWithPerksDto
 import com.project.common.data.responses.kyc.KYCResponse
+import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.exceptions.APIException
 import com.project.common.exceptions.businessPartner.BusinessNotFoundException
 import com.project.common.exceptions.kyc.KycNotFoundException
@@ -125,7 +126,7 @@ class BankServiceProvider(
         }
     }
 
-    fun gettUserBleRecommendationDaaInput(userId: Long, businessPartnerId: Long): BleUserRecommendationInput {
+    fun getUserBleRecommendationDataInput(userId: Long, businessPartnerId: Long): BleUserRecommendationInput {
         val headers = HttpHeaders().apply {
             contentType = MediaType.APPLICATION_JSON
         }
@@ -143,6 +144,46 @@ class BankServiceProvider(
             response.body ?: throw APIException("unable to fetch required data", HttpStatus.NOT_FOUND)
         } catch (ex: HttpClientErrorException.NotFound) {
             throw APIException(ex.message ?: "error fetching user data", HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    fun getUserAccountProducts(userId: Long): List<AccountWithProductResponse> {
+        val headers = HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+        }
+
+        val request = HttpEntity<String>(null, headers)
+
+        return try {
+            val response = RestTemplate().exchange(
+                "$bankServiceURL/accounts/internal/$userId",
+                HttpMethod.GET,
+                request,
+                object : ParameterizedTypeReference<List<AccountWithProductResponse>>() {}
+            )
+            response.body ?: emptyList()
+        } catch (ex: HttpClientErrorException) {
+            emptyList()
+        }
+    }
+
+    fun getUserTransactions(userId: Long): List<TransactionDetails> {
+        val headers = HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+        }
+
+        val request = HttpEntity<String>(null, headers)
+
+        return try {
+            val response = RestTemplate().exchange(
+                "$bankServiceURL/transactions/internal/$userId",
+                HttpMethod.GET,
+                request,
+                object : ParameterizedTypeReference<List<TransactionDetails>>() {}
+            )
+            response.body ?: emptyList()
+        } catch (ex: HttpClientErrorException) {
+            emptyList()
         }
     }
 }

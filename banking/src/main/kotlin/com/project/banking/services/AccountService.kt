@@ -6,6 +6,7 @@ import com.project.common.data.requests.accounts.AccountCreateRequest
 import com.project.common.data.requests.ble.BleStoreLocationRecommendationDataRequest
 import com.project.common.data.responses.accounts.UniqueUserProductsAndAllProducts
 import com.project.common.data.responses.accounts.AccountDto
+import com.project.common.data.responses.accounts.AccountWithProductResponse
 import com.project.common.data.responses.authentication.UserInfoDto
 import com.project.common.data.responses.ble.BleUserRecommendationInput
 
@@ -19,4 +20,5 @@ interface AccountService {
     fun getAllAccountsByUserId(userId: Long): List<AccountDto>
     fun createNewClientPackage(userId: Long, accountProducts: List<AccountProductEntity>)
     fun getClientUniqueProductsAndAccountProducts(request: BleStoreLocationRecommendationDataRequest): BleUserRecommendationInput
+    fun getAllAccountsInternal(userId: Long): List<AccountWithProductResponse>
 }

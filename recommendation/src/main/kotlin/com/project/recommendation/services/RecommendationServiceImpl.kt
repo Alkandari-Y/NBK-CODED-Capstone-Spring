@@ -393,7 +393,7 @@ class RecommendationServiceImpl(
             ?: throw StoreLocationNotFoundException()
         logger.info("Found store location: $storeLocation for beaconId: ${request.beaconId}")
 
-        val response = bankServiceProvider.gettUserBleRecommendationDaaInput(
+        val response = bankServiceProvider.getUserBleRecommendationDataInput(
             userId = request.userId,
             businessPartnerId = storeLocation.partnerId
                 ?: throw APIException("No partnerId found for store location: $storeLocation", HttpStatus.BAD_REQUEST)

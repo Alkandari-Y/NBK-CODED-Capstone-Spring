@@ -45,6 +45,7 @@ class TransactionsAPIController(
         return ResponseEntity(transactions, HttpStatus.OK)
     }
 
+    // used by admin only
     @GetMapping("/clients/{clientId}")
     fun getTransactionsByClientId(
         @PathVariable("clientId") clientId: Long,
@@ -58,6 +59,17 @@ class TransactionsAPIController(
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
 
+        return ResponseEntity(
+            transactionService.getAllTransactionByUserId(clientId),
+            HttpStatus.OK
+        )
+    }
+
+    // used by rec service
+    @GetMapping("/internal/{clientId}")
+    fun getTransactionsByClientIdInternal(
+        @PathVariable("clientId") clientId: Long
+    ): ResponseEntity<List<TransactionDetails>> {
         return ResponseEntity(
             transactionService.getAllTransactionByUserId(clientId),
             HttpStatus.OK

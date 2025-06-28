@@ -15,6 +15,7 @@ import com.project.common.data.requests.accounts.AccountCreateRequest
 import com.project.common.data.requests.ble.BleStoreLocationRecommendationDataRequest
 import com.project.common.data.responses.accounts.UniqueUserProductsAndAllProducts
 import com.project.common.data.responses.accounts.AccountDto
+import com.project.common.data.responses.accounts.AccountWithProductResponse
 import com.project.common.data.responses.authentication.UserInfoDto
 import com.project.common.data.responses.ble.BleUserRecommendationInput
 import com.project.common.enums.AccountOwnerType
@@ -25,6 +26,7 @@ import com.project.common.exceptions.APIException
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
 import com.project.common.exceptions.accountProducts.MultipleCashbackException
 import com.project.common.exceptions.accounts.AccountLimitException
+import com.project.common.exceptions.accounts.AccountNotFoundException
 import com.project.common.exceptions.businessPartner.BusinessNotFoundException
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.CachePut
@@ -206,5 +208,24 @@ class AccountServiceImpl(
                 .map { it.toSummaryDto() },
             relatedPartnerSummary = businessPartners.toSummaryDto()
         )
+    }
+
+    override fun getAllAccountsInternal(userId: Long): List<AccountWithProductResponse> {
+        val accounts = accountRepository.findByOwnerIdActive(userId)
+        val uniqueProductIds = accounts.map { it.accountProductId }.toSet()
+        val products = accountProductRepository.findAllById(uniqueProductIds).associateBy { it.id }
+
+        return accounts.map { account ->
+            val product = products[account.accountProductId] ?: throw AccountNotFoundException()
+            AccountWithProductResponse(
+                id = account.id,
+                accountNumber = account.accountNumber,
+                balance = account.balance,
+                ownerId = account.ownerId,
+                ownerType = account.ownerType,
+                accountProduct = product.toDto(),
+                accountType = account.accountType
+            )
+        }
     }
 }
