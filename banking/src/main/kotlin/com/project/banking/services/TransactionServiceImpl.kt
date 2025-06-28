@@ -137,8 +137,7 @@ class TransactionServiceImpl(
             purchaseRequest.sourceAccountNumber,
             purchaseRequest.destinationAccountNumber,
             userId,
-            purchaseRequest.amount
-        )
+            purchaseRequest.amount)
 
         val category = businessPartnerRepository.findByAccountId(businessAccount.id!!)?.category
             ?: throw CategoryNotFoundException()
@@ -148,8 +147,7 @@ class TransactionServiceImpl(
 
         val matchedPerks = perks.filter { perk ->
             perk.categories.any { it.name == category.name } &&
-                    purchaseRequest.amount >= (perk.minPayment ?: BigDecimal.ZERO)
-        }
+                    purchaseRequest.amount >= (perk.minPayment ?: BigDecimal.ZERO) }
 
         var effectivePrice = purchaseRequest.amount.setScale(3)
 
@@ -250,7 +248,7 @@ class TransactionServiceImpl(
                     currentAccountId = sourceAccount.id!!,
                     listOfOwnedUniqueAccountProductIds = usersUniqueCards
                 )
-
+                // TODO: this endpoint doesn't do anything yet
                 recommendationServiceProvider.triggerAccountScoreNotif(recDto)
             }
         }

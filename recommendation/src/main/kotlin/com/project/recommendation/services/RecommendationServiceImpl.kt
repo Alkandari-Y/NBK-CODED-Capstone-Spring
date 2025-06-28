@@ -249,6 +249,17 @@ class RecommendationServiceImpl(
     }
 
     // TODO: gut like a fish and fix
+    // in CategoryScoreService there are two new functions
+    // calculateCategoryScore(), and getTop3Categories()
+    // you can use getTop3, it iterates the calculation over every single category
+    // and returns the top 3, obviously
+    // the function below needs to calculate the top 3 products
+    // send num 1 to the account score drop notif
+    //    (or make a different function for that one?)
+    // send to another fun that lists all acc products
+    //    - first the top 3, highlighted
+    //    - then the rest, that are eligible
+    //    - then the remaining ineligible ones
     override fun getTopProductRecommendations(userId: Long): List<AccountProductDto> {
 //        val userKyc = businessServiceProvider.getUserKyc(userId) ?: throw KycNotFoundException(userId)
 //        val businessPartners = businessServiceProvider.getAllBusinessPartners()
@@ -381,7 +392,7 @@ class RecommendationServiceImpl(
     }
 
     override fun triggerAccountScoreNotif(request: AccountProductRecDto) {
-        // TODO Handled later — right now just receives data
+        // TODO: impl for triggering the account score notif, with the top card recommendation
     }
 
     override fun triggerBluetoothBeaconNotification(
