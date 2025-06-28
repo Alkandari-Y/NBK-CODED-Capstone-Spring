@@ -248,7 +248,7 @@ class RecommendationServiceImpl(
         return featureScore
     }
 
-    // TODO: gut like a fish and fix
+    // TODO: gut like a fish and fix (the current impl uses onboarding-specific functions)
     // in CategoryScoreService there are two new functions
     // calculateCategoryScore(), and getTop3Categories()
     // you can use getTop3, it iterates the calculation over every single category
