@@ -524,21 +524,23 @@ class DataSeeder(
         val categoriesMap = categories.associateBy { it.name }
 
         val partnerToCategory = listOf(
-            "National Bank of Kuwait"   to categoriesMap    ["financial services"]!!,
-            "Jumeirah Hotels"           to categoriesMap    ["hospitality"]!!,
-            "Almosafer"                 to categoriesMap    ["travel"]!!,
-            "Caribou Coffee"            to categoriesMap    ["dining"]!!,
-            "Shake Shack"               to categoriesMap    ["dining"]!!,
-            "KidZania Kuwait"           to categoriesMap    ["education"]!!,
-            "VOX Cinemas"               to categoriesMap    ["entertainment"]!!,
-            "Kuwait Airways"            to categoriesMap    ["travel"]!!,
-            "Xcite Electronics"         to categoriesMap    ["technology"]!!,
-            "H&M"                       to categoriesMap    ["fashion"]!!,
-            "Safat Home"                to categoriesMap    ["retail"]!!,
-            "Spark Gym"                 to categoriesMap    ["personal care"]!!,
-            "The Avenues Mall"          to categoriesMap    ["retail"]!!,
-            "360 Mall"                  to categoriesMap    ["retail"]!!,
-            "The Sultan Center"         to categoriesMap    ["wholesale"]!!
+
+            "Jumeirah Hotels" to categoriesMap.get("hospitality")!!,
+            "Almosafer" to categoriesMap.get("travel")!!,
+            "Caribou Coffee" to categoriesMap.get("dining")!!,
+            "Shake Shack" to categoriesMap.get("dining")!!,
+            "KidZania Kuwait" to categoriesMap.get("education")!!,
+            "VOX Cinemas" to categoriesMap.get("entertainment")!!,
+            "Kuwait Airways" to categoriesMap.get("travel")!!,
+            "Xcite Electronics" to categoriesMap.get("technology")!!,
+            "H&M" to categoriesMap.get("fashion")!!,
+            "Safat Home" to categoriesMap.get("retail")!!,
+            "Spark Gym" to categoriesMap.get("personal care")!!,
+            "Pick" to categoriesMap.get("dining")!!,
+            "OFK" to categoriesMap.get("dining")!!,
+            "Grand Cinemas" to categoriesMap.get("entertainment")!!,
+            "Chips Store" to categoriesMap.get("technology")!!,
+            "Sultan Center" to categoriesMap.get("wholesale")!!
         )
 
        // val logisticsoBase = "http://localhost:9000/capstone-public/"
