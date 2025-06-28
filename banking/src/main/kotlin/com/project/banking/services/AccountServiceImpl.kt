@@ -62,6 +62,8 @@ class AccountServiceImpl(
 
         if (accountProduct.accountType == AccountType.CASHBACK) { throw MultipleCashbackException() }
 
+        if (accountProduct.name!!.contains("Business")) { throw AccountProductNotFoundException() }
+
         val account = accountRepository.save(accountRequest.toEntity(userInfoDto.userId, accountProduct))
         mailService.sendHtmlEmail(
             to = userInfoDto.username,
