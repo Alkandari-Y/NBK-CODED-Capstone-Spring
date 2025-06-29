@@ -11,7 +11,7 @@ import com.project.notification.entities.NotificationEntity
 interface NotificationService{
 
     fun getAllNotificationsByUserId(userId: Long): List<NotificationEntity>
-    fun getNotificationById(userId: Long, notificationId: Long): NotificationEntity?
+    fun getNotificationById(userId: Long, notificationId: Long): NotificationEntity
     fun processGeofenceEvent(event: GeofenceNotificationDto)
     fun processBleNotification(event: BleBeaconNotificationDto)
     fun processAccountScoreNotification(event: AccountScoreNotification)

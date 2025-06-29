@@ -7,6 +7,7 @@ import java.time.LocalDateTime
 data class NotificationResponseDto(
     val id: Long,
     val userId: Long,
+    val title: String,
     val message: String,
     val deliveryType: NotificationDeliveryType,
     val createdAt: LocalDateTime,

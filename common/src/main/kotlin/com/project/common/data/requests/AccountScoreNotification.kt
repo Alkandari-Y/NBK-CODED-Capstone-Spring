@@ -1,6 +1,5 @@
 package com.project.common.data.requests
 
-
 data class AccountScoreNotification(
     val userId: Long,
     val accountProductName: String,

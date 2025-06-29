@@ -38,4 +38,6 @@ class PromotionApiController(
         val body = promotionService.getAllActivePromotionsByBusiness(businessId)
         return ResponseEntity(body, HttpStatus.OK)
     }
+
+    // TODO Add get promotion by business and user within current day for banking payments
 }

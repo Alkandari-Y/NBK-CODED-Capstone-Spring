@@ -30,6 +30,8 @@ class NotificationServiceImpl(
 ) : NotificationService {
     private val logger = LoggerFactory.getLogger(NotificationService::class.java)
 
+
+    // TODO("ensure unique entries for all notifications")
     override fun getAllNotificationsByUserId(userId: Long): List<NotificationEntity> {
         return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId)
     }

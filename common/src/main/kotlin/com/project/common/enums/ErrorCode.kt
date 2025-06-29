@@ -38,5 +38,4 @@ enum class ErrorCode {
     NOTIFICATION_NOT_FOUND,
     BAD_REQUEST,
     FIREBASE_TOKEN_NOT_FOUND
-
 }

@@ -30,4 +30,11 @@ interface PromotionRepository : JpaRepository<PromotionEntity, Long>{
         @Param("businessIds") businessIds: List<Long>,
         @Param("currentDate") currentDate: LocalDate
     ): List<PromotionEntity>
+
+    @Query("""
+    SELECT p 
+        FROM PromotionEntity p
+        WHERE p.endDate <= :date
+    """)
+    fun findAllPromotionsEndingOn(@Param("date") date: LocalDate = LocalDate.now()): List<PromotionEntity>
 }

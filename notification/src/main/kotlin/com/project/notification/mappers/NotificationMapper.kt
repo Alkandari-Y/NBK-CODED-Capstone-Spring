@@ -7,6 +7,7 @@ fun NotificationEntity.toResponseDto(): NotificationResponseDto {
     return NotificationResponseDto(
         id = this.id!!,
         userId = this.userId,
+        title = this.title,
         message = this.message,
         deliveryType = this.deliveryType,
         createdAt = this.createdAt,

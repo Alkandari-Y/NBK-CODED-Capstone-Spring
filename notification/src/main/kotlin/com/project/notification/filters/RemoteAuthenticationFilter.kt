@@ -18,9 +18,15 @@ class RemoteAuthenticationFilter(
     private val jwtAuthProvider: JwtAuthProvider
 ) : OncePerRequestFilter() {
 
+    val publicUrls = listOf(
+        "/api/v1/notifications/search",
+    )
+
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
-        // This tells the filter to skip authentication for the geofence event endpoint
-        return request.requestURI.startsWith("/api/v1/notifications") && request.method == "POST"
+        val isPublicUrl = request.method == "GET" && publicUrls.any { request.requestURI.contains(it) }
+        val isPublicPost = request.method == "POST" && (request.requestURI.startsWith("/api/v1/notifications"))
+
+        return isPublicUrl || isPublicPost
     }
 
 
