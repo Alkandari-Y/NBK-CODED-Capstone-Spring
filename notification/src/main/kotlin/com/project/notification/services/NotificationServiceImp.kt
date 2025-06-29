@@ -12,6 +12,8 @@ import com.project.notification.repositories.UserDeviceRepository
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Service
 class NotificationServiceImpl(
@@ -25,8 +27,19 @@ class NotificationServiceImpl(
         return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId)
     }
 
-    override fun getNotificationById(notificationId: Long): NotificationEntity? {
-        return notificationRepository.findByIdOrNull(notificationId)
+    override fun getNotificationById(userId: Long, notificationId: Long): NotificationEntity {
+        val notification = notificationRepository.findByIdOrNull(notificationId)
+            ?: throw NotificationNotFoundException()
+
+        if (userId != notification.userId) {
+            throw APIException(
+                message = "User does not have access to this resource",
+                httpStatus = HttpStatus.FORBIDDEN,
+                code = ErrorCode.ACCESS_DENIED,
+            )
+        }
+
+        return notification
     }
 
 
@@ -35,6 +48,18 @@ class NotificationServiceImpl(
         logger.info("[+]: ${event.userId}")
         val userDevice = userDeviceRepository.findByUserId(event.userId) ?: return
 
+        notificationRepository.save(NotificationEntity(
+            userId = event.userId,
+            title = "Promotions Nearby",
+            message = event.message,
+            deliveryType = NotificationDeliveryType.PUSH,
+            delivered = true,
+            partnerId = event.partnerId,
+            eventId = null,
+            recommendationId = event.recommendationId,
+            promotionId = event.promotionId,
+            triggerType = NotificationTriggerType.GPS,
+        ))
         sendGeofenceNotification(event, userDevice)
     }
 
@@ -42,8 +67,69 @@ class NotificationServiceImpl(
         logger.info("Processing ble event: ${event.message} - ${event.userId}")
         logger.info("[+]: ${event.userId}")
         val userDevice = userDeviceRepository.findByUserId(event.userId) ?: return
-
+        val title = if (event.promotionId == null) { event.message.split("at ").last() } else { "Promotions Nearby" }
         sendBleNotification(event, userDevice)
+
+        notificationRepository.save(NotificationEntity(
+            userId = event.userId,
+            title = title,
+            message = event.message,
+            deliveryType = NotificationDeliveryType.PUSH,
+            delivered = true,
+            partnerId = event.partnerId,
+            eventId = null,
+            recommendationId = event.recommendationId,
+            promotionId = event.promotionId,
+            triggerType = NotificationTriggerType.GPS,
+        ))
+    }
+
+    override fun processAccountScoreNotification(event: AccountScoreNotification) {
+        logger.info("Processing account score event: ${event.message} - ${event.userId}")
+        logger.info("[+]: ${event.userId}")
+        val userDevice = userDeviceRepository.findByUserId(event.userId) ?: throw APIException(
+            message = "User Firebasetoken not found",
+            httpStatus = HttpStatus.NOT_FOUND,
+            code = ErrorCode.FIREBASE_TOKEN_NOT_FOUND,
+        )
+
+        sendAccountScoreNotification(event, userDevice)
+
+        notificationRepository.save(
+            NotificationEntity(
+                userId = event.userId,
+                title = event.title,
+                message = event.message,
+                deliveryType = NotificationDeliveryType.PUSH,
+                createdAt = LocalDateTime.now(),
+                delivered = true,
+                partnerId = null,
+                eventId = null,
+                recommendationId = event.recommendationId,
+                promotionId = null,
+                triggerType = NotificationTriggerType.POS
+            )
+        )
+    }
+
+
+    override fun notificationByTypeSentToUserToday(
+        userId: Long,
+        notificationTriggerType: NotificationTriggerType,
+        partnerId: Long
+    ): NotificationEntity? {
+        val today = LocalDate.now()
+        val startOfDay = today.atStartOfDay()
+        val endOfDay = today.plusDays(1).atStartOfDay()
+
+        val notification = notificationRepository.findByUserIdAndPartnerIdAndNotificationTypeOnSentDate(
+            userId = userId,
+            partnerId = partnerId,
+            triggerType = notificationTriggerType,
+            startOfDay = startOfDay,
+            endOfDay = endOfDay
+        )
+        return notification
     }
 
     private fun sendGeofenceNotification(
@@ -56,7 +142,6 @@ class NotificationServiceImpl(
                 .setToken(userDevice.firebaseToken)
                 .putData("title", "Promotions Nearby")
                 .putData("body", event.message)
-                .putData("someId", 1.toString())
                 .setNotification(
                     Notification.builder()
                         .setTitle("Promotions Nearby")
@@ -86,7 +171,6 @@ class NotificationServiceImpl(
                 .setToken(userDevice.firebaseToken)
                 .putData("title", title)
                 .putData("body", event.message)
-                .putData("someId", 1.toString())
                 .setNotification(
                     Notification.builder()
                         .setTitle(title)
@@ -102,4 +186,27 @@ class NotificationServiceImpl(
         }
     }
 
+    private fun sendAccountScoreNotification(
+        event: AccountScoreNotification,
+        userDevice: UserDeviceEntity
+    ) {
+        try {
+            val message = Message.builder()
+                .setToken(userDevice.firebaseToken)
+                .putData("title", event.title)
+                .putData("body", event.message)
+                .setNotification(
+                    Notification.builder()
+                        .setTitle(event.title)
+                        .setBody(event.message)
+                        .build()
+                )
+                .build()
+
+            val response = firebaseMessaging.send(message)
+            logger.info("Sent account sore notification: $response")
+        } catch (e: Exception) {
+            logger.error("Failed to send notification to device ${userDevice.id}: ${e.message}")
+        }
+    }
 }
