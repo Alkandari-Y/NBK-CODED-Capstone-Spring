@@ -5,13 +5,20 @@ import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
 import com.project.common.data.requests.notifications.BleBeaconNotificationDto
 import com.project.common.data.requests.notifications.GeofenceNotificationDto
+import com.project.common.enums.ErrorCode
+import com.project.common.enums.NotificationDeliveryType
+import com.project.common.enums.NotificationTriggerType
+import com.project.common.exceptions.APIException
+import com.project.common.exceptions.notifications.NotificationNotFoundException
 import com.project.notification.entities.NotificationEntity
 import com.project.notification.entities.UserDeviceEntity
 import com.project.notification.repositories.NotificationRepository
 import com.project.notification.repositories.UserDeviceRepository
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class NotificationServiceImpl(
@@ -21,12 +28,25 @@ class NotificationServiceImpl(
 ) : NotificationService {
     private val logger = LoggerFactory.getLogger(NotificationService::class.java)
 
+
+    // TODO("ensure unique entries for all notifications")
     override fun getAllNotificationsByUserId(userId: Long): List<NotificationEntity> {
         return notificationRepository.findByUserIdOrderByCreatedAtDesc(userId)
     }
 
-    override fun getNotificationById(notificationId: Long): NotificationEntity? {
-        return notificationRepository.findByIdOrNull(notificationId)
+    override fun getNotificationById(userId: Long, notificationId: Long): NotificationEntity {
+        val notification = notificationRepository.findByIdOrNull(notificationId)
+            ?: throw NotificationNotFoundException()
+
+        if (userId != notification.userId) {
+            throw APIException(
+                message = "User does not have access to this resource",
+                httpStatus = HttpStatus.FORBIDDEN,
+                code = ErrorCode.ACCESS_DENIED,
+            )
+        }
+
+        return notification
     }
 
 
@@ -35,6 +55,18 @@ class NotificationServiceImpl(
         logger.info("[+]: ${event.userId}")
         val userDevice = userDeviceRepository.findByUserId(event.userId) ?: return
 
+        notificationRepository.save(NotificationEntity(
+            userId = event.userId,
+            title = "Promotions Nearby",
+            message = event.message,
+            deliveryType = NotificationDeliveryType.PUSH,
+            delivered = true,
+            partnerId = event.partnerId,
+            eventId = null,
+            recommendationId = event.recommendationId,
+            promotionId = event.promotionId,
+            triggerType = NotificationTriggerType.GPS,
+        ))
         sendGeofenceNotification(event, userDevice)
     }
 
@@ -42,8 +74,45 @@ class NotificationServiceImpl(
         logger.info("Processing ble event: ${event.message} - ${event.userId}")
         logger.info("[+]: ${event.userId}")
         val userDevice = userDeviceRepository.findByUserId(event.userId) ?: return
-
+        val title = if (event.promotionId == null) { event.message.split("at ").last() } else { "Promotions Nearby" }
         sendBleNotification(event, userDevice)
+
+        notificationRepository.save(NotificationEntity(
+            userId = event.userId,
+            title = title,
+            message = event.message,
+            deliveryType = NotificationDeliveryType.PUSH,
+            delivered = true,
+            partnerId = event.partnerId,
+            eventId = null,
+            recommendationId = event.recommendationId,
+            promotionId = event.promotionId,
+            triggerType = NotificationTriggerType.GPS,
+        ))
+    }
+
+    override fun processAccountScoreNotification(event: AccountScoreNotification) {
+        TODO("Not yet implemented")
+    }
+
+
+    override fun notificationByTypeSentToUserToday(
+        userId: Long,
+        notificationTriggerType: NotificationTriggerType,
+        partnerId: Long
+    ): NotificationEntity? {
+        val today = LocalDate.now()
+        val startOfDay = today.atStartOfDay()
+        val endOfDay = today.plusDays(1).atStartOfDay()
+
+        val notification = notificationRepository.findByUserIdAndPartnerIdAndNotificationTypeOnSentDate(
+            userId = userId,
+            partnerId = partnerId,
+            triggerType = notificationTriggerType,
+            startOfDay = startOfDay,
+            endOfDay = endOfDay
+        )
+        return notification
     }
 
     private fun sendGeofenceNotification(
@@ -101,5 +170,4 @@ class NotificationServiceImpl(
             logger.error("Failed to send notification to device ${userDevice.id}: ${e.message}")
         }
     }
-
 }

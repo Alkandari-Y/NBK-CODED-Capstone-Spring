@@ -16,6 +16,9 @@ data class NotificationEntity(
     @Column(name = "user_id", nullable = false)
     var userId: Long,
 
+    @Column(name = "title", nullable = false, length = 255)
+    var title: String = "",
+
     @Column(name = "message", nullable = false, length = 255)
     var message: String,
 
@@ -23,7 +26,7 @@ data class NotificationEntity(
     var deliveryType: NotificationDeliveryType,
 
     @Column(name = "created_at", nullable = false)
-    var createdAt: LocalDateTime,
+    var createdAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(name = "delivered", nullable = false)
     var delivered: Boolean,

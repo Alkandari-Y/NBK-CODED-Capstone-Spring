@@ -22,7 +22,8 @@ class SecurityConfig(
         http.csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers(
-                    HttpMethod.POST, "/api/v1/notifications/**").permitAll() // Allow geofence events without auth
+                    HttpMethod.POST, "/api/v1/notifications/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/notifications/search").permitAll()
                     .anyRequest().authenticated()
             }
             .sessionManagement {
