@@ -41,7 +41,7 @@ class NotificationApiController(
         @AuthenticationPrincipal user: RemoteUserPrincipal
     ): ResponseEntity<NotificationResponseDto> {
         val notification = notificationService.getNotificationById(user.getUserId(), notificationId)
-        return ResponseEntity(notification.toResponseDto(), HttpStatus.OK)
+        return ResponseEntity(notification?.toResponseDto(), HttpStatus.OK)
     }
 
     @GetMapping("/search")
