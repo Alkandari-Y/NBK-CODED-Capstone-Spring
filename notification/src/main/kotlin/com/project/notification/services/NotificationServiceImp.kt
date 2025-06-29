@@ -124,7 +124,6 @@ class NotificationServiceImpl(
 
     override fun notificationByTypeSentToUserToday(
         userId: Long,
-        notificationTriggerType: NotificationTriggerType,
         partnerId: Long
     ): NotificationEntity? {
         val today = LocalDate.now()
@@ -134,7 +133,6 @@ class NotificationServiceImpl(
         val notification = notificationRepository.findByUserIdAndPartnerIdAndNotificationTypeOnSentDate(
             userId = userId,
             partnerId = partnerId,
-            triggerType = notificationTriggerType,
             startOfDay = startOfDay,
             endOfDay = endOfDay
         )

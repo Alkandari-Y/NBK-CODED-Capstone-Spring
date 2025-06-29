@@ -21,5 +21,7 @@ class PromotionLastDayNotification(
 //        val promotionsEndingToday =
     }
 
+    // TODO("trigger notifcations to groups")
+
 
 }

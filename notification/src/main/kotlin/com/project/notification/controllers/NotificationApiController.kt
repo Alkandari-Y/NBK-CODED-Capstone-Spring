@@ -47,12 +47,10 @@ class NotificationApiController(
     @GetMapping("/search")
     fun getNotificationSentToUserByType(
         @RequestParam("userId") userId: Long,
-        @RequestParam("tiggerType") notificationTriggerType: NotificationTriggerType,
         @RequestParam("partnerId") partnerId: Long,
     ): ResponseEntity<NotificationResponseDto> {
         val notification = notificationService.notificationByTypeSentToUserToday(
             userId,
-            notificationTriggerType,
             partnerId = partnerId
         )
             ?: throw NotificationNotFoundException()

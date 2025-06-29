@@ -17,7 +17,6 @@ interface NotificationService{
     fun processAccountScoreNotification(event: AccountScoreNotification)
     fun notificationByTypeSentToUserToday(
         userId: Long,
-        notificationTriggerType: NotificationTriggerType,
         partnerId: Long
     ): NotificationEntity?
 }
