@@ -1,4 +1,4 @@
-package com.project.common.data.responses
+package com.project.common.data.responses.recommendation
 
 import com.project.common.enums.RecommendationType
 import java.time.LocalDateTime

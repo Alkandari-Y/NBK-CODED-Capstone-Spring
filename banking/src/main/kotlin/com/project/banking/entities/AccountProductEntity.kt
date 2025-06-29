@@ -18,38 +18,38 @@ import java.math.BigDecimal
 
 @Entity
 @Table(name = "account_products")
-data class AccountProductEntity (
+data class AccountProductEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-     var id: Long? = null,
+    var id: Long? = null,
 
     @Column(name = "name", nullable = false, unique = true)
-     var name: String? = null,
+    var name: String? = null,
 
     @Column(name = "type", nullable = false)
-     var accountType: AccountType = AccountType.DEBIT,
+    var accountType: AccountType = AccountType.DEBIT,
 
-    @Column(name="description", nullable = false)
+    @Column(name = "description", nullable = false)
     var description: String = "",
 
     @Column(name = "interest_rate", precision = 9, scale = 3)
-     var interestRate: BigDecimal = BigDecimal.ZERO,
+    var interestRate: BigDecimal = BigDecimal.ZERO,
 
     @Column(name = "min_balance_required", precision = 9, scale = 3)
-     var minBalanceRequired: BigDecimal = BigDecimal.ZERO,
+    var minBalanceRequired: BigDecimal = BigDecimal.ZERO,
 
     @Column(name = "credit_limit", precision = 9, scale = 3)
-     var creditLimit: BigDecimal = BigDecimal.ZERO,
+    var creditLimit: BigDecimal = BigDecimal.ZERO,
 
     @Column(name = "annual_fee", precision = 9, scale = 3)
-     var annualFee: BigDecimal = BigDecimal.ZERO,
+    var annualFee: BigDecimal = BigDecimal.ZERO,
 
     @Column(name = "min_salary", precision = 9, scale = 2)
-     var minSalary: BigDecimal = BigDecimal.ZERO,
+    var minSalary: BigDecimal = BigDecimal.ZERO,
 
     @Column(name = "image")
-     var image: String? = null,
+    var image: String? = null,
 
     @OneToMany(
         mappedBy = "accountProduct",

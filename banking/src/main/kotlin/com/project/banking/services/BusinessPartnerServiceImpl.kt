@@ -2,6 +2,7 @@ package com.project.banking.services
 
 import com.project.banking.entities.AccountEntity
 import com.project.banking.entities.BusinessPartnerEntity
+import com.project.banking.mappers.toDto
 import com.project.banking.mappers.toEntity
 import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.AccountRepository
@@ -9,9 +10,11 @@ import com.project.banking.repositories.BusinessPartnerRepository
 import com.project.banking.repositories.CategoryRepository
 import com.project.common.data.requests.businessPartners.CreateBusinessPartnerRequest
 import com.project.common.data.responses.authentication.UserInfoDto
+import com.project.common.data.responses.businessPartners.PartnerAccountResponse
 import com.project.common.enums.AccountOwnerType
 import com.project.common.enums.AccountType
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
+import com.project.common.exceptions.accounts.AccountNotFoundException
 import com.project.common.exceptions.businessPartner.BusinessNotFoundException
 import com.project.common.exceptions.categories.CategoryNotFoundException
 import org.springframework.data.repository.findByIdOrNull
@@ -51,20 +54,17 @@ class BusinessServiceImpl(
                 ownerType = AccountOwnerType.BUSINESS,
                 accountProduct = accountProduct,
                 accountType = AccountType.DEBIT
-            )
-        )
+            ))
 
         val newBusiness = businessPartnerRepository.save(
             businessPartnerRequest.toEntity(
                 businessAccount = businessAccount,
                 category = category,
                 userId = userInfoDto.userId,
-            )
-        )
+            ))
 
         return newBusiness
     }
-
 
     override fun deletePartnerById(id: Long) {
         val business = businessPartnerRepository.findByIdOrNull(id)
@@ -74,7 +74,21 @@ class BusinessServiceImpl(
     }
 
     override fun allPartnersByCategoryId(categoryId: Long): List<BusinessPartnerEntity> {
-        return businessPartnerRepository.findByCategoryId(categoryId)
+        return businessPartnerRepository.findAllByCategoryId(categoryId)
     }
 
+    override fun getPartnerAccount(partnerId: Long): PartnerAccountResponse {
+        val partner = businessPartnerRepository.findByIdOrNull(partnerId)
+            ?: throw BusinessNotFoundException()
+
+        val account = partner.account ?: throw AccountNotFoundException()
+
+        return PartnerAccountResponse(
+            id = partner.id!!,
+            name = partner.name,
+            account = account.toDto(),
+            logoUrl = partner.logoUrl!!,
+            category = partner.category!!.toDto()
+        )
+    }
 }

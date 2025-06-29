@@ -2,6 +2,7 @@
 
     import com.project.banking.entities.AccountEntity
     import com.project.common.data.responses.accounts.AccountDto
+    import com.project.common.enums.AccountOwnerType
     import com.project.common.enums.AccountType
     import org.springframework.data.jpa.repository.JpaRepository
     import org.springframework.data.jpa.repository.Query
@@ -68,6 +69,7 @@
 
         fun findFirstByOwnerIdAndAccountTypeOrderByIdAsc(ownerId: Long, accountType: AccountType): AccountEntity?
 
+        fun existsByOwnerId(ownerId: Long): Boolean
 
         @Query("""
             SELECT DISTINCT ap.id 

@@ -2,6 +2,7 @@ package com.project.recommendation.controllers
 
 import com.project.common.data.requests.categoryScores.IncrementCategoryScoreRequest
 import com.project.common.data.requests.categoryScores.InitializeCategoryScores
+import com.project.recommendation.entities.CategoryScoreEntity
 import com.project.recommendation.services.CategoryScoreService
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,4 +26,9 @@ class CategoryScoreController(
     fun incrementCategoryFrequency(@Valid @RequestBody request: IncrementCategoryScoreRequest) {
         categoryScoreService.incrementCategoryFrequency(request)
     }
+
+//    @GetMapping("{id}")
+//    fun getCategoryScoreById(userId: Long, categoryId: Long): CategoryScoreEntity {
+//        return categoryScoreService.findCategoryScoreById(userId, categoryId)
+//    }
 }

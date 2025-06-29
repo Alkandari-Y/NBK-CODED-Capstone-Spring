@@ -22,7 +22,7 @@ import com.project.recommendation.entities.PromotionEntity
 import com.project.recommendation.entities.RecommendationEntity
 import com.project.recommendation.mappers.toRecommendation
 import com.project.recommendation.providers.BankServiceProvider
-import com.project.recommendation.providers.NotificationProvider
+import com.project.recommendation.providers.NotificationServiceProvider
 import com.project.recommendation.repositories.PromotionRepository
 import com.project.recommendation.repositories.RecommendationRepository
 import com.project.recommendation.repositories.StoreLocationRepository
@@ -36,7 +36,7 @@ import java.time.LocalDate
 @Service
 class RecommendationServiceImpl(
     private val businessServiceProvider: BankServiceProvider,
-    private val notificationProvider: NotificationProvider,
+    private val notificationProvider: NotificationServiceProvider,
     private val storeLocationsService: StoreLocationsService,
     private val promotionService: PromotionService,
     private val favBusinessService: FavBusinessService,
@@ -248,29 +248,39 @@ class RecommendationServiceImpl(
         return featureScore
     }
 
-    fun getTopProductRecommendations(
-        userId: Long,
-        limit: Int = 3
-    ): List<AccountProductDto> {
-        val userKyc = businessServiceProvider.getUserKyc(userId) ?: throw KycNotFoundException(userId)
-        val businessPartners = businessServiceProvider.getAllBusinessPartners()
-        val allProducts = businessServiceProvider.getAllAccountProducts()
-
-        val favCategories = favCategoriesService.findAllFavCategories(userId)
-        val favBusinesses = favBusinessService.findAllFavBusinesses(userId)
-
-        val favoriteBusinessPartners = businessPartners.filter { partner ->
-            partner.id in favBusinesses.map { it.partnerId }
-        }
-
-        val creditCards = allProducts.filter { it.accountType == AccountType.CREDIT.toString() }
-
-        return recommendCreditCards(
-            userKyc = userKyc,
-            favoriteCategories = favCategories,
-            favoriteBusinesses = favoriteBusinessPartners,
-            allAccountProducts = creditCards,
-        ).take(limit).map { it.copy(recommended = true) }
+    // TODO: gut like a fish and fix (the current impl uses onboarding-specific functions)
+    // in CategoryScoreService there are two new functions
+    // calculateCategoryScore(), and getTop3Categories()
+    // you can use getTop3, it iterates the calculation over every single category
+    // and returns the top 3, obviously
+    // the function below needs to calculate the top 3 products
+    // send num 1 to the account score drop notif
+    //    (or make a different function for that one?)
+    // send to another fun that lists all acc products
+    //    - first the top 3, highlighted
+    //    - then the rest, that are eligible
+    //    - then the remaining ineligible ones
+    override fun getTopProductRecommendations(userId: Long): List<AccountProductDto> {
+//        val userKyc = businessServiceProvider.getUserKyc(userId) ?: throw KycNotFoundException(userId)
+//        val businessPartners = businessServiceProvider.getAllBusinessPartners()
+//        val allProducts = businessServiceProvider.getAllAccountProducts()
+//
+//        val favCategories = favCategoriesService.findAllFavCategories(userId)
+//        val favBusinesses = favBusinessService.findAllFavBusinesses(userId)
+//
+//        val favoriteBusinessPartners = businessPartners.filter { partner ->
+//            partner.id in favBusinesses.map { it.partnerId }
+//        }
+//
+//        val creditCards = allProducts.filter { it.accountType == AccountType.CREDIT.toString() }
+//
+//        return recommendCreditCards(
+//            userKyc = userKyc,
+//            favoriteCategories = favCategories,
+//            favoriteBusinesses = favoriteBusinessPartners,
+//            allAccountProducts = creditCards,
+//        ).take(3).map { it.copy(recommended = true) }
+        return emptyList()
     }
 
 
@@ -382,7 +392,7 @@ class RecommendationServiceImpl(
     }
 
     override fun triggerAccountScoreNotif(request: AccountProductRecDto) {
-        // TODO Handled later — right now just receives data
+        // TODO: impl for triggering the account score notif, with the top card recommendation
     }
 
     override fun triggerBluetoothBeaconNotification(
@@ -394,7 +404,7 @@ class RecommendationServiceImpl(
             ?: throw StoreLocationNotFoundException()
         logger.info("Found store location: $storeLocation for beaconId: ${request.beaconId}")
 
-        val response = bankServiceProvider.gettUserBleRecommendationDaaInput(
+        val response = bankServiceProvider.getUserBleRecommendationDataInput(
             userId = request.userId,
             businessPartnerId = storeLocation.partnerId
                 ?: throw APIException("No partnerId found for store location: $storeLocation", HttpStatus.BAD_REQUEST)

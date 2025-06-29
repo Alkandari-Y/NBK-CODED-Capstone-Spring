@@ -17,7 +17,6 @@ class RoleServiceImpl(
     private val userRepository: UserRepository
 ): RoleService {
     override fun getDefaultRole(): RoleEntity {
-        // TODO("ADD AS CONFIGURATION LATER")
         val defaultRoleName = "ROLE_USER"
         val defaultRole = roleRepository.findByName(defaultRoleName)
             ?: roleRepository.save(RoleEntity(null, defaultRoleName))

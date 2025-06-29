@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate
 
 
 @Named
-class NotificationProvider(
+class NotificationServiceProvider(
     @Value("\${notificationServiceBase.url}") private val notificationServiceURL: String
 ) {
     fun sendGeoFencedNotification(notification: GeofenceNotificationDto) {
