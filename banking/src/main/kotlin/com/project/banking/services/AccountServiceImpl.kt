@@ -33,6 +33,7 @@ import org.springframework.cache.annotation.CachePut
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 
 @Service
@@ -49,6 +50,7 @@ class AccountServiceImpl(
        return accountRepository.findByOwnerIdActive(userId)
     }
 
+    @Transactional
     override fun createClientAccount(
         accountRequest: AccountCreateRequest,
         userInfoDto: UserInfoDto
