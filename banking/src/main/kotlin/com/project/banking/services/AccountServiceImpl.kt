@@ -45,7 +45,6 @@ class AccountServiceImpl(
     private val categoryService: CategoryService,
     private val businessPartnerRepository: BusinessPartnerRepository
 ): AccountService {
-
     override fun getActiveAccountsByUserId(userId: Long): List<AccountDto> {
        return accountRepository.findByOwnerIdActive(userId)
     }
@@ -55,9 +54,12 @@ class AccountServiceImpl(
         userInfoDto: UserInfoDto
     ): AccountEntity {
 
-        val accountsOwnedCount = accountRepository.findByOwnerIdActive(userInfoDto.userId).size
+        val accounts = accountRepository.findByOwnerIdActive(userInfoDto.userId)
 
-        if (accountsOwnedCount == 6) { throw AccountLimitException() }
+        val uniqueProducts = accounts.map { it.accountProductId }
+        if (uniqueProducts.contains(accountRequest.accountProductId)) { throw APIException("get something else", httpStatus = HttpStatus.BAD_REQUEST, code = ErrorCode.INVALID_INPUT) }
+
+        if (accounts.size == 6) { throw AccountLimitException() }
 
         val accountProduct = accountProductRepository.findByIdOrNull(accountRequest.accountProductId)
             ?: throw AccountProductNotFoundException()

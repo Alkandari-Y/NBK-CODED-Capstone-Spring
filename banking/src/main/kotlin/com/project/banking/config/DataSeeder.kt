@@ -558,7 +558,7 @@ class DataSeeder(
                 name = name,
                 adminUser = 1L,
                 account = account,
-                logoUrl = "${name.lowercase().replace(" ", "_")}.png",
+                logoUrl = "${name.replace("&","_").lowercase().replace(" ", "_")}.png",
                 category = category
             )
         }

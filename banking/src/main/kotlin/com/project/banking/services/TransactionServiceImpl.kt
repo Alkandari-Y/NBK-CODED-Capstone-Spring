@@ -9,6 +9,7 @@ import com.project.banking.entities.TransactionEntity
 import com.project.banking.entities.XpHistoryEntity
 import com.project.banking.mappers.toDto
 import com.project.banking.mappers.toEntity
+import com.project.banking.providers.NotificationServiceProvider
 import com.project.banking.providers.RecommendationServiceProvider
 import com.project.banking.repositories.AccountProductRepository
 import com.project.banking.repositories.AccountRepository
@@ -21,9 +22,11 @@ import com.project.common.data.responses.transactions.PaymentDetails
 import com.project.common.data.responses.transactions.TransactionDetails
 import com.project.common.enums.AccountOwnerType
 import com.project.common.enums.AccountType
+import com.project.common.enums.ErrorCode
 import com.project.common.enums.XpGainMethod
 import com.project.common.enums.RewardType
 import com.project.common.enums.TransactionType
+import com.project.common.exceptions.APIException
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
 import com.project.common.exceptions.transactions.AccountLookupException
 import com.project.common.exceptions.accounts.AccountNotActiveException
@@ -31,6 +34,7 @@ import com.project.common.exceptions.auth.InvalidCredentialsException
 import com.project.common.exceptions.categories.CategoryNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDateTime
@@ -45,6 +49,7 @@ class TransactionServiceImpl(
     private val xpService: XpService,
     private val businessPartnerRepository: BusinessPartnerRepository,
     private val recommendationServiceProvider: RecommendationServiceProvider,
+    private val notificationServiceProvider: NotificationServiceProvider
 ): TransactionService {
     override fun getTransactionsByAccount(accountId: Long?, accountNumber: String?): List<TransactionDetails> {
         if ((accountId == null && accountNumber == null) || (accountId != null && accountNumber != null)) {
@@ -127,7 +132,6 @@ class TransactionServiceImpl(
     }
 
     @Transactional
-    // TODO: check if notif was sent in last 24h
     override fun purchase(userId: Long, purchaseRequest: PaymentCreateRequest): PaymentDetails {
         if (purchaseRequest.type != TransactionType.PAYMENT) {
             throw InvalidTransferException("This is the PAYMENT endpoint.")
@@ -139,7 +143,14 @@ class TransactionServiceImpl(
             userId,
             purchaseRequest.amount)
 
-        val category = businessPartnerRepository.findByAccountId(businessAccount.id!!)?.category
+        val businessPartner = businessPartnerRepository.findByAccountId(businessAccount.id!!)
+            ?: throw APIException(
+                "Business partner not found", 
+                httpStatus = HttpStatus.NOT_FOUND, 
+                ErrorCode.BUSINESS_NOT_FOUND
+            )
+
+        val category = businessPartner.category
             ?: throw CategoryNotFoundException()
 
         val accountProduct = sourceAccount.accountProduct!!
@@ -152,13 +163,17 @@ class TransactionServiceImpl(
         var effectivePrice = purchaseRequest.amount.setScale(3)
 
         // check for active promos
-        val businessPartner = businessPartnerRepository.findByAccountId(businessAccount.id!!)
         val promotions = businessPartner?.id?.let {
             recommendationServiceProvider.getActivePromotionsByBusiness(it)
         } ?: emptyList()
+
+        val sentNotification = notificationServiceProvider.getPromotionNotificationSentToUserForPartner(
+            userId = userId,
+            partnerId = businessPartner.id!!,
+        )
+
         val matchedPromo = promotions.firstOrNull()
 
-        // check for perks
         if (matchedPerks.isNotEmpty()) {
             val bestPerk = matchedPerks.maxByOrNull { it.perkAmount }
             val perkAmount = bestPerk?.perkAmount ?: BigDecimal.ZERO
@@ -222,6 +237,22 @@ class TransactionServiceImpl(
             )
             xpService.earnXP(perkXpRecord)
             earnedXpRecords.add(perkXpRecord)
+        }
+
+        if (sentNotification != null) {
+            val promoXp = xpInfo.xpTier!!.xpPerPromotion
+            val promoXpRecord = XpHistoryEntity(
+                amount = promoXp,
+                gainMethod = XpGainMethod.NOTIFICATION,
+                transaction = transaction,
+                category = category,
+                xpTier = xpTier,
+                userXp = userXp,
+                account = sourceAccount,
+                accountProduct = accountProduct
+            )
+            xpService.earnXP(promoXpRecord)
+            earnedXpRecords.add(promoXpRecord)
         }
 
         val newBalance = sourceAccount.balance.setScale(3).subtract(effectivePrice)

@@ -17,18 +17,18 @@ interface NotificationRepository : JpaRepository<NotificationEntity, Long> {
 
     @Query(
         """
-    SELECT n FROM NotificationEntity n
-    WHERE n.userId = :userId
-      AND n.partnerId = :partnerId
-      AND n.triggerType = :triggerType 
-      AND n.createdAt >= :startOfDay 
-      AND n.createdAt < :endOfDay
+        SELECT n FROM NotificationEntity n
+        WHERE n.userId = :userId
+          AND n.partnerId = :partnerId
+          AND n.createdAt >= :startOfDay 
+          AND n.createdAt < :endOfDay
+          AND n.promotionId IS NOT NULL
+        ORDER BY n.createdAt DESC
 """
     )
     fun findByUserIdAndPartnerIdAndNotificationTypeOnSentDate(
         @Param("userId") userId: Long,
         @Param("partnerId") partnerId: Long,
-        @Param("triggerType") triggerType: NotificationTriggerType,
         @Param("startOfDay") startOfDay: LocalDateTime,
         @Param("endOfDay") endOfDay: LocalDateTime
     ): NotificationEntity?
