@@ -45,21 +45,18 @@ class DataSeeder(
     }
 
 
-fun seedCategories(): List<CategoryEntity> {
-        if (categoryRepository.count() > 0L) {
-            println("Categories already exist. Skipping seeding.")
-            return categoryRepository.findAll()
-        }
-        val categories = listOf(
-            "retail","travel", "dining", "fashion", "technology" , "hospitality", "education", "entertainment",
-            "personal care","wholesale", "manufacturing", "healthcare", "financial services", "real estate", "logistics", "construction",
-            "agriculture", "automotive", "personal","consulting", "energy",
-        ).map { name -> CategoryEntity(name = name) }
+    fun seedCategories(): List<CategoryEntity> {
+        val existing = categoryRepository.findAll().associateBy { it.name }
 
-        val categoryEntities = categoryRepository.saveAll(categories)
-        println("Seeded default categories.")
+        val categoriesToSave = listOf(
+            "retail", "travel", "dining", "fashion", "technology", "hospitality", "education", "entertainment",
+            "personal care", "wholesale", "manufacturing", "healthcare", "financial services", "real estate",
+            "logistics", "construction", "agriculture", "automotive", "personal", "consulting", "energy", "cashback",
+        ).map { name -> existing[name] ?: CategoryEntity(name = name) }
 
-        return categoryEntities
+        val saved = categoryRepository.saveAll(categoriesToSave)
+        println("Upserted ${saved.size} categories.")
+        return saved
     }
 
     fun seedAccountProducts(): List<AccountProductEntity> {
@@ -527,6 +524,7 @@ fun seedCategories(): List<CategoryEntity> {
         val categoriesMap = categories.associateBy { it.name }
 
         val partnerToCategory = listOf(
+
             "Jumeirah Hotels" to categoriesMap.get("hospitality")!!,
             "Almosafer" to categoriesMap.get("travel")!!,
             "Caribou Coffee" to categoriesMap.get("dining")!!,
@@ -538,11 +536,12 @@ fun seedCategories(): List<CategoryEntity> {
             "H&M" to categoriesMap.get("fashion")!!,
             "Safat Home" to categoriesMap.get("retail")!!,
             "Spark Gym" to categoriesMap.get("personal care")!!,
-            "The Avenues Mall" to categoriesMap.get("retail")!!,
-            "360 Mall" to categoriesMap.get("retail")!!,
-            "The Sultan Center" to categoriesMap.get("wholesale")!!
+            "Pick" to categoriesMap.get("dining")!!,
+            "OFK" to categoriesMap.get("dining")!!,
+            "Grand Cinemas" to categoriesMap.get("entertainment")!!,
+            "Chips Store" to categoriesMap.get("technology")!!,
+            "Sultan Center" to categoriesMap.get("wholesale")!!
         )
-
 
        // val logisticsoBase = "http://localhost:9000/capstone-public/"
 
@@ -571,7 +570,7 @@ fun seedCategories(): List<CategoryEntity> {
 
     fun seedTiers() {
         if (xpTierRepository.count() > 0L) {
-            println("Perks already exist. Skipping seeding.")
+            println("XP Tiers already exist. Skipping seeding.")
             return
         }
         val tiers = listOf(

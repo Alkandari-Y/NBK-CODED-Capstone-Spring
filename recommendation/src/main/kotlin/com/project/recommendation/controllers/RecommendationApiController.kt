@@ -26,7 +26,7 @@ class RecommendationApiController(
 
     @PostMapping("/account-score")
     fun accountScoreRecommendationNotificationTrigger(request: AccountProductRecDto): ResponseEntity<Void> {
-        // TODO() hook up with notification service and create an empty service
+        // TODO: the endpoint that does nothing, yet
         recommendationService.triggerAccountScoreNotif(request)
         return ResponseEntity.ok().build()
     }
@@ -45,7 +45,6 @@ class RecommendationApiController(
         recommendationService.createGeofencingRecommendation(geoFenceRequest)
          return ResponseEntity.ok().build()
     }
-
 
     @PostMapping("/bluetooth-beacon")
     fun bluetoothBeaconNotificationTrigger(

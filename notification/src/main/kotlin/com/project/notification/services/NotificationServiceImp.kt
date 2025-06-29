@@ -19,6 +19,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Service
 class NotificationServiceImpl(
@@ -92,7 +93,31 @@ class NotificationServiceImpl(
     }
 
     override fun processAccountScoreNotification(event: AccountScoreNotification) {
-        TODO("Not yet implemented")
+        logger.info("Processing account score event: ${event.message} - ${event.userId}")
+        logger.info("[+]: ${event.userId}")
+        val userDevice = userDeviceRepository.findByUserId(event.userId) ?: throw APIException(
+            message = "User Firebasetoken not found",
+            httpStatus = HttpStatus.NOT_FOUND,
+            code = ErrorCode.FIREBASE_TOKEN_NOT_FOUND,
+        )
+
+        sendAccountScoreNotification(event, userDevice)
+
+        notificationRepository.save(
+            NotificationEntity(
+                userId = event.userId,
+                title = event.title,
+                message = event.message,
+                deliveryType = NotificationDeliveryType.PUSH,
+                createdAt = LocalDateTime.now(),
+                delivered = true,
+                partnerId = null,
+                eventId = null,
+                recommendationId = event.recommendationId,
+                promotionId = null,
+                triggerType = NotificationTriggerType.POS
+            )
+        )
     }
 
 
@@ -125,7 +150,6 @@ class NotificationServiceImpl(
                 .setToken(userDevice.firebaseToken)
                 .putData("title", "Promotions Nearby")
                 .putData("body", event.message)
-                .putData("someId", 1.toString())
                 .setNotification(
                     Notification.builder()
                         .setTitle("Promotions Nearby")
@@ -155,7 +179,6 @@ class NotificationServiceImpl(
                 .setToken(userDevice.firebaseToken)
                 .putData("title", title)
                 .putData("body", event.message)
-                .putData("someId", 1.toString())
                 .setNotification(
                     Notification.builder()
                         .setTitle(title)
@@ -166,6 +189,30 @@ class NotificationServiceImpl(
 
             val response = firebaseMessaging.send(message)
             logger.info("Sent geofence notification: $response")
+        } catch (e: Exception) {
+            logger.error("Failed to send notification to device ${userDevice.id}: ${e.message}")
+        }
+    }
+
+    private fun sendAccountScoreNotification(
+        event: AccountScoreNotification,
+        userDevice: UserDeviceEntity
+    ) {
+        try {
+            val message = Message.builder()
+                .setToken(userDevice.firebaseToken)
+                .putData("title", event.title)
+                .putData("body", event.message)
+                .setNotification(
+                    Notification.builder()
+                        .setTitle(event.title)
+                        .setBody(event.message)
+                        .build()
+                )
+                .build()
+
+            val response = firebaseMessaging.send(message)
+            logger.info("Sent account sore notification: $response")
         } catch (e: Exception) {
             logger.error("Failed to send notification to device ${userDevice.id}: ${e.message}")
         }

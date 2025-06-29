@@ -10,6 +10,7 @@ import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.requests.ble.BleStoreLocationRecommendationDataRequest
 import com.project.common.data.responses.accounts.UniqueUserProductsAndAllProducts
 import com.project.common.data.responses.accounts.AccountDto
+import com.project.common.data.responses.accounts.AccountWithProductResponse
 import com.project.common.data.responses.authentication.UserInfoDto
 import com.project.common.data.responses.ble.BleUserRecommendationInput
 import com.project.common.data.responses.transactions.PaymentDetails
@@ -151,5 +152,14 @@ class AccountApiController(
             accountService.getClientUniqueProductsAndAccountProducts(request),
             HttpStatus.OK
         )
+    }
+
+    // used by rec service
+    @GetMapping("/internal/{userId}")
+    fun getAllAccountsInternal(
+        @PathVariable("userId") userId: Long
+    ): ResponseEntity<List<AccountWithProductResponse>> {
+        val body = accountService.getAllAccountsInternal(userId)
+        return ResponseEntity(body, HttpStatus.OK)
     }
 }

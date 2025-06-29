@@ -1,7 +1,7 @@
 package com.project.banking.providers
 
 import com.project.common.data.requests.accountProducts.AccountProductRecDto
-import com.project.common.data.responses.RecommendationDto
+import com.project.common.data.responses.recommendation.RecommendationDto
 import com.project.common.data.responses.promotions.PromotionResponse
 import jakarta.inject.Named
 import org.springframework.beans.factory.annotation.Value

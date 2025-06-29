@@ -18,7 +18,7 @@ interface BusinessPartnerRepository: JpaRepository<BusinessPartnerEntity, Long> 
     SELECT bp FROM BusinessPartnerEntity bp
     WHERE bp.category.id = :categoryId
 """)
-    fun findByCategoryId(@Param("categoryId") categoryId: Long): List<BusinessPartnerEntity>
+    fun findAllByCategoryId(@Param("categoryId") categoryId: Long): List<BusinessPartnerEntity>
 
 
     @Query("""

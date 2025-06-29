@@ -1,15 +1,13 @@
 package com.project.notification.controllers
 
+import com.project.common.data.requests.AccountScoreNotification
 import com.project.common.data.requests.notifications.BleBeaconNotificationDto
 import com.project.common.data.requests.notifications.GeofenceNotificationDto
 import com.project.common.data.responses.notifications.NotificationResponseDto
-import com.project.common.enums.ErrorCode
 import com.project.common.enums.NotificationTriggerType
-import com.project.common.exceptions.APIException
 import com.project.common.exceptions.notifications.NotificationNotFoundException
 import com.project.common.security.RemoteUserPrincipal
 import com.project.notification.mappers.toResponseDto
-import com.project.notification.services.AccountScoreNotification
 import com.project.notification.services.NotificationService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus

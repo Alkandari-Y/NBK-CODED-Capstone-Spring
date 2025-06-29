@@ -1,6 +1,7 @@
 package com.project.banking.services
 
 import com.project.banking.entities.AccountEntity
+import com.project.banking.entities.TransactionEntity
 import com.project.common.data.requests.accounts.PaymentCreateRequest
 import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.transactions.PaymentDetails
@@ -17,5 +18,5 @@ interface TransactionService {
     ): TransactionDetails
 
     fun purchase(userId: Long, purchaseRequest: PaymentCreateRequest): PaymentDetails
-    fun awardCashback(source: AccountEntity, userId: Long, amount: BigDecimal)
+    fun awardCashback(source: AccountEntity, userId: Long, amount: BigDecimal): TransactionEntity
 }
