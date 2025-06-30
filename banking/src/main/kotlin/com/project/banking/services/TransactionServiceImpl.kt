@@ -1,6 +1,7 @@
 package com.project.banking.services
 
 import com.project.banking.entities.AccountEntity
+import com.project.banking.entities.AccountProductEntity
 import com.project.banking.entities.CategoryEntity
 import com.project.common.exceptions.accounts.AccountNotFoundException
 import com.project.common.exceptions.transactions.InsufficientFundsException
@@ -33,6 +34,7 @@ import com.project.common.exceptions.accounts.AccountNotActiveException
 import com.project.common.exceptions.auth.InvalidCredentialsException
 import com.project.common.exceptions.categories.CategoryNotFoundException
 import jakarta.transaction.Transactional
+import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
@@ -65,6 +67,7 @@ class TransactionServiceImpl(
             else -> emptyList()
         }
     }
+    private val logger = LoggerFactory.getLogger(TransactionServiceImpl::class.java)
 
     override fun getAllTransactionByUserId(userId: Long): List<TransactionDetails> {
         return transactionRepository.findAllByUserId(userId)
@@ -145,8 +148,8 @@ class TransactionServiceImpl(
 
         val businessPartner = businessPartnerRepository.findByAccountId(businessAccount.id!!)
             ?: throw APIException(
-                "Business partner not found", 
-                httpStatus = HttpStatus.NOT_FOUND, 
+                "Business partner not found",
+                httpStatus = HttpStatus.NOT_FOUND,
                 ErrorCode.BUSINESS_NOT_FOUND
             )
 
@@ -264,7 +267,7 @@ class TransactionServiceImpl(
                 calculateAccountScore(userId, accountProduct.id!!)
                     ?: Triple(0.0, 0, 0)
 
-            println("Account product score: $score")
+            logger.info("Account product score: $score")
 
             if (score < 0.15) {
                 val usersUniqueCards = accountRepository.findByOwnerIdActive(userId)
@@ -279,7 +282,6 @@ class TransactionServiceImpl(
                     currentAccountId = sourceAccount.id!!,
                     listOfOwnedUniqueAccountProductIds = usersUniqueCards
                 )
-                // TODO: this endpoint doesn't do anything yet
                 recommendationServiceProvider.triggerAccountScoreNotif(recDto)
             }
         }

@@ -29,7 +29,8 @@ class SecurityConfig(
                     "/api/v1/categories",
                     "/api/v1/products/**",
                     "/api/v1/kyc/client/**",
-
+                    "/api/v1/accounts/internal/**",
+                    "/api/v1/transactions/internal/**",
                 ).permitAll()
                     .requestMatchers(
                         HttpMethod.POST,

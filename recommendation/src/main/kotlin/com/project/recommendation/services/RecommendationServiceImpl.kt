@@ -1,10 +1,12 @@
 package com.project.recommendation.services
 
+import com.project.common.data.requests.AccountScoreNotification
 import com.project.common.data.requests.accountProducts.AccountProductRecDto
 import com.project.common.data.requests.ble.BlueToothBeaconNotificationRequest
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
 import com.project.common.data.requests.notifications.BleBeaconNotificationDto
 import com.project.common.data.requests.notifications.GeofenceNotificationDto
+import com.project.common.data.requests.recommendations.RecommendedAccountProducts
 import com.project.common.data.responses.accountProducts.AccountProductDto
 import com.project.common.data.responses.businessPartners.BusinessPartnerDto
 import com.project.common.data.responses.kyc.KYCResponse
@@ -17,18 +19,22 @@ import com.project.common.enums.RewardType
 import com.project.common.exceptions.APIException
 import com.project.common.exceptions.kyc.KycNotFoundException
 import com.project.common.exceptions.storeLocations.StoreLocationNotFoundException
+import com.project.recommendation.entities.AccountScoreEntity
 import com.project.recommendation.entities.FavCategoryEntity
 import com.project.recommendation.entities.PromotionEntity
 import com.project.recommendation.entities.RecommendationEntity
 import com.project.recommendation.mappers.toRecommendation
+import com.project.recommendation.mappers.toRecommendedAccountProduct
 import com.project.recommendation.providers.BankServiceProvider
 import com.project.recommendation.providers.NotificationServiceProvider
+import com.project.recommendation.repositories.AccountScoreRepository
 import com.project.recommendation.repositories.PromotionRepository
 import com.project.recommendation.repositories.RecommendationRepository
 import com.project.recommendation.repositories.StoreLocationRepository
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
@@ -46,6 +52,7 @@ class RecommendationServiceImpl(
     private val promotionRepository: PromotionRepository,
     private val storeLocationRepository: StoreLocationRepository,
     private val bankServiceProvider: BankServiceProvider,
+    private val accountScoreRepository: AccountScoreRepository
 ) : RecommendationService {
     private val logger = LoggerFactory.getLogger(GeofenceNotificationDto::class.java)
 
@@ -248,42 +255,72 @@ class RecommendationServiceImpl(
         return featureScore
     }
 
-    // TODO: gut like a fish and fix (the current impl uses onboarding-specific functions)
-    // in CategoryScoreService there are two new functions
-    // calculateCategoryScore(), and getTop3Categories()
-    // you can use getTop3, it iterates the calculation over every single category
-    // and returns the top 3, obviously
-    // the function below needs to calculate the top 3 products
-    // send num 1 to the account score drop notif
-    //    (or make a different function for that one?)
-    // send to another fun that lists all acc products
-    //    - first the top 3, highlighted
-    //    - then the rest, that are eligible
-    //    - then the remaining ineligible ones
-    override fun getTopProductRecommendations(userId: Long): List<AccountProductDto> {
-//        val userKyc = businessServiceProvider.getUserKyc(userId) ?: throw KycNotFoundException(userId)
-//        val businessPartners = businessServiceProvider.getAllBusinessPartners()
-//        val allProducts = businessServiceProvider.getAllAccountProducts()
-//
-//        val favCategories = favCategoriesService.findAllFavCategories(userId)
-//        val favBusinesses = favBusinessService.findAllFavBusinesses(userId)
-//
-//        val favoriteBusinessPartners = businessPartners.filter { partner ->
-//            partner.id in favBusinesses.map { it.partnerId }
-//        }
-//
-//        val creditCards = allProducts.filter { it.accountType == AccountType.CREDIT.toString() }
-//
-//        return recommendCreditCards(
-//            userKyc = userKyc,
-//            favoriteCategories = favCategories,
-//            favoriteBusinesses = favoriteBusinessPartners,
-//            allAccountProducts = creditCards,
-//        ).take(3).map { it.copy(recommended = true) }
-        return emptyList()
+    override fun getTopProductRecommendations(userId: Long): List<RecommendedAccountProducts> {
+        logger.info("Fetching top product recommendations for user $userId")
+
+        val allProducts = businessServiceProvider.getAllAccountProducts().filter { it.accountType == AccountType.CREDIT.toString() }
+        logger.info("Retrieved ${allProducts.size} total account products")
+
+        val userOwnedAccountProductIds = businessServiceProvider.getUserAccountProducts(userId)
+            .map { it.accountProduct.id }
+            .distinct()
+            .toSet()
+        logger.info("User $userId owns ${userOwnedAccountProductIds.size} unique account products: $userOwnedAccountProductIds")
+
+        val existingRecommendations = recommendationRepository.findAllByUserIdAndRecType(
+            userId = userId,
+            recType = RecommendationType.ACCOUNT_PRODUCT
+        )
+
+        val recommendedProductIds = existingRecommendations
+            .mapNotNull { it.genericIdRef }
+            .toSet()
+        logger.info("User $userId has ${recommendedProductIds.size} existing recommended product IDs: $recommendedProductIds")
+
+        // Identify and remove stale recommendations
+        val excludedRecommendations = existingRecommendations
+            .filter { it.genericIdRef != null && it.genericIdRef in userOwnedAccountProductIds }
+            .mapNotNull { it.id }
+
+        if (excludedRecommendations.isNotEmpty()) {
+            logger.info("Removing ${excludedRecommendations.size} stale recommendations for user $userId as user now owns them: $excludedRecommendations")
+            recommendationRepository.deleteAllByIds(excludedRecommendations)
+        } else {
+            logger.info("No stale recommendations to remove for user $userId")
+        }
+
+        val recommendedProducts = allProducts.filter { it.id in recommendedProductIds }.map { product ->
+            product.toRecommendedAccountProduct(recommended = true, isOwned = false).also {
+                logger.debug("Product ${product.id} marked as RECOMMENDED for user $userId")
+            }
+        }
+
+        val unownedProducts = allProducts.filter { it.id !in userOwnedAccountProductIds }.map { product ->
+            product.toRecommendedAccountProduct(recommended = false, isOwned = false).also {
+                logger.debug("Product ${product.id} marked as AVAILABLE for recommendation for user $userId")
+            }
+        }
+
+        val userOwnedProducts = allProducts.filter { it.id in userOwnedAccountProductIds }.map { product ->
+            product.toRecommendedAccountProduct(recommended = false, isOwned = true).also {
+                logger.debug("Product ${product.id} marked as OWNED for user $userId")
+            }
+        }
+
+        val sortedProducts = recommendedProducts + unownedProducts + userOwnedProducts
+
+
+        logger.info("Completed categorization of products for user $userId: " +
+                "${sortedProducts.count { it.recommended }} recommended, " +
+                "${sortedProducts.count { it.isOwned }} owned, " +
+                "${sortedProducts.count { !it.recommended && !it.isOwned }} unowned/unrecommended")
+
+        return sortedProducts
     }
 
 
+
+    @Transactional
     override fun createGeofencingRecommendation(
         geofenceData: GeofenceEventRequest,
     ): RecommendationEntity? {
@@ -356,15 +393,14 @@ class RecommendationServiceImpl(
             val bestPromotion = categoryBasedPromotions.maxByOrNull { it.endDate?.toEpochDay() ?: 0 } ?: return null
             val recommendation = recommendationRepository.save(bestPromotion.toRecommendation(userId))
             val partner = allPartners.firstOrNull { it.id == bestPromotion.businessPartnerId } ?: return null
+
+            logger.info("Sending promotion notification from category-matched partner: ${partner.name}")
             sendGeoNotification(
                 promotion = bestPromotion,
                 recommendation = recommendation,
                 partner = partner,
                 geofenceData = geofenceData
             )
-
-            logger.info("Sending promotion notification from category-matched partner: ${partner.name}")
-            sendGeoNotification(promotion = bestPromotion, recommendation = recommendation, partner = partner, geofenceData = geofenceData)
             return recommendation
         }
 
@@ -391,9 +427,91 @@ class RecommendationServiceImpl(
         return null
     }
 
+    @Transactional
     override fun triggerAccountScoreNotif(request: AccountProductRecDto) {
-        // TODO: impl for triggering the account score notif, with the top card recommendation
+        val userId = request.userId
+
+        val existingAccountScore = accountScoreRepository.findAllByUserIdAndAccountId(
+            userId = userId,
+            accountId = request.currentAccountId
+        )
+
+        val newAccountScore = AccountScoreEntity(
+            id = existingAccountScore?.id,
+            accountId = request.currentAccountId,
+            userId = userId,
+            accountScoreRating = request.accountScore
+                .toBigDecimal()
+                .setScale(3, RoundingMode.HALF_UP)
+        )
+        accountScoreRepository.save(newAccountScore)
+
+        if (request.accountScore >= 0.15) {
+            logger.info("Account score ${request.accountScore} for user $userId above threshold, no recommendation needed.")
+            return
+        }
+
+        logger.info("Account score ${request.accountScore} for user $userId below threshold, generating recommendations.")
+
+        val userKyc = businessServiceProvider.getUserKyc(userId) ?: throw KycNotFoundException(userId)
+        val businessPartners = businessServiceProvider.getAllBusinessPartners()
+        val allProducts = businessServiceProvider.getAllAccountProducts()
+        val favCategories = favCategoriesService.findAllFavCategories(userId)
+        val favBusinesses = favBusinessService.findAllFavBusinesses(userId)
+
+        val creditCards = allProducts.filter { it.accountType == AccountType.CREDIT.toString() }
+
+
+        val favoriteBusinessPartners = businessPartners.filter { partner ->
+            partner.id in favBusinesses.map { it.partnerId }
+        }
+
+
+        val topCategories = categoryScoreService.getTop3Categories(userId)
+        val ownedProductIds = request.listOfOwnedUniqueAccountProductIds.toSet()
+
+        val recommendedCards = recommendCreditCards(
+            userKyc = userKyc,
+            favoriteCategories = favCategories.filter { it.categoryId in topCategories },
+            favoriteBusinesses = favoriteBusinessPartners,
+            allAccountProducts = creditCards
+        ).filterNot { card ->
+            card.id in ownedProductIds
+        }.take(3)
+
+        if (recommendedCards.isEmpty()) {
+            logger.info("No eligible recommended cards found for user $userId below score threshold.")
+            return
+        }
+
+        recommendationRepository.deleteAllByUserIdAndRecType(userId, RecommendationType.ACCOUNT_PRODUCT)
+        recommendedCards.forEachIndexed { index, card ->
+            val recommendation = RecommendationEntity(
+                genericIdRef = card.id,
+                userId = userId,
+                recType = RecommendationType.ACCOUNT_PRODUCT
+            )
+            recommendationRepository.save(recommendation)
+
+            if (index == 0) {
+                val productName = card.name ?: "Your New Card"
+                notificationProvider.sendAccountProductRecommendationNotification(
+                    AccountScoreNotification(
+                        userId = userId,
+                        accountProductId = card.id!!,
+                        accountProductName = card.name!!,
+                        recommendationId = recommendation.id!!,
+                        title = "Earn More with $productName",
+                        message = "Apply and get more cashbacks and discounts"
+                    )
+                )
+                logger.info("Sent account product recommendation notification for user $userId with cardId ${card.id}")
+            }
+        }
+
+        logger.info("Finished generating ${recommendedCards.size} card recommendations for user $userId due to low account score.")
     }
+
 
     override fun triggerBluetoothBeaconNotification(
         request: BlueToothBeaconNotificationRequest

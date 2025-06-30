@@ -43,7 +43,7 @@ class CategoryScoreServiceImpl(
             categoryScore.copy(frequency = categoryScore.frequency + 1))
     }
 
-    override fun findAllCategoryScores(userId: Long): List<CategoryScoreEntity>? {
+    override fun findAllCategoryScores(userId: Long): List<CategoryScoreEntity> {
         return categoryScoreRepository.findAllByUserId(userId)
     }
 
@@ -51,8 +51,6 @@ class CategoryScoreServiceImpl(
         return categoryScoreRepository.findByCategoryIdAndUserId(userId, categoryId)
             ?: throw CategoryScoreNotFoundException()
     }
-
-
 
 
     override fun calculateCategoryScore(userId: Long, categoryId: Long): Double {

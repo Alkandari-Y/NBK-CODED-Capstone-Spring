@@ -6,7 +6,7 @@ import com.project.recommendation.entities.CategoryScoreEntity
 interface CategoryScoreService {
     fun createUserCategoryScores(userId: Long)
     fun incrementCategoryFrequency(request: IncrementCategoryScoreRequest)
-    fun findAllCategoryScores(userId: Long): List<CategoryScoreEntity>?
+    fun findAllCategoryScores(userId: Long): List<CategoryScoreEntity>
     fun findCategoryScoreById(userId: Long, categoryId: Long): CategoryScoreEntity
     fun calculateCategoryScore(userId: Long, categoryId: Long): Double
     fun getTop3Categories(userId: Long): List<Long>

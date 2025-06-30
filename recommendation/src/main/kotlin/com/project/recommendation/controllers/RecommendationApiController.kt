@@ -3,6 +3,7 @@ package com.project.recommendation.controllers
 import com.project.common.data.requests.accountProducts.AccountProductRecDto
 import com.project.common.data.requests.ble.BlueToothBeaconNotificationRequest
 import com.project.common.data.requests.geofencing.GeofenceEventRequest
+import com.project.common.data.requests.recommendations.RecommendedAccountProducts
 import com.project.common.data.responses.accountProducts.AccountProductDto
 import com.project.common.security.RemoteUserPrincipal
 import com.project.recommendation.services.RecommendationService
@@ -23,10 +24,16 @@ class RecommendationApiController(
     private val storeLocationsService: StoreLocationsService,
     private val recommendationService: RecommendationService,
 ) {
+    @GetMapping
+    fun getTopProductRecommendations(
+        @AuthenticationPrincipal user: RemoteUserPrincipal
+    ): ResponseEntity<List<RecommendedAccountProducts>> {
+        val recommended = recommendationService.getTopProductRecommendations(user.getUserId())
+        return ResponseEntity.ok(recommended)
+    }
 
     @PostMapping("/account-score")
-    fun accountScoreRecommendationNotificationTrigger(request: AccountProductRecDto): ResponseEntity<Void> {
-        // TODO: the endpoint that does nothing, yet
+    fun accountScoreRecommendationNotificationTrigger(@Valid @RequestBody request: AccountProductRecDto): ResponseEntity<Void> {
         recommendationService.triggerAccountScoreNotif(request)
         return ResponseEntity.ok().build()
     }

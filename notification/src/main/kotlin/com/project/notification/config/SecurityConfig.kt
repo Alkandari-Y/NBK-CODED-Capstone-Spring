@@ -23,7 +23,7 @@ class SecurityConfig(
             .authorizeHttpRequests {
                 it.requestMatchers(
                     HttpMethod.POST, "/api/v1/notifications/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/notifications/search").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/notifications/search/**").permitAll()
                     .anyRequest().authenticated()
             }
             .sessionManagement {
