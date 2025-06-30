@@ -32,6 +32,7 @@ import com.project.common.exceptions.accountProducts.AccountProductNotFoundExcep
 import com.project.common.exceptions.transactions.AccountLookupException
 import com.project.common.exceptions.accounts.AccountNotActiveException
 import com.project.common.exceptions.auth.InvalidCredentialsException
+import com.project.common.exceptions.businessPartner.BusinessNotFoundException
 import com.project.common.exceptions.categories.CategoryNotFoundException
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
@@ -147,11 +148,7 @@ class TransactionServiceImpl(
             purchaseRequest.amount)
 
         val businessPartner = businessPartnerRepository.findByAccountId(businessAccount.id!!)
-            ?: throw APIException(
-                "Business partner not found",
-                httpStatus = HttpStatus.NOT_FOUND,
-                ErrorCode.BUSINESS_NOT_FOUND
-            )
+            ?: throw BusinessNotFoundException()
 
         val category = businessPartner.category
             ?: throw CategoryNotFoundException()
@@ -166,7 +163,7 @@ class TransactionServiceImpl(
         var effectivePrice = purchaseRequest.amount.setScale(3)
 
         // check for active promos
-        val promotions = businessPartner?.id?.let {
+        val promotions = businessPartner.id?.let {
             recommendationServiceProvider.getActivePromotionsByBusiness(it)
         } ?: emptyList()
 
