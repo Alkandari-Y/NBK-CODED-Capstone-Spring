@@ -25,6 +25,7 @@ class RemoteAuthenticationFilter(
         "/api/v1/kyc/client",
         "/api/v1/accounts/clients/",
         "/api/v1/accounts/internal",
+        "/api/v1/transactions/internal",
     )
 
     val publicPostUrls = listOf(

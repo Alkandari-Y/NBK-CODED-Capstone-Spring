@@ -258,7 +258,7 @@ class RecommendationServiceImpl(
     override fun getTopProductRecommendations(userId: Long): List<RecommendedAccountProducts> {
         logger.info("Fetching top product recommendations for user $userId")
 
-        val allProducts = businessServiceProvider.getAllAccountProducts()
+        val allProducts = businessServiceProvider.getAllAccountProducts().filter { it.accountType == AccountType.CREDIT.toString() }
         logger.info("Retrieved ${allProducts.size} total account products")
 
         val userOwnedAccountProductIds = businessServiceProvider.getUserAccountProducts(userId)
@@ -289,31 +289,33 @@ class RecommendationServiceImpl(
             logger.info("No stale recommendations to remove for user $userId")
         }
 
-        val categorizedProducts = allProducts.map { product ->
-            when {
-                product.id in recommendedProductIds ->
-                    product.toRecommendedAccountProduct(recommended = true, isOwned = false).also {
-                        logger.debug("Product ${product.id} marked as RECOMMENDED for user $userId")
-                    }
-
-                product.id in userOwnedAccountProductIds ->
-                    product.toRecommendedAccountProduct(recommended = false, isOwned = true).also {
-                        logger.debug("Product ${product.id} marked as OWNED for user $userId")
-                    }
-
-                else ->
-                    product.toRecommendedAccountProduct(recommended = false, isOwned = false).also {
-                        logger.debug("Product ${product.id} marked as AVAILABLE for recommendation for user $userId")
-                    }
+        val recommendedProducts = allProducts.filter { it.id in recommendedProductIds }.map { product ->
+            product.toRecommendedAccountProduct(recommended = true, isOwned = false).also {
+                logger.debug("Product ${product.id} marked as RECOMMENDED for user $userId")
             }
         }
 
-        logger.info("Completed categorization of products for user $userId: " +
-                "${categorizedProducts.count { it.recommended }} recommended, " +
-                "${categorizedProducts.count { it.isOwned }} owned, " +
-                "${categorizedProducts.count { !it.recommended && !it.isOwned }} unowned/unrecommended")
+        val unownedProducts = allProducts.filter { it.id !in userOwnedAccountProductIds }.map { product ->
+            product.toRecommendedAccountProduct(recommended = false, isOwned = false).also {
+                logger.debug("Product ${product.id} marked as AVAILABLE for recommendation for user $userId")
+            }
+        }
 
-        return categorizedProducts
+        val userOwnedProducts = allProducts.filter { it.id in userOwnedAccountProductIds }.map { product ->
+            product.toRecommendedAccountProduct(recommended = false, isOwned = true).also {
+                logger.debug("Product ${product.id} marked as OWNED for user $userId")
+            }
+        }
+
+        val sortedProducts = recommendedProducts + unownedProducts + userOwnedProducts
+
+
+        logger.info("Completed categorization of products for user $userId: " +
+                "${sortedProducts.count { it.recommended }} recommended, " +
+                "${sortedProducts.count { it.isOwned }} owned, " +
+                "${sortedProducts.count { !it.recommended && !it.isOwned }} unowned/unrecommended")
+
+        return sortedProducts
     }
 
 

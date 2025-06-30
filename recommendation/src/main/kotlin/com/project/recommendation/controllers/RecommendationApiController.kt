@@ -33,7 +33,7 @@ class RecommendationApiController(
     }
 
     @PostMapping("/account-score")
-    fun accountScoreRecommendationNotificationTrigger(request: AccountProductRecDto): ResponseEntity<Void> {
+    fun accountScoreRecommendationNotificationTrigger(@Valid @RequestBody request: AccountProductRecDto): ResponseEntity<Void> {
         recommendationService.triggerAccountScoreNotif(request)
         return ResponseEntity.ok().build()
     }

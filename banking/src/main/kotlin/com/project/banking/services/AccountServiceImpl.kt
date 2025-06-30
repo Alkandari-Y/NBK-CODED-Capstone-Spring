@@ -13,6 +13,7 @@ import com.project.banking.repositories.AccountRepository
 import com.project.banking.repositories.BusinessPartnerRepository
 import com.project.common.data.requests.accounts.AccountCreateRequest
 import com.project.common.data.requests.ble.BleStoreLocationRecommendationDataRequest
+import com.project.common.data.requests.notifications.GeofenceNotificationDto
 import com.project.common.data.responses.accounts.UniqueUserProductsAndAllProducts
 import com.project.common.data.responses.accounts.AccountDto
 import com.project.common.data.responses.accounts.AccountWithProductResponse
@@ -28,6 +29,7 @@ import com.project.common.exceptions.accountProducts.MultipleCashbackException
 import com.project.common.exceptions.accounts.AccountLimitException
 import com.project.common.exceptions.accounts.AccountNotFoundException
 import com.project.common.exceptions.businessPartner.BusinessNotFoundException
+import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.CachePut
 import org.springframework.data.repository.findByIdOrNull
@@ -35,6 +37,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
+import kotlin.math.log
 
 @Service
 class AccountServiceImpl(
@@ -46,6 +49,8 @@ class AccountServiceImpl(
     private val categoryService: CategoryService,
     private val businessPartnerRepository: BusinessPartnerRepository
 ): AccountService {
+    private val logger = LoggerFactory.getLogger(AccountProductEntity::class.java)
+
     override fun getActiveAccountsByUserId(userId: Long): List<AccountDto> {
        return accountRepository.findByOwnerIdActive(userId)
     }
@@ -215,13 +220,23 @@ class AccountServiceImpl(
     }
 
     override fun getAllAccountsInternal(userId: Long): List<AccountWithProductResponse> {
-        val accounts = accountRepository.findByOwnerIdActive(userId)
-        val uniqueProductIds = accounts.map { it.accountProductId }.toSet()
+        logger.info("Fetching internal accounts for userId=$userId")
+
+        val accounts = getActiveAccountsByUserId(userId)
+        logger.info("Retrieved ${accounts.size} active accounts for userId=$userId")
+
+        val uniqueProductIds = accounts.map { it.accountProductId }.distinct()
+        logger.info("Extracted ${uniqueProductIds.size} unique product IDs for userId=$userId: $uniqueProductIds")
+
         val products = accountProductRepository.findAllById(uniqueProductIds).associateBy { it.id }
+        logger.info("Fetched ${products.size} account products for userId=$userId")
 
         return accounts.map { account ->
-            val product = products[account.accountProductId] ?: throw AccountNotFoundException()
-            AccountWithProductResponse(
+            val product = products[account.accountProductId] ?: run {
+                logger.error("Account product not found for accountId=${account.id}, productId=${account.accountProductId}, userId=$userId")
+                throw AccountNotFoundException()
+            }
+            val response = AccountWithProductResponse(
                 id = account.id,
                 accountNumber = account.accountNumber,
                 balance = account.balance,
@@ -230,6 +245,10 @@ class AccountServiceImpl(
                 accountProduct = product.toDto(),
                 accountType = account.accountType
             )
+            logger.debug("Prepared AccountWithProductResponse for accountId=${account.id}, userId=$userId")
+            response
+        }.also {
+            logger.info("Returning ${it.size} AccountWithProductResponse entries for userId=$userId")
         }
     }
 }

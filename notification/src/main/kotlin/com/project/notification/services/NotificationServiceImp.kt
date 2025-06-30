@@ -101,7 +101,6 @@ class NotificationServiceImpl(
             httpStatus = HttpStatus.NOT_FOUND,
             code = ErrorCode.FIREBASE_TOKEN_NOT_FOUND,
         )
-
         sendAccountScoreNotification(event, userDevice)
 
         notificationRepository.save(
