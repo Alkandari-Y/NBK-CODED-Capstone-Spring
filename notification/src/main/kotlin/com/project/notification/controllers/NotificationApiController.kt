@@ -76,5 +76,3 @@ class NotificationApiController(
         return ResponseEntity.ok().build()
     }
 }
-
-// merged
