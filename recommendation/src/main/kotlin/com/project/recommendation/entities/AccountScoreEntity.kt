@@ -14,7 +14,7 @@ data class AccountScoreEntity(
     @Column(name = "account_id", nullable = false)
     var accountId: Long? = null,
 
-    @Column(name = "account_score_rating", nullable = false)
+    @Column(name = "account_score_rating", nullable = false, precision = 9, scale = 3)
     var accountScoreRating: BigDecimal = BigDecimal.ZERO,
 
     @Column(name = "user_id", nullable = false)

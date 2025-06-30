@@ -20,6 +20,7 @@ class RemoteAuthenticationFilter(
     val publicUrls = listOf(
         "/api/v1/store-locations",
         "/api/v1/promotions",
+        "/api/v1/api/v1/notifications/search"
     )
     override fun doFilterInternal(
         request: HttpServletRequest,

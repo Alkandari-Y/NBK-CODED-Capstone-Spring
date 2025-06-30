@@ -279,7 +279,6 @@ class TransactionServiceImpl(
                     currentAccountId = sourceAccount.id!!,
                     listOfOwnedUniqueAccountProductIds = usersUniqueCards
                 )
-                // TODO: this endpoint doesn't do anything yet
                 recommendationServiceProvider.triggerAccountScoreNotif(recDto)
             }
         }

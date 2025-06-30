@@ -29,7 +29,7 @@ class SecurityConfig(
                     "/api/v1/categories",
                     "/api/v1/products/**",
                     "/api/v1/kyc/client/**",
-
+                    "/api/v1/accounts/internal/**",
                 ).permitAll()
                     .requestMatchers(
                         HttpMethod.POST,

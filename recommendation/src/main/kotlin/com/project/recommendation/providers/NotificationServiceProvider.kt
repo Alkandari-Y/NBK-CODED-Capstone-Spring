@@ -1,5 +1,6 @@
 package com.project.recommendation.providers
 
+import com.project.common.data.requests.AccountScoreNotification
 import com.project.common.data.requests.notifications.BleBeaconNotificationDto
 import com.project.common.data.requests.notifications.GeofenceNotificationDto
 import com.project.common.exceptions.APIException
@@ -52,6 +53,25 @@ class NotificationServiceProvider(
             )
         } catch (ex: HttpClientErrorException.NotFound) {
             throw APIException("error fetching sending notification")
+        }
+    }
+
+    fun sendAccountProductRecommendationNotification(recommendation: AccountScoreNotification) {
+        val headers = HttpHeaders().apply {
+            contentType = MediaType.APPLICATION_JSON
+        }
+
+        val request = HttpEntity<AccountScoreNotification>(recommendation, headers)
+
+        try {
+            RestTemplate().exchange(
+                "$notificationServiceURL/notifications/account-score",
+                HttpMethod.POST,
+                request,
+                Void::class.java
+            )
+        } catch (ex: HttpClientErrorException.NotFound) {
+            throw APIException("error fetching sending account recommendation")
         }
     }
 }
