@@ -524,7 +524,7 @@ class DataSeeder(
         val categoriesMap = categories.associateBy { it.name }
 
         val partnerToCategory = listOf(
-
+            "National Bank of Kuwait" to categoriesMap.get("financial services")!!,
             "Jumeirah Hotels" to categoriesMap.get("hospitality")!!,
             "Almosafer" to categoriesMap.get("travel")!!,
             "Caribou Coffee" to categoriesMap.get("dining")!!,
