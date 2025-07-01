@@ -1,6 +1,6 @@
 ![](/common/src/main/resources/assets/logo.png)
-Welcome to **Klue** — your onboarding banking rewards platform blending secure accounts, XP tiers, partner perks, and smart, contextual notifications.
 
+Welcome to **Klue** — your onboarding banking rewards platform blending secure accounts, XP tiers, partner perks, and smart, contextual notifications.
 
 <!-- TOC -->
   * [Architecture](#architecture)
