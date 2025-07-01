@@ -1,6 +1,6 @@
 package com.project.recommendation.services
 
-import com.project.common.data.requests.AccountScoreNotification
+import com.project.common.data.requests.notifications.AccountScoreNotification
 import com.project.common.data.requests.accountProducts.AccountProductRecDto
 import com.project.common.data.requests.ble.BlueToothBeaconNotificationRequest
 import com.project.common.data.requests.geofencing.GeofenceEventRequest

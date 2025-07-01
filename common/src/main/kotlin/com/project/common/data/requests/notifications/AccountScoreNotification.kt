@@ -1,4 +1,4 @@
-package com.project.common.data.requests
+package com.project.common.data.requests.notifications
 
 data class AccountScoreNotification(
     val userId: Long,
