@@ -56,10 +56,12 @@ class NotificationServiceImpl(
         logger.info("Processing geofence event: ${event.message} - ${event.userId}")
         logger.info("[+]: ${event.userId}")
         val userDevice = userDeviceRepository.findByUserId(event.userId) ?: return
+        val title = if (event.promotionId == null) { event.message.split("at ").last() } else { "Promotions Nearby" }
+        sendGeofenceNotification(event, userDevice)
 
         notificationRepository.save(NotificationEntity(
             userId = event.userId,
-            title = "Promotions Nearby",
+            title = title,
             message = event.message,
             deliveryType = NotificationDeliveryType.PUSH,
             delivered = true,
@@ -69,7 +71,6 @@ class NotificationServiceImpl(
             promotionId = event.promotionId,
             triggerType = NotificationTriggerType.GPS,
         ))
-        sendGeofenceNotification(event, userDevice)
     }
 
     override fun processBleNotification(event: BleBeaconNotificationDto) {
@@ -142,9 +143,8 @@ class NotificationServiceImpl(
         event: GeofenceNotificationDto,
         userDevice: UserDeviceEntity,
     ) {
-
         try {
-            val message = Message.builder()
+            val messageBuilder = Message.builder()
                 .setToken(userDevice.firebaseToken)
                 .putData("title", "Promotions Nearby")
                 .putData("body", event.message)
@@ -154,8 +154,21 @@ class NotificationServiceImpl(
                         .setBody(event.message)
                         .build()
                 )
-                .build()
 
+            // Only add deep link if there's a promotion
+            if (event.promotionId != null) {
+                val deepLink = "nbkcapstone://promotion/${event.promotionId}"
+                val targetScreen = "promotion"
+                val parameters = mapOf("promotionId" to event.promotionId.toString())
+
+                messageBuilder
+                    .putData("deepLink", deepLink)
+                    .putData("targetScreen", targetScreen)
+                    .putData("requiresAuth", "true")
+                    .putData("parameters", parameters.toString())
+            }
+
+            val message = messageBuilder.build()
             val response = firebaseMessaging.send(message)
             logger.info("Sent geofence notification: $response")
         } catch (e: Exception) {
@@ -172,8 +185,9 @@ class NotificationServiceImpl(
         } else {
             "Promotions Nearby"
         }
+        
         try {
-            val message = Message.builder()
+            val messageBuilder = Message.builder()
                 .setToken(userDevice.firebaseToken)
                 .putData("title", title)
                 .putData("body", event.message)
@@ -183,10 +197,23 @@ class NotificationServiceImpl(
                         .setBody(event.message)
                         .build()
                 )
-                .build()
 
+            // Only add deep link if there's a promotion
+            if (event.promotionId != null) {
+                val deepLink = "nbkcapstone://promotion/${event.promotionId}"
+                val targetScreen = "promotion"
+                val parameters = mapOf("promotionId" to event.promotionId.toString())
+
+                messageBuilder
+                    .putData("deepLink", deepLink)
+                    .putData("targetScreen", targetScreen)
+                    .putData("requiresAuth", "true")
+                    .putData("parameters", parameters.toString())
+            }
+
+            val message = messageBuilder.build()
             val response = firebaseMessaging.send(message)
-            logger.info("Sent geofence notification: $response")
+            logger.info("Sent BLE notification: $response")
         } catch (e: Exception) {
             logger.error("Failed to send notification to device ${userDevice.id}: ${e.message}")
         }
@@ -197,7 +224,7 @@ class NotificationServiceImpl(
         userDevice: UserDeviceEntity
     ) {
         try {
-            val message = Message.builder()
+            val messageBuilder = Message.builder()
                 .setToken(userDevice.firebaseToken)
                 .putData("title", event.title)
                 .putData("body", event.message)
@@ -207,10 +234,24 @@ class NotificationServiceImpl(
                         .setBody(event.message)
                         .build()
                 )
-                .build()
 
+            // Add deep link if there's a card product recommendation
+            // Assuming the recommendationId in account score notifications refers to card products
+            if (event.recommendationId != null) {
+                val deepLink = "nbkcapstone://card-product/${event.recommendationId}"
+                val targetScreen = "card-product"
+                val parameters = mapOf("cardProductId" to event.recommendationId.toString())
+
+                messageBuilder
+                    .putData("deepLink", deepLink)
+                    .putData("targetScreen", targetScreen)
+                    .putData("requiresAuth", "true")
+                    .putData("parameters", parameters.toString())
+            }
+
+            val message = messageBuilder.build()
             val response = firebaseMessaging.send(message)
-            logger.info("Sent account sore notification: $response")
+            logger.info("Sent account score notification: $response")
         } catch (e: Exception) {
             logger.error("Failed to send notification to device ${userDevice.id}: ${e.message}")
         }

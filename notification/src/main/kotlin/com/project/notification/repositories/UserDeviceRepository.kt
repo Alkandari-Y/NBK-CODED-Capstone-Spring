@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository
 interface UserDeviceRepository: JpaRepository<UserDeviceEntity, Long> {
     fun findByUserId(userId: Long): UserDeviceEntity?
     fun findByFirebaseToken(firebaseToken: String): UserDeviceEntity?
+    fun findByUserIdIn(userIds: List<Long>): List<UserDeviceEntity>
 
     fun deleteByUserId(userId: Long)
     fun deleteByFirebaseToken(firebaseToken: String)
