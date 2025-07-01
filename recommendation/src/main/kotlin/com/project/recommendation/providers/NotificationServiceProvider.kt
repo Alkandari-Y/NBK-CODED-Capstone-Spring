@@ -1,6 +1,6 @@
 package com.project.recommendation.providers
 
-import com.project.common.data.requests.AccountScoreNotification
+import com.project.common.data.requests.notifications.AccountScoreNotification
 import com.project.common.data.requests.notifications.BleBeaconNotificationDto
 import com.project.common.data.requests.notifications.GeofenceNotificationDto
 import com.project.common.exceptions.APIException

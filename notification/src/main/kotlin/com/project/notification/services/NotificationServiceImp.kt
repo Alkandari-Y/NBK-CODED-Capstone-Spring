@@ -3,7 +3,7 @@ package com.project.notification.services
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
-import com.project.common.data.requests.AccountScoreNotification
+import com.project.common.data.requests.notifications.AccountScoreNotification
 import com.project.common.data.requests.notifications.BleBeaconNotificationDto
 import com.project.common.data.requests.notifications.GeofenceNotificationDto
 import com.project.common.enums.ErrorCode
