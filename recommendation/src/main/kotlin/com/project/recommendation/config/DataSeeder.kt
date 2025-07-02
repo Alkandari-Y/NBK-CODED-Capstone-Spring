@@ -10,9 +10,7 @@ import java.math.BigDecimal
 import java.time.LocalTime
 import com.project.recommendation.repositories.PromotionRepository
 import com.project.recommendation.entities.PromotionEntity
-import com.project.common.enums.RewardType
 import com.project.recommendation.filters.LoggingFilter
-import jakarta.mail.Store
 import java.time.LocalDate
 
 
@@ -410,12 +408,12 @@ class DataSeeder(
         val signatureSpaPromotion = PromotionEntity(
             name = "Summer Spa Special",
             businessPartnerId = 19,
-            startDate = LocalDate.parse("2025-0-01"),
+            startDate = LocalDate.parse("2025-07-01"),
             endDate = LocalDate.parse("2025-07-15"),
             description = "Enjoy 20% off on selected spa products. Get the perfect fit for your body type."
         )
 
-        val coleHaan = PromotionEntity(
+        val coleHaanPromotion = PromotionEntity(
             name = "Cole's Hamra Special",
             businessPartnerId = 20,
             startDate = LocalDate.parse("2025-07-01"),
@@ -427,7 +425,7 @@ class DataSeeder(
             jumeirahPromotion, almosaferPromotion, caribouPromotion, shakeShackPromotion, voxPromotion,
             kuwaitAirwaysPromotion, xcitePromotion, hAndMPromotion, safatHomePromotion, sparkGymPromotion, pickPromotion,
             grandCinemasPromotion, chipsStorePromotion, sultanCenterPromotion, lushPromotion,
-            signatureSpaPromotion
+            signatureSpaPromotion, coleHaanPromotion
         ))
     }
 }

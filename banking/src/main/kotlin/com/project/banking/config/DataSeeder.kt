@@ -65,7 +65,7 @@ class DataSeeder(
             println("Account products already exist. Skipping seeding.")
             return accountProducts
         }
-        val description = "this card will give you a lot of perks and bonuses when used with our banking services and categories"
+        val description = "This card will give you a lot of perks and bonuses when used with our banking services and categories."
 
         // 1. Debit Card – No Credit, No Fees
         val debitAccount = AccountProductEntity(
@@ -112,7 +112,7 @@ class DataSeeder(
         val familyCard = AccountProductEntity(
             name = "Family Essential",
             accountType = AccountType.CREDIT,
-            description = "Perfect for families - earn rewards on groceries, education, healthcare and dining",
+            description = "Perfect for families — earn rewards on retail, wholesale, education, and healthcare purchases.",
             interestRate = BigDecimal("2.8"),
             minBalanceRequired = BigDecimal("0.000"),
             creditLimit = BigDecimal("1200.000"),
@@ -125,7 +125,7 @@ class DataSeeder(
         val youthCard = AccountProductEntity(
             name = "Youth Starter",
             accountType = AccountType.CREDIT,
-            description = "Designed for young adults - rewards on technology, fashion, dining and entertainment",
+            description = "Designed for young adults and students — enjoy perks on technology, fashion, and dining.",
             interestRate = BigDecimal("2.8"),
             minBalanceRequired = BigDecimal("0.000"),
             creditLimit = BigDecimal("600.000"),
@@ -138,7 +138,7 @@ class DataSeeder(
         val shopperCard = AccountProductEntity(
             name = "Shopper's Delight",
             accountType = AccountType.CREDIT,
-            description = "Maximize savings on retail, fashion, wholesale and personal purchases",
+            description = "Maximize savings on retail, fashion, and wholesale shopping with exclusive perks.",
             interestRate = BigDecimal("2.8"),
             minBalanceRequired = BigDecimal("0.000"),
             creditLimit = BigDecimal("1200.000"),
@@ -153,7 +153,7 @@ class DataSeeder(
         val travelCard = AccountProductEntity(
             name = "Travel Explorer",
             accountType = AccountType.CREDIT,
-            description = "Perfect for travelers - premium rewards on hospitality, dining, automotive and logistics",
+            description = "Ideal for travelers — get premium perks on travel, hospitality, automotive, dining, and logistics.",
             interestRate = BigDecimal("2.8"),
             minBalanceRequired = BigDecimal("0.000"),
             creditLimit = BigDecimal("2500.000"),
@@ -166,7 +166,7 @@ class DataSeeder(
         val businessProCard = AccountProductEntity(
             name = "Business Pro",
             accountType = AccountType.CREDIT,
-            description = "Tailored for business needs - rewards on consulting, financial services, technology and manufacturing",
+            description = "Tailored for entrepreneurs and businesses — earn perks on consulting, financial services, technology, and manufacturing.",
             interestRate = BigDecimal("2.1"),
             minBalanceRequired = BigDecimal("0.000"),
             creditLimit = BigDecimal("3000.000"),
@@ -179,7 +179,7 @@ class DataSeeder(
         val lifestyleCard = AccountProductEntity(
             name = "Lifestyle Premium",
             accountType = AccountType.CREDIT,
-            description = "For the style and health conscious - rewards on healthcare, fashion, personal care and hospitality",
+            description = "For the style and health conscious — enjoy perks on healthcare, fashion, personal care, and hospitality.",
             interestRate = BigDecimal("2.4"),
             minBalanceRequired = BigDecimal("0.000"),
             creditLimit = BigDecimal("2200.000"),
@@ -194,7 +194,7 @@ class DataSeeder(
         val platinumCard = AccountProductEntity(
             name = "Platinum Elite",
             accountType = AccountType.CREDIT,
-            description = "Exclusive benefits for high earners - premium rewards across real estate, automotive, energy, consulting and financial services",
+            description = "Exclusive card for high earners — unlock premium perks on real estate, automotive, energy, and consulting.",
             interestRate = BigDecimal("1.8"),
             minBalanceRequired = BigDecimal("0.000"),
             creditLimit = BigDecimal("6000.000"),
@@ -207,7 +207,7 @@ class DataSeeder(
         val diamondCard = AccountProductEntity(
             name = "Diamond VIP",
             accountType = AccountType.CREDIT,
-            description = "Ultimate luxury card for VIP clients - exceptional rewards across all premium categories including real estate, automotive, hospitality, energy and consulting",
+            description = "Ultimate luxury card for VIPs — exceptional perks on real estate, automotive, hospitality, energy, and consulting.",
             interestRate = BigDecimal("1.5"),
             minBalanceRequired = BigDecimal("0.000"),
             creditLimit = BigDecimal("10000.000"),
@@ -232,281 +232,191 @@ class DataSeeder(
             return
         }
 
+        fun categories(vararg names: String) = categories.filter { it.name in names }.toMutableList()
+
         val perks = mutableListOf<PerkEntity>()
 
-        // BASIC TIER PERKS
-
-        // Family Essential Card Perks
+        // BASIC TIER
         val familyCard = accountProducts.first { it.name == "Family Essential" }
         perks.addAll(listOf(
             PerkEntity(
                 type = RewardType.CASHBACK,
-                minPayment = BigDecimal("25.00"),
+                minPayment = BigDecimal("30.00"),
                 rewardsXp = 12,
-                perkAmount = BigDecimal("3.0"),
-                isTierBased = false,
+                perkAmount = BigDecimal("5.0"),
+                isTierBased = true,
                 accountProduct = familyCard,
-                categories = categories.filter { it.name in listOf("retail", "wholesale") }.toMutableList()
+                categories = categories("retail", "wholesale")
             ),
             PerkEntity(
                 type = RewardType.DISCOUNT,
-                minPayment = BigDecimal("40.00"),
+                minPayment = BigDecimal("50.00"),
                 rewardsXp = 15,
-                perkAmount = BigDecimal("5.0"),
-                isTierBased = false,
+                perkAmount = BigDecimal("6.0"),
+                isTierBased = true,
                 accountProduct = familyCard,
-                categories = categories.filter { it.name in listOf("education", "healthcare") }.toMutableList()
-            ),
-            PerkEntity(
-                type = RewardType.CASHBACK,
-                minPayment = BigDecimal("20.00"),
-                rewardsXp = 10,
-                perkAmount = BigDecimal("2.5"),
-                isTierBased = false,
-                accountProduct = familyCard,
-                categories = categories.filter { it.name in listOf("dining") }.toMutableList()
+                categories = categories("education", "healthcare")
             )
         ))
 
-        // Youth Starter Card Perks
         val youthCard = accountProducts.first { it.name == "Youth Starter" }
         perks.addAll(listOf(
             PerkEntity(
                 type = RewardType.CASHBACK,
-                minPayment = BigDecimal("15.00"),
-                rewardsXp = 8,
-                perkAmount = BigDecimal("2.0"),
-                isTierBased = false,
+                minPayment = BigDecimal("20.00"),
+                rewardsXp = 10,
+                perkAmount = BigDecimal("5.0"),
+                isTierBased = true,
                 accountProduct = youthCard,
-                categories = categories.filter { it.name in listOf("technology", "fashion") }.toMutableList()
+                categories = categories("technology", "fashion")
             ),
             PerkEntity(
                 type = RewardType.DISCOUNT,
-                minPayment = BigDecimal("30.00"),
+                minPayment = BigDecimal("40.00"),
                 rewardsXp = 12,
-                perkAmount = BigDecimal("4.0"),
-                isTierBased = false,
+                perkAmount = BigDecimal("6.0"),
+                isTierBased = true,
                 accountProduct = youthCard,
-                categories = categories.filter { it.name in listOf("dining") }.toMutableList()
+                categories = categories("dining")
             )
         ))
 
-        // Shopper's Delight Card Perks
         val shopperCard = accountProducts.first { it.name == "Shopper's Delight" }
         perks.addAll(listOf(
             PerkEntity(
                 type = RewardType.CASHBACK,
-                minPayment = BigDecimal("30.00"),
+                minPayment = BigDecimal("40.00"),
                 rewardsXp = 15,
-                perkAmount = BigDecimal("4.5"),
+                perkAmount = BigDecimal("6.0"),
                 isTierBased = true,
                 accountProduct = shopperCard,
-                categories = categories.filter { it.name in listOf("retail", "fashion", "wholesale") }.toMutableList()
+                categories = categories("retail", "fashion", "wholesale")
             ),
             PerkEntity(
                 type = RewardType.DISCOUNT,
                 minPayment = BigDecimal("50.00"),
                 rewardsXp = 18,
-                perkAmount = BigDecimal("6.0"),
+                perkAmount = BigDecimal("8.0"),
                 isTierBased = true,
                 accountProduct = shopperCard,
-                categories = categories.filter { it.name in listOf("retail") }.toMutableList()
+                categories = categories("retail")
             )
         ))
 
-        // MIDDLE TIER PERKS
-
-        // Travel Explorer Card Perks
+        // MIDDLE TIER
         val travelCard = accountProducts.first { it.name == "Travel Explorer" }
         perks.addAll(listOf(
             PerkEntity(
                 type = RewardType.CASHBACK,
-                minPayment = BigDecimal("50.00"),
+                minPayment = BigDecimal("60.00"),
                 rewardsXp = 20,
-                perkAmount = BigDecimal("6.0"),
-                isTierBased = true,
-                accountProduct = travelCard,
-                categories = categories.filter { it.name in listOf("hospitality", "automotive") }.toMutableList()
-            ),
-            PerkEntity(
-                type = RewardType.DISCOUNT,
-                minPayment = BigDecimal("75.00"),
-                rewardsXp = 25,
                 perkAmount = BigDecimal("8.0"),
                 isTierBased = true,
                 accountProduct = travelCard,
-                categories = categories.filter { it.name in listOf("dining", "logistics") }.toMutableList()
+                categories = categories("travel", "hospitality", "automotive")
             ),
             PerkEntity(
-                type = RewardType.CASHBACK,
-                minPayment = BigDecimal("40.00"),
-                rewardsXp = 18,
-                perkAmount = BigDecimal("4.5"),
-                isTierBased = false,
+                type = RewardType.DISCOUNT,
+                minPayment = BigDecimal("100.00"),
+                rewardsXp = 25,
+                perkAmount = BigDecimal("10.0"),
+                isTierBased = true,
                 accountProduct = travelCard,
-                categories = categories.filter { it.name in listOf("energy") }.toMutableList()
+                categories = categories("dining", "logistics")
             )
         ))
 
-        // Business Pro Card Perks
         val businessProCard = accountProducts.first { it.name == "Business Pro" }
         perks.addAll(listOf(
             PerkEntity(
                 type = RewardType.CASHBACK,
-                minPayment = BigDecimal("100.00"),
-                rewardsXp = 30,
-                perkAmount = BigDecimal("7.5"),
+                minPayment = BigDecimal("80.00"),
+                rewardsXp = 25,
+                perkAmount = BigDecimal("10.0"),
                 isTierBased = true,
                 accountProduct = businessProCard,
-                categories = categories.filter { it.name in listOf("consulting", "financial services") }.toMutableList()
+                categories = categories("consulting", "financial services")
             ),
             PerkEntity(
                 type = RewardType.DISCOUNT,
-                minPayment = BigDecimal("80.00"),
-                rewardsXp = 25,
-                perkAmount = BigDecimal("6.5"),
+                minPayment = BigDecimal("120.00"),
+                rewardsXp = 28,
+                perkAmount = BigDecimal("12.0"),
                 isTierBased = true,
                 accountProduct = businessProCard,
-                categories = categories.filter { it.name in listOf("technology", "manufacturing") }.toMutableList()
-            ),
-            PerkEntity(
-                type = RewardType.CASHBACK,
-                minPayment = BigDecimal("60.00"),
-                rewardsXp = 22,
-                perkAmount = BigDecimal("5.0"),
-                isTierBased = false,
-                accountProduct = businessProCard,
-                categories = categories.filter { it.name in listOf("logistics", "wholesale") }.toMutableList()
+                categories = categories("technology", "manufacturing")
             )
         ))
 
-        // Lifestyle Premium Card Perks
         val lifestyleCard = accountProducts.first { it.name == "Lifestyle Premium" }
         perks.addAll(listOf(
             PerkEntity(
                 type = RewardType.CASHBACK,
-                minPayment = BigDecimal("45.00"),
-                rewardsXp = 20,
-                perkAmount = BigDecimal("5.5"),
-                isTierBased = true,
-                accountProduct = lifestyleCard,
-                categories = categories.filter { it.name in listOf("healthcare", "fashion") }.toMutableList()
-            ),
-            PerkEntity(
-                type = RewardType.DISCOUNT,
                 minPayment = BigDecimal("60.00"),
-                rewardsXp = 25,
+                rewardsXp = 20,
                 perkAmount = BigDecimal("7.0"),
                 isTierBased = true,
                 accountProduct = lifestyleCard,
-                categories = categories.filter { it.name in listOf("personal", "hospitality") }.toMutableList()
-            ),
-            PerkEntity(
-                type = RewardType.CASHBACK,
-                minPayment = BigDecimal("35.00"),
-                rewardsXp = 15,
-                perkAmount = BigDecimal("3.5"),
-                isTierBased = false,
-                accountProduct = lifestyleCard,
-                categories = categories.filter { it.name in listOf("dining") }.toMutableList()
-            )
-        ))
-
-        // HIGH TIER PERKS
-
-        // Platinum Elite Card Perks
-        val platinumCard = accountProducts.first { it.name == "Platinum Elite" }
-        perks.addAll(listOf(
-            PerkEntity(
-                type = RewardType.CASHBACK,
-                minPayment = BigDecimal("150.00"),
-                rewardsXp = 40,
-                perkAmount = BigDecimal("10.0"),
-                isTierBased = true,
-                accountProduct = platinumCard,
-                categories = categories.filter { it.name in listOf("real estate", "automotive") }.toMutableList()
-            ),
-            PerkEntity(
-                type = RewardType.DISCOUNT,
-                minPayment = BigDecimal("120.00"),
-                rewardsXp = 35,
-                perkAmount = BigDecimal("12.0"),
-                isTierBased = true,
-                accountProduct = platinumCard,
-                categories = categories.filter { it.name in listOf("energy", "consulting") }.toMutableList()
-            ),
-            PerkEntity(
-                type = RewardType.CASHBACK,
-                minPayment = BigDecimal("100.00"),
-                rewardsXp = 30,
-                perkAmount = BigDecimal("8.0"),
-                isTierBased = true,
-                accountProduct = platinumCard,
-                categories = categories.filter { it.name in listOf("financial services", "hospitality") }.toMutableList()
+                categories = categories("healthcare", "fashion")
             ),
             PerkEntity(
                 type = RewardType.DISCOUNT,
                 minPayment = BigDecimal("80.00"),
                 rewardsXp = 25,
-                perkAmount = BigDecimal("6.0"),
-                isTierBased = false,
-                accountProduct = platinumCard,
-                categories = categories.filter { it.name in listOf("technology", "dining") }.toMutableList()
+                perkAmount = BigDecimal("9.0"),
+                isTierBased = true,
+                accountProduct = lifestyleCard,
+                categories = categories("personal", "hospitality")
             )
         ))
 
-        // Diamond VIP Card Perks
+        // HIGH TIER
+        val platinumCard = accountProducts.first { it.name == "Platinum Elite" }
+        perks.addAll(listOf(
+            PerkEntity(
+                type = RewardType.CASHBACK,
+                minPayment = BigDecimal("120.00"),
+                rewardsXp = 35,
+                perkAmount = BigDecimal("15.0"),
+                isTierBased = true,
+                accountProduct = platinumCard,
+                categories = categories("real estate", "automotive")
+            ),
+            PerkEntity(
+                type = RewardType.DISCOUNT,
+                minPayment = BigDecimal("200.00"),
+                rewardsXp = 40,
+                perkAmount = BigDecimal("20.0"),
+                isTierBased = true,
+                accountProduct = platinumCard,
+                categories = categories("energy", "consulting")
+            )
+        ))
+
         val diamondCard = accountProducts.first { it.name == "Diamond VIP" }
         perks.addAll(listOf(
             PerkEntity(
                 type = RewardType.CASHBACK,
-                minPayment = BigDecimal("200.00"),
-                rewardsXp = 50,
-                perkAmount = BigDecimal("15.0"),
-                isTierBased = true,
-                accountProduct = diamondCard,
-                categories = categories.filter { it.name in listOf("real estate", "automotive", "energy") }.toMutableList()
-            ),
-            PerkEntity(
-                type = RewardType.DISCOUNT,
-                minPayment = BigDecimal("180.00"),
-                rewardsXp = 45,
+                minPayment = BigDecimal("150.00"),
+                rewardsXp = 40,
                 perkAmount = BigDecimal("18.0"),
                 isTierBased = true,
                 accountProduct = diamondCard,
-                categories = categories.filter { it.name in listOf("hospitality", "consulting") }.toMutableList()
-            ),
-            PerkEntity(
-                type = RewardType.CASHBACK,
-                minPayment = BigDecimal("150.00"),
-                rewardsXp = 40,
-                perkAmount = BigDecimal("12.0"),
-                isTierBased = true,
-                accountProduct = diamondCard,
-                categories = categories.filter { it.name in listOf("financial services", "technology") }.toMutableList()
+                categories = categories("real estate", "automotive", "energy")
             ),
             PerkEntity(
                 type = RewardType.DISCOUNT,
-                minPayment = BigDecimal("120.00"),
-                rewardsXp = 35,
-                perkAmount = BigDecimal("10.0"),
+                minPayment = BigDecimal("250.00"),
+                rewardsXp = 50,
+                perkAmount = BigDecimal("25.0"),
                 isTierBased = true,
                 accountProduct = diamondCard,
-                categories = categories.filter { it.name in listOf("fashion", "healthcare", "manufacturing") }.toMutableList()
-            ),
-            PerkEntity(
-                type = RewardType.CASHBACK,
-                minPayment = BigDecimal("100.00"),
-                rewardsXp = 30,
-                perkAmount = BigDecimal("8.0"),
-                isTierBased = false,
-                accountProduct = diamondCard,
-                categories = categories.filter { it.name in listOf("dining", "retail") }.toMutableList()
+                categories = categories("hospitality", "consulting")
             )
         ))
 
         perkRepository.saveAll(perks)
-        println("Seeded ${perks.size} specialized perks across all card tiers.")
+        println("Seeded ${perks.size} perks with stronger raw KWD values.")
     }
 
     fun seedBusinessPartners(
@@ -541,7 +451,6 @@ class DataSeeder(
             "Grand Cinemas" to categoriesMap.get("entertainment")!!,
             "Chips Store" to categoriesMap.get("technology")!!,
             "Sultan Center" to categoriesMap.get("wholesale")!!,
-            // new partners
             "Lush" to categoriesMap.get("personal care")!!,
             "Signature Spa" to categoriesMap.get("personal care")!!,
             "Cole Haan" to categoriesMap.get("fashion")!!

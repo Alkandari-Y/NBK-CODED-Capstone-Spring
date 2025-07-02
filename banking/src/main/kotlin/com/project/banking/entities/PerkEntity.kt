@@ -19,26 +19,26 @@ import java.math.BigDecimal
 
 @Entity
 @Table(name = "perks")
-data class PerkEntity (
+data class PerkEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-     var id: Long? = null,
+    var id: Long? = null,
 
     @Column(name = "type", nullable = false)
-     var type: RewardType? = null,
+    var type: RewardType? = null,
 
     @Column(name = "min_payment", nullable = false, precision = 8, scale = 2)
-     var minPayment: BigDecimal? = null,
+    var minPayment: BigDecimal? = null,
 
     @Column(name = "rewards_xp", nullable = false)
-     var rewardsXp: Long? = null,
+    var rewardsXp: Long? = null,
 
     @Column(name = "perk_amount", nullable = false, precision = 8, scale = 2)
-     var perkAmount: BigDecimal? = null,
+    var perkAmount: BigDecimal? = null,
 
     @Column(name = "is_tier_based", nullable = false)
-     var isTierBased: Boolean = false,
+    var isTierBased: Boolean = false,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_product_id", nullable = false)

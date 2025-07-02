@@ -1,11 +1,7 @@
 package com.project.banking.services
 
 import com.project.banking.entities.AccountEntity
-import com.project.banking.entities.AccountProductEntity
 import com.project.banking.entities.CategoryEntity
-import com.project.common.exceptions.accounts.AccountNotFoundException
-import com.project.common.exceptions.transactions.InsufficientFundsException
-import com.project.common.exceptions.transactions.InvalidTransferException
 import com.project.banking.entities.TransactionEntity
 import com.project.banking.entities.XpHistoryEntity
 import com.project.banking.mappers.toDto
@@ -21,27 +17,25 @@ import com.project.common.data.requests.accounts.PaymentCreateRequest
 import com.project.common.data.requests.accounts.TransferCreateRequest
 import com.project.common.data.responses.transactions.PaymentDetails
 import com.project.common.data.responses.transactions.TransactionDetails
-import com.project.common.enums.AccountOwnerType
 import com.project.common.enums.AccountType
-import com.project.common.enums.ErrorCode
-import com.project.common.enums.XpGainMethod
 import com.project.common.enums.RewardType
 import com.project.common.enums.TransactionType
-import com.project.common.exceptions.APIException
+import com.project.common.enums.XpGainMethod
 import com.project.common.exceptions.accountProducts.AccountProductNotFoundException
-import com.project.common.exceptions.transactions.AccountLookupException
 import com.project.common.exceptions.accounts.AccountNotActiveException
+import com.project.common.exceptions.accounts.AccountNotFoundException
 import com.project.common.exceptions.auth.InvalidCredentialsException
 import com.project.common.exceptions.businessPartner.BusinessNotFoundException
 import com.project.common.exceptions.categories.CategoryNotFoundException
+import com.project.common.exceptions.transactions.AccountLookupException
+import com.project.common.exceptions.transactions.InsufficientFundsException
+import com.project.common.exceptions.transactions.InvalidTransferException
 import jakarta.transaction.Transactional
 import org.slf4j.LoggerFactory
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDateTime
-import kotlin.times
 
 @Service
 class TransactionServiceImpl(
@@ -181,8 +175,11 @@ class TransactionServiceImpl(
 
         if (matchedPerks.isNotEmpty()) {
             val bestPerk = matchedPerks.maxByOrNull { it.perkAmount }
-            val percentageMultiplier = BigDecimal(xpTier.perkAmountPercentage!!).divide(BigDecimal(100))
-            val perkAmount = bestPerk?.perkAmount?.times(percentageMultiplier) ?: BigDecimal.ZERO
+            var percentageMultiplier = BigDecimal.ONE
+            if (bestPerk != null && bestPerk.isTierBased) {
+                percentageMultiplier = BigDecimal(xpTier.perkAmountPercentage!!)
+                    .divide(BigDecimal(100))}
+            val perkAmount = bestPerk?.perkAmount?.multiply(percentageMultiplier) ?: BigDecimal.ZERO
 
             when (bestPerk?.type) {
                 RewardType.DISCOUNT -> effectivePrice = effectivePrice.subtract(perkAmount)
