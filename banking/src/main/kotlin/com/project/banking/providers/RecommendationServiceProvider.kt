@@ -27,7 +27,7 @@ class RecommendationServiceProvider(
 
         return try {
             val response = RestTemplate().exchange(
-                "$recServiceUrl/category-scores",
+                "$recServiceUrl/api/v1/category-scores",
                 HttpMethod.POST,
                 request,
                 object : ParameterizedTypeReference<Void>() {}
@@ -47,7 +47,7 @@ class RecommendationServiceProvider(
 
         return try {
             val response = RestTemplate().exchange(
-                "$recServiceUrl/recommendations/account-score",
+                "$recServiceUrl/api/v1/recommendations/account-score",
                 HttpMethod.POST,
                 request,
                 object : ParameterizedTypeReference<Void>() {}
@@ -68,7 +68,7 @@ class RecommendationServiceProvider(
 
         return try {
             val response = RestTemplate().exchange(
-                "$recServiceUrl/category-scores/increment",
+                "$recServiceUrl/api/v1/category-scores/increment",
                 HttpMethod.POST,
                 request,
                 object : ParameterizedTypeReference<Void>() {}
@@ -82,7 +82,7 @@ class RecommendationServiceProvider(
     fun getActivePromotionsByBusiness(businessId: Long): List<PromotionResponse> {
         return try {
             val response = RestTemplate().exchange(
-                "$recServiceUrl/promotions/business/$businessId/active",
+                "$recServiceUrl/api/v1/promotions/business/$businessId/active",
                 HttpMethod.GET,
                 null,
                 object : ParameterizedTypeReference<List<PromotionResponse>>() {}

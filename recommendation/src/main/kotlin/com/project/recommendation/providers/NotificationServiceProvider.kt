@@ -27,7 +27,7 @@ class NotificationServiceProvider(
 
         try {
             val response = RestTemplate().exchange(
-                "$notificationServiceURL/notifications/geofence/entered",
+                "$notificationServiceURL/api/v1/notifications/geofence/entered",
                 HttpMethod.POST,
                 request,
                 Void::class.java
@@ -46,7 +46,7 @@ class NotificationServiceProvider(
 
         try {
             val response = RestTemplate().exchange(
-                "$notificationServiceURL/notifications/ble",
+                "$notificationServiceURL/api/v1/notifications/ble",
                 HttpMethod.POST,
                 request,
                 Void::class.java
@@ -65,7 +65,7 @@ class NotificationServiceProvider(
 
         try {
             RestTemplate().exchange(
-                "$notificationServiceURL/notifications/account-score",
+                "$notificationServiceURL/api/v1/notifications/account-score",
                 HttpMethod.POST,
                 request,
                 Void::class.java

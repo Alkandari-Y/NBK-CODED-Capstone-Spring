@@ -27,7 +27,7 @@ class NotificationServiceProvider(
         }
         val request = HttpEntity<Void>(null, headers)
 
-        val url = "$notificationServiceUrl/notifications/search" +
+        val url = "$notificationServiceUrl/api/v1/notifications/search" +
                 "?userId=$userId&partnerId=$partnerId"
 
         return try {

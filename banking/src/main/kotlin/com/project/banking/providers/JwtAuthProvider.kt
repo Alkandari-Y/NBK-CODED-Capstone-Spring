@@ -22,7 +22,7 @@ class JwtAuthProvider (
         val request = HttpEntity<String>(null, headers)
 
         val response = RestTemplate().exchange(
-            "$authServiceURL/auth/validate",
+            "$authServiceURL/api/v1/auth/validate",
             HttpMethod.POST,
             request,
             object : ParameterizedTypeReference<ValidateTokenResponse>() {}

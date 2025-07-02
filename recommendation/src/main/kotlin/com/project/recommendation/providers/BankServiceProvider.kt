@@ -35,7 +35,7 @@ class BankServiceProvider(
 
         return try {
             val response = RestTemplate().exchange(
-                "$bankServiceURL/partners/$businessPartnerId",
+                "$bankServiceURL/api/v1/partners/$businessPartnerId",
                 HttpMethod.GET,
                 request,
                 object : ParameterizedTypeReference<BusinessPartnerDto>() {}
@@ -55,7 +55,7 @@ class BankServiceProvider(
 
         return try {
             val response = RestTemplate().exchange(
-                "$bankServiceURL/partners",
+                "$bankServiceURL/api/v1/partners",
                 HttpMethod.GET,
                 request,
                 object : ParameterizedTypeReference<List<BusinessPartnerDto>>() {}
@@ -75,7 +75,7 @@ class BankServiceProvider(
 
         return try {
             val response = RestTemplate().exchange(
-                "$bankServiceURL/products",
+                "$bankServiceURL/api/v1/products",
                 HttpMethod.GET,
                 request,
                 object : ParameterizedTypeReference<List<AccountProductDto>>() {}
@@ -95,7 +95,7 @@ class BankServiceProvider(
 
         return try {
             val response = RestTemplate().exchange(
-                "$bankServiceURL/categories",
+                "$bankServiceURL/api/v1/categories",
                 HttpMethod.GET,
                 request,
                 object : ParameterizedTypeReference<List<CategoryWithPerksDto>>() {}
@@ -115,7 +115,7 @@ class BankServiceProvider(
 
         return try {
             val response = RestTemplate().exchange(
-                "$bankServiceURL/kyc/client/$userId",
+                "$bankServiceURL/api/v1/kyc/client/$userId",
                 HttpMethod.GET,
                 request,
                 object : ParameterizedTypeReference<KYCResponse>() {}
@@ -136,7 +136,7 @@ class BankServiceProvider(
 
         return try {
             val response = RestTemplate().exchange(
-                "$bankServiceURL/accounts/clients/products",
+                "$bankServiceURL/api/v1/accounts/clients/products",
                 HttpMethod.POST,
                 request,
                 object : ParameterizedTypeReference<BleUserRecommendationInput>() {}
@@ -156,7 +156,7 @@ class BankServiceProvider(
 
         return try {
             val response = RestTemplate().exchange(
-                "$bankServiceURL/accounts/internal/$userId",
+                "$bankServiceURL/api/v1/accounts/internal/$userId",
                 HttpMethod.GET,
                 request,
                 object : ParameterizedTypeReference<List<AccountWithProductResponse>>() {}
@@ -176,7 +176,7 @@ class BankServiceProvider(
 
         return try {
             val response = RestTemplate().exchange(
-                "$bankServiceURL/transactions/internal/$userId",
+                "$bankServiceURL/api/v1/transactions/internal/$userId",
                 HttpMethod.GET,
                 request,
                 object : ParameterizedTypeReference<List<TransactionDetails>>() {}
