@@ -41,6 +41,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 import java.time.LocalDateTime
+import kotlin.times
 
 @Service
 class TransactionServiceImpl(
@@ -162,6 +163,10 @@ class TransactionServiceImpl(
 
         var effectivePrice = purchaseRequest.amount.setScale(3)
 
+        val xpInfo = xpService.getCurrentXpInfo(userId)!!
+        val xpTier = xpInfo.xpTier!!.toEntity()
+        val userXp = xpInfo.toEntity(userId)
+
         // check for active promos
         val promotions = businessPartner.id?.let {
             recommendationServiceProvider.getActivePromotionsByBusiness(it)
@@ -176,7 +181,8 @@ class TransactionServiceImpl(
 
         if (matchedPerks.isNotEmpty()) {
             val bestPerk = matchedPerks.maxByOrNull { it.perkAmount }
-            val perkAmount = bestPerk?.perkAmount ?: BigDecimal.ZERO
+            val percentageMultiplier = BigDecimal(xpTier.perkAmountPercentage!!).divide(BigDecimal(100))
+            val perkAmount = bestPerk?.perkAmount?.times(percentageMultiplier) ?: BigDecimal.ZERO
 
             when (bestPerk?.type) {
                 RewardType.DISCOUNT -> effectivePrice = effectivePrice.subtract(perkAmount)
@@ -199,9 +205,6 @@ class TransactionServiceImpl(
 
         // earn xp if it was awarded
         val earnedXpRecords = mutableListOf<XpHistoryEntity>()
-        val xpInfo = xpService.getCurrentXpInfo(userId)!!
-        val xpTier = xpInfo.xpTier!!.toEntity()
-        val userXp = xpInfo.toEntity(userId)
 
         if (matchedPromo != null) {
             val promoXp = xpInfo.xpTier!!.xpPerPromotion

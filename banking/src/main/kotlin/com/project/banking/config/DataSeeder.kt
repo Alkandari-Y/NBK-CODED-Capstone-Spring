@@ -585,7 +585,7 @@ class DataSeeder(
                 xpPerkMultiplier = 1.0,
                 xpPerNotification = 10,
                 xpPerPromotion = 20,
-                perkAmountPercentage = 5
+                perkAmountPercentage = 50
             ),
             XpTierEntity(
                 name = "Gold",
@@ -594,7 +594,7 @@ class DataSeeder(
                 xpPerkMultiplier = 1.2,
                 xpPerNotification = 15,
                 xpPerPromotion = 25,
-                perkAmountPercentage = 10
+                perkAmountPercentage = 75
             ),
             XpTierEntity(
                 name = "Platinum",
@@ -603,7 +603,7 @@ class DataSeeder(
                 xpPerkMultiplier = 1.5,
                 xpPerNotification = 20,
                 xpPerPromotion = 30,
-                perkAmountPercentage = 15
+                perkAmountPercentage = 100
             )
         )
         xpTierRepository.saveAll(tiers)
