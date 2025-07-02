@@ -20,7 +20,6 @@ services:
       - .env
     depends_on:
       - db
-      - redis
       - mailhog
     volumes:
       - maven_cache:/root/.m2
@@ -36,7 +35,6 @@ services:
     depends_on:
       - db
       - mailhog
-      - redis
       - authentication
     volumes:
       - maven_cache:/root/.m2
@@ -51,7 +49,6 @@ services:
       - .env
     depends_on:
       - db
-      - redis
       - authentication
       - banking
     volumes:
@@ -67,7 +64,6 @@ services:
       - .env
     depends_on:
       - db
-      - redis
       - authentication
       - banking
       - recommendation

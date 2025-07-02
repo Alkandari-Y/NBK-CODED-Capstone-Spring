@@ -16,6 +16,6 @@ RUN mvn clean install -DskipTests -pl authentication -am
 
 FROM eclipse-temurin:21-alpine
 WORKDIR /app
-COPY --from=build /build/authentication/target/*.jar app.jar
+#COPY --from=build /build/authentication/target/*.jar app.jar
 EXPOSE 8000
 ENTRYPOINT ["java", "-jar", "app.jar"]
