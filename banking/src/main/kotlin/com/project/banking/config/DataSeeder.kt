@@ -115,8 +115,8 @@ class DataSeeder(
             description = "Perfect for families - earn rewards on groceries, education, healthcare and dining",
             interestRate = BigDecimal("2.8"),
             minBalanceRequired = BigDecimal("0.000"),
-            creditLimit = BigDecimal("800.000"),
-            annualFee = BigDecimal("30.000"),
+            creditLimit = BigDecimal("1200.000"),
+            annualFee = BigDecimal("50.000"),
             minSalary = BigDecimal("500.000"),
             image = "http://localhost:9000/capstone-public/fd4ac1cd-c88f-446a-846b-f23ecea8fe63"
         )
@@ -126,10 +126,10 @@ class DataSeeder(
             name = "Youth Starter",
             accountType = AccountType.CREDIT,
             description = "Designed for young adults - rewards on technology, fashion, dining and entertainment",
-            interestRate = BigDecimal("3.2"),
+            interestRate = BigDecimal("2.8"),
             minBalanceRequired = BigDecimal("0.000"),
             creditLimit = BigDecimal("600.000"),
-            annualFee = BigDecimal("20.000"),
+            annualFee = BigDecimal("50.000"),
             minSalary = BigDecimal("350.000"),
             image = "http://localhost:9000/capstone-public/fd4ac1cd-c88f-446a-846b-f23ecea8fe63"
         )
@@ -139,11 +139,11 @@ class DataSeeder(
             name = "Shopper's Delight",
             accountType = AccountType.CREDIT,
             description = "Maximize savings on retail, fashion, wholesale and personal purchases",
-            interestRate = BigDecimal("2.9"),
+            interestRate = BigDecimal("2.8"),
             minBalanceRequired = BigDecimal("0.000"),
             creditLimit = BigDecimal("1200.000"),
-            annualFee = BigDecimal("40.000"),
-            minSalary = BigDecimal("600.000"),
+            annualFee = BigDecimal("50.000"),
+            minSalary = BigDecimal("500.000"),
             image = "http://localhost:9000/capstone-public/fd4ac1cd-c88f-446a-846b-f23ecea8fe63"
         )
 
@@ -154,7 +154,7 @@ class DataSeeder(
             name = "Travel Explorer",
             accountType = AccountType.CREDIT,
             description = "Perfect for travelers - premium rewards on hospitality, dining, automotive and logistics",
-            interestRate = BigDecimal("2.3"),
+            interestRate = BigDecimal("2.8"),
             minBalanceRequired = BigDecimal("0.000"),
             creditLimit = BigDecimal("2500.000"),
             annualFee = BigDecimal("75.000"),
@@ -540,7 +540,11 @@ class DataSeeder(
             "OFK" to categoriesMap.get("dining")!!,
             "Grand Cinemas" to categoriesMap.get("entertainment")!!,
             "Chips Store" to categoriesMap.get("technology")!!,
-            "Sultan Center" to categoriesMap.get("wholesale")!!
+            "Sultan Center" to categoriesMap.get("wholesale")!!,
+            // new partners
+            "Lush" to categoriesMap.get("personal care")!!,
+            "Signature Spa" to categoriesMap.get("personal care")!!,
+            "Cole Haan" to categoriesMap.get("fashion")!!
         )
 
        // val logisticsoBase = "http://localhost:9000/capstone-public/"

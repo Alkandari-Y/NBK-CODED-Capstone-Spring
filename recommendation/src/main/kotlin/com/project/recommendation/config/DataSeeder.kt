@@ -11,13 +11,16 @@ import java.time.LocalTime
 import com.project.recommendation.repositories.PromotionRepository
 import com.project.recommendation.entities.PromotionEntity
 import com.project.common.enums.RewardType
+import com.project.recommendation.filters.LoggingFilter
+import jakarta.mail.Store
 import java.time.LocalDate
 
 
 @Component
 class DataSeeder(
     private val storeLocationRepository: StoreLocationRepository,
-    private val promotionRepository: PromotionRepository
+    private val promotionRepository: PromotionRepository,
+    private val loggingFilter: LoggingFilter
 ) {
     @EventListener(ApplicationReadyEvent::class)
     @Transactional
@@ -228,10 +231,50 @@ class DataSeeder(
             closesAt = LocalTime.parse("12:00"),
             beaconId = 1,
         )
+        val lushAlHamra = StoreLocationEntity(
+            partnerId = 17,
+            longitude = BigDecimal("29.378143327340798"),
+            latitude = BigDecimal("47.9927118971342"),
+            googleMapUrl = "https://maps.app.goo.gl/ek9UJhpVfyNyLnaw9",
+            country = "Kuwait",
+            addressLine1 = "Kuwait City",
+            addressLine2 = "Al Hamra Tower & Mall",
+            opensAt = LocalTime.parse("08:00"),
+            closesAt = LocalTime.parse("12:00"),
+            beaconId = 1,
+        )
+
+        val signatureSpaAlHamra = StoreLocationEntity(
+            partnerId = 18,
+            longitude = BigDecimal("29.37912848593534"),
+            latitude = BigDecimal("47.99325102112254"),
+            googleMapUrl = "https://maps.app.goo.gl/hp4F7eTu1gc3E3PU6",
+            country = "Kuwait",
+            addressLine1 = "Kuwait City",
+            addressLine2 = "Al Hamra Tower & Mall",
+            opensAt = LocalTime.parse("08:00"),
+            closesAt = LocalTime.parse("12:00"),
+            beaconId = 1,
+        )
+
+        val coleHaanAlHamra = StoreLocationEntity(
+            partnerId = 19,
+            longitude = BigDecimal("29.379551150051835"),
+            latitude = BigDecimal("47.99310187589717"),
+            googleMapUrl = "https://maps.app.goo.gl/gfvfryFrHuhqt7xX8",
+            country = "Kuwait",
+            addressLine1 = "Kuwait City",
+            addressLine2 = "Al Hamra Tower & Mall",
+            opensAt = LocalTime.parse("08:00"),
+            closesAt = LocalTime.parse("12:00"),
+            beaconId = 1,
+        )
+
 
         storeLocationRepository.saveAll(listOf(
             jumeirahHotel, alMosafer, caribouArraya, shakeShack, kidZania, voxCinemas, kuwaitAirways, xcite,
-            hAndM, safatHome, sparkGym, pickAlHamra, ofk, grandCinemas, chipsStore, sultanCenter
+            hAndM, safatHome, sparkGym, pickAlHamra, ofk, grandCinemas, chipsStore, sultanCenter,
+            lushAlHamra, signatureSpaAlHamra, coleHaanAlHamra
         ))
     }
     fun seedPromotions() {
@@ -318,7 +361,7 @@ class DataSeeder(
         val sparkGymPromotion = PromotionEntity(
             name = "Summer Fitness Challenge",
             businessPartnerId = 12,
-            startDate = LocalDate.parse("2025-07-06"),
+            startDate = LocalDate.parse("2025-07-01"),
             endDate = LocalDate.parse("2025-07-13"),
             description = "Join our summer fitness program and get 20% off membership fees. Get summer-ready!",
         )
@@ -327,7 +370,7 @@ class DataSeeder(
         val pickPromotion = PromotionEntity(
             name = "Healthy Meal Deals",
             businessPartnerId = 13,
-            startDate = LocalDate.parse("2025-07-04"),
+            startDate = LocalDate.parse("2025-06-04"),
             endDate = LocalDate.parse("2025-07-08"),
             description = "15% off on all healthy meal options. Eat well, Feel well",
         )
@@ -335,7 +378,7 @@ class DataSeeder(
         val grandCinemasPromotion = PromotionEntity(
             name = "Family Movie Night",
             businessPartnerId = 15,
-            startDate = LocalDate.parse("2025-07-07"),
+            startDate = LocalDate.parse("2025-07-02"),
             endDate = LocalDate.parse("2025-07-10"),
             description = "25% off family tickets for selected shows.",
         )
@@ -356,10 +399,35 @@ class DataSeeder(
             description = "Get 6% cashback on organic section and veggies purchases. Great deals on smart choices!",
         )
 
+        val lushPromotion = PromotionEntity(
+            name = "Lush Summer Sale",
+            businessPartnerId = 18,
+            startDate = LocalDate.parse("2025-07-01"),
+            endDate = LocalDate.parse("2025-07-15"),
+            description = "20% off on selected lush products. Make your home a little more colorful!"
+        )
+
+        val signatureSpaPromotion = PromotionEntity(
+            name = "Summer Spa Special",
+            businessPartnerId = 19,
+            startDate = LocalDate.parse("2025-0-01"),
+            endDate = LocalDate.parse("2025-07-15"),
+            description = "Enjoy 20% off on selected spa products. Get the perfect fit for your body type."
+        )
+
+        val coleHaan = PromotionEntity(
+            name = "Cole's Hamra Special",
+            businessPartnerId = 20,
+            startDate = LocalDate.parse("2025-07-01"),
+            endDate = LocalDate.parse("2025-07-15"),
+            description = "Enjoy 20% off on selected spa products. Get the perfect fit for your body type."
+        )
+
         promotionRepository.saveAll(listOf(
             jumeirahPromotion, almosaferPromotion, caribouPromotion, shakeShackPromotion, voxPromotion,
             kuwaitAirwaysPromotion, xcitePromotion, hAndMPromotion, safatHomePromotion, sparkGymPromotion, pickPromotion,
-            grandCinemasPromotion, chipsStorePromotion, sultanCenterPromotion
+            grandCinemasPromotion, chipsStorePromotion, sultanCenterPromotion, lushPromotion,
+            signatureSpaPromotion
         ))
     }
 }
