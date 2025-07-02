@@ -63,44 +63,77 @@ Klue keeps your customers engaged and spending — driving loyalty and deeper pa
 
 ### Auth Service
 
-| Method | Endpoint                | Description                  |
-|--------|-------------------------|------------------------------|
-| POST   | `/api/v1/auth/register` | Register new user & get JWT  |
-| POST   | `/api/v1/auth/login`    | Login with username/password |
+| Method | Endpoint                | Description                    |
+|--------|-------------------------|--------------------------------|
+| POST   | `/api/v1/auth/register` | Register new user & get JWT    |
+| POST   | `/api/v1/auth/login`    | Login with username/password   |
+| POST   | `/api/v1/auth/refresh`  | Refresh access token           |
+| POST   | `/api/v1/auth/validate` | Validate token & get user info |
+
+---
 
 ### Banking Service
 
-| Method | Endpoint                                 | What It Does                          |
-|--------|------------------------------------------|---------------------------------------|
-| GET    | `/api/v1/accounts`                       | See all your active accounts          |
-| POST   | `/api/v1/accounts`                       | Open a new account                    |
-| POST   | `/api/v1/accounts/onboarding/create`     | Onboard and create first account      |
-| POST   | `/api/v1/accounts/transfer`              | Transfer money between your accounts  |
-| POST   | `/api/v1/accounts/purchase`              | Make a purchase & earn XP             |
-| DELETE | `/api/v1/accounts/close/{accountNumber}` | Close an account                      |
-| GET    | `/api/v1/transactions/account`           | Get transactions by account ID/number |
-| POST   | `/api/v1/kyc`                            | Create or update KYC                  |
-| GET    | `/api/v1/kyc`                            | Fetch your KYC info                   |
-| GET    | `/api/v1/xp`                             | See your XP stats                     |
-| GET    | `/api/v1/xp/history`                     | Review your XP history                |
+| Method | Endpoint                                    | Description                                  |
+|--------|---------------------------------------------|----------------------------------------------|
+| POST   | `/api/v1/kyc`                               | Create or update your KYC                    |
+| GET    | `/api/v1/kyc`                               | Get your KYC info                            |
+| GET    | `/api/v1/accounts`                          | See all your active accounts                 |
+| POST   | `/api/v1/accounts`                          | Create a new account                         |
+| DELETE | `/api/v1/accounts/close/{accountNumber}`    | Close an account                             |
+| GET    | `/api/v1/accounts/details`                  | Get account details by ID or number          |
+| POST   | `/api/v1/accounts/transfer`                 | Transfer money between your accounts         |
+| POST   | `/api/v1/accounts/purchase`                 | Make a purchase                              |
+| GET    | `/api/v1/transactions/account`              | Get your transactions by account ID/number   |
+| GET    | `/api/v1/xp`                                | See your XP stats                            |
+| GET    | `/api/v1/xp/history`                        | Review your XP history                       |
+| GET    | `/api/v1/xp/tiers`                          | Get all XP tiers                             |
+| GET    | `/api/v1/xp/tiers/{id}`                     | Get XP tier by ID                            |
+| GET    | `/api/v1/products`                          | Get all account product types                |
+| GET    | `/api/v1/products/{productId}`              | Get details for one account product          |
+| GET    | `/api/v1/products/perks/{perkId}`           | Get details for one perk                     |
+| GET    | `/api/v1/products/{productId}/perks`        | Get all perks for an account product         |
+| GET    | `/api/v1/categories`                        | Get all categories                           |
+| GET    | `/api/v1/partners`                          | Get all business partners                    |
+| GET    | `/api/v1/partners/{partnerId}`              | Get business partner by ID                   |
+| GET    | `/api/v1/partners/by-category/{categoryId}` | Get partners by category                     |
 
+---
 
 ### Recommendation Service
 
-| Method | Endpoint                 | What It Does                     |
-|--------|--------------------------|----------------------------------|
-| GET    | `/api/v1/fav/businesses` | Get all your favorite partners   |
-| PUT    | `/api/v1/fav/businesses` | Add a favorite partner           |
-| GET    | `/api/v1/fav/categories` | Get all your favorite categories |
-| PUT    | `/api/v1/fav/categories` | Add a favorite category          |
+| Method | Endpoint                                            | Description                                      |
+|--------|-----------------------------------------------------|--------------------------------------------------|
+| GET    | `/api/v1/recommendations`                           | Get top recommended account products             |
+| GET    | `/api/v1/fav/businesses`                            | Get all your favorite businesses                 |
+| POST   | `/api/v1/fav/businesses`                            | Replace your favorite businesses                 |
+| PUT    | `/api/v1/fav/businesses`                            | Add a business to favorites                      |
+| DELETE | `/api/v1/fav/businesses`                            | Remove multiple businesses from favorites        |
+| DELETE | `/api/v1/fav/businesses/remove`                     | Remove one business from favorites               |
+| DELETE | `/api/v1/fav/businesses/clear`                      | Clear all favorite businesses                    |
+| GET    | `/api/v1/fav/categories`                            | Get all your favorite categories                 |
+| POST   | `/api/v1/fav/categories`                            | Replace your favorite categories                 |
+| PUT    | `/api/v1/fav/categories`                            | Add a category to favorites                      |
+| DELETE | `/api/v1/fav/categories`                            | Remove multiple categories from favorites        |
+| DELETE | `/api/v1/fav/categories/remove`                     | Remove one category from favorites               |
+| DELETE | `/api/v1/fav/categories/clear`                      | Clear all favorite categories                    |
+| GET    | `/api/v1/promotions`                                | Get all promotions                               |
+| GET    | `/api/v1/promotions/{id}`                           | Get promotion by ID                              |
+| GET    | `/api/v1/promotions/business/{businessId}`          | Get promotions for a business                    |
+| GET    | `/api/v1/promotions/business/{businessId}/active`   | Get active promotions for business               |
+| GET    | `/api/v1/store-locations`                           | Get all store locations                          |
+| GET    | `/api/v1/store-locations/details/{storeLocationId}` | Get store location details                       |
+| POST   | `/api/v1/store-locations/near-me`                   | Find nearby stores                               |
+
+---
 
 ### Notification Service
 
-| Method | Endpoint                                         | What It Does                            |
+| Method | Endpoint                                         | Description                             |
 |--------|--------------------------------------------------|-----------------------------------------|
-| GET    | `/api/v1/notifications`                          | See all your notifications              |
+| GET    | `/api/v1/notifications`                          | Get all your notifications              |
 | GET    | `/api/v1/notifications/details/{notificationId}` | Get details for a specific notification |
-| GET    | `/api/v1/notifications/search`                   | Look up notifications by user & partner |
+| GET    | `/api/v1/notifications/search`                   | Look up notification sent to you        |
 
 ---
 
