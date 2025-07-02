@@ -297,7 +297,7 @@ class DataSeeder(
             businessPartnerId = 7,
             type = RewardType.DISCOUNT,
             startDate = LocalDate.parse("2025-07-02"),
-            endDate = LocalDate.parse("2025-07-7"),
+            endDate = LocalDate.parse("2025-07-07"),
             description = "Special 20% discount on flights this weekend. Explore the world with comfort!",
             storeId = 7
         )
