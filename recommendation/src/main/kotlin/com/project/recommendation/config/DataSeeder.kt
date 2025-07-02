@@ -50,7 +50,7 @@ class DataSeeder(
             beaconId = 1,
         )
         val alMosafer = StoreLocationEntity(
-            partnerId = 2, // reflects partner id
+            partnerId = 2,
             longitude = BigDecimal("29.30386362725354"),
             latitude = BigDecimal("47.93920228034512"),
             googleMapUrl = "https://maps.app.goo.gl/kXHJNeNBK7MQQ8yh8",
@@ -58,11 +58,11 @@ class DataSeeder(
             addressLine1 = "Farwaniya",
             addressLine2 = "Ghazali St, Kuwait",
             opensAt = LocalTime.parse("10:00"),
-            closesAt = LocalTime.parse("10:00"),
+            closesAt = LocalTime.parse("22:00"),
             beaconId = 1,
         )
         val caribouArraya = StoreLocationEntity(
-            partnerId = 3, // reflects partner id
+            partnerId = 3,
             longitude = BigDecimal("29.377097437910905"),
             latitude = BigDecimal("47.989935393232315"),
             googleMapUrl = "https://maps.app.goo.gl/5CTsFM3jpRPyTbt9A",
@@ -70,11 +70,11 @@ class DataSeeder(
             addressLine1 = "Kuwait City",
             addressLine2 = "Al-Rayah Tower, Al-Shuhada St",
             opensAt = LocalTime.parse("06:00"),
-            closesAt = LocalTime.parse("11:30"),
+            closesAt = LocalTime.parse("23:30"),
             beaconId = 1,
         )
         val shakeShack = StoreLocationEntity(
-            partnerId = 4, // reflects partner id
+            partnerId = 4,
             longitude = BigDecimal("29.257698709807816"),
             latitude = BigDecimal("48.02211738757822"),
             googleMapUrl = "https://maps.app.goo.gl/b7EB3Wkq14STDEUf8",
@@ -82,11 +82,11 @@ class DataSeeder(
             addressLine1 = "Sabhan",
             addressLine2 = "The Murouj",
             opensAt = LocalTime.parse("11:00"),
-            closesAt = LocalTime.parse("11:00"),
+            closesAt = LocalTime.parse("23:00"),
             beaconId = 1,
         )
         val kidZania = StoreLocationEntity(
-            partnerId = 5, // reflects partner id
+            partnerId = 5,
             longitude = BigDecimal("29.302511154213303"),
             latitude = BigDecimal("47.93607195584594"),
             googleMapUrl = "https://maps.app.goo.gl/GKKDXKWC5SQe7pS4A",
@@ -94,11 +94,11 @@ class DataSeeder(
             addressLine1 = "Al Rai",
             addressLine2 = "The Avenues Mall, 1st Floor",
             opensAt = LocalTime.parse("10:00"),
-            closesAt = LocalTime.parse("10:00"),
+            closesAt = LocalTime.parse("22:00"),
             beaconId = 1,
         )
         val voxCinemas = StoreLocationEntity(
-            partnerId = 6, // reflects partner id
+            partnerId = 6,
             longitude = BigDecimal("29.304969010219697"),
             latitude = BigDecimal("47.943087696146556"),
             googleMapUrl = "https://maps.app.goo.gl/J6rNeykTS2XNZHtA6",
@@ -110,7 +110,7 @@ class DataSeeder(
             beaconId = 1821,
         )
         val kuwaitAirways = StoreLocationEntity(
-            partnerId = 7, // reflects partner id
+            partnerId = 7,
             longitude = BigDecimal("29.256278021380403"),
             latitude = BigDecimal("47.96930350563195"),
             googleMapUrl = "https://maps.app.goo.gl/58Fz1qcrb8r7Tjp9A",
@@ -122,7 +122,7 @@ class DataSeeder(
             beaconId = 1,
         )
         val xcite = StoreLocationEntity(
-            partnerId = 8, // reflects partner id
+            partnerId = 8,
             longitude = BigDecimal("29.302421262580605"),
             latitude = BigDecimal("47.930135963921344"),
             googleMapUrl = "https://maps.app.goo.gl/AiqhJeDDgjwKYPeNA",
@@ -130,11 +130,11 @@ class DataSeeder(
             addressLine1 = "Al Rai",
             addressLine2 = "The Avenues Mall, Ground Floor",
             opensAt = LocalTime.parse("09:00"),
-            closesAt = LocalTime.parse("11:00"),
+            closesAt = LocalTime.parse("23:00"),
             beaconId = 1,
         )
         val hAndM = StoreLocationEntity(
-            partnerId = 9, // reflects partner id
+            partnerId = 9,
             longitude = BigDecimal("29.37868952048407"),
             latitude = BigDecimal("47.99306350963311"),
             googleMapUrl = "https://maps.app.goo.gl/GwUkqAwFoNszC8YBA",
@@ -142,11 +142,11 @@ class DataSeeder(
             addressLine1 = "Al Rai",
             addressLine2 = "The Avenues Mall, Ground Floor",
             opensAt = LocalTime.parse("10:00"),
-            closesAt = LocalTime.parse("12:00"),
+            closesAt = LocalTime.parse("00:00"),
             beaconId = 1,
         )
         val safatHome = StoreLocationEntity(
-            partnerId = 10, // reflects partner id
+            partnerId = 10,
             longitude = BigDecimal("29.31320516553269"),
             latitude = BigDecimal("47.93514936947917"),
             googleMapUrl = "https://maps.app.goo.gl/b4XxtbTmNUJJ66928",
@@ -154,11 +154,11 @@ class DataSeeder(
             addressLine1 = "Alrai",
             addressLine2 = "Fourth Ring Road St",
             opensAt = LocalTime.parse("09:30"),
-            closesAt = LocalTime.parse("12:00"),
+            closesAt = LocalTime.parse("00:00"),
             beaconId = 1,
         )
         val sparkGym = StoreLocationEntity(
-            partnerId = 11, // reflects partner id
+            partnerId = 11,
             longitude = BigDecimal("29.31320516553269"),
             latitude = BigDecimal("47.93514936947917"),
             googleMapUrl = "https://maps.app.goo.gl/8fPJpnFSVUiiP9ok7",
@@ -166,11 +166,11 @@ class DataSeeder(
             addressLine1 = "Kuwait City",
             addressLine2 = "KIPCO Tower, Al-Shuhada St, Floor 2",
             opensAt = LocalTime.parse("09:30"),
-            closesAt = LocalTime.parse("12:00"),
+            closesAt = LocalTime.parse("00:00"),
             beaconId = 1,
         )
         val pickAlHamra = StoreLocationEntity(
-            partnerId = 12, // reflects partner id
+            partnerId = 12,
             longitude = BigDecimal("29.37868972651343"),
             latitude = BigDecimal("47.99306473973293"),
             googleMapUrl = "https://maps.app.goo.gl/dS7T3fVUugiCVVRZ7",
@@ -178,11 +178,11 @@ class DataSeeder(
             addressLine1 = "Kuwait City",
             addressLine2 = "Al Hamra Tower, Al-Shuhada St",
             opensAt = LocalTime.parse("06:30"),
-            closesAt = LocalTime.parse("11:00"),
+            closesAt = LocalTime.parse("23:00"),
             beaconId = 1,
         )
         val ofk = StoreLocationEntity(
-            partnerId = 13, // reflects partner id
+            partnerId = 13,
             longitude = BigDecimal("29.378674612438175"),
             latitude = BigDecimal("47.99265693723903"),
             googleMapUrl = "https://maps.app.goo.gl/H2KTLQ7aCoAWqQLJ9",
@@ -190,11 +190,11 @@ class DataSeeder(
             addressLine1 = "Kuwait City",
             addressLine2 = "Al Hamra Tower & Mall",
             opensAt = LocalTime.parse("01:00"),
-            closesAt = LocalTime.parse("11:00"),
+            closesAt = LocalTime.parse("23:00"),
             beaconId = 1,
         )
         val grandCinemas = StoreLocationEntity(
-            partnerId = 14, // reflects partner id
+            partnerId = 14,
             longitude = BigDecimal("29.378701350821807"),
             latitude = BigDecimal("47.99298930468366"),
             googleMapUrl = "https://maps.app.goo.gl/76HqxAjQMqX4iwM16",
@@ -206,7 +206,7 @@ class DataSeeder(
             beaconId = 1,
         )
         val chipsStore = StoreLocationEntity(
-            partnerId = 15, // reflects partner id
+            partnerId = 15,
             longitude = BigDecimal("29.378679376650446"),
             latitude = BigDecimal("47.99317651198166"),
             googleMapUrl = "https://maps.app.goo.gl/4pPx2qdyxdcFCzyZ8",
@@ -218,7 +218,7 @@ class DataSeeder(
             beaconId = 1,
         )
         val sultanCenter = StoreLocationEntity(
-            partnerId = 16, // reflects partner id
+            partnerId = 16,
             longitude = BigDecimal("29.37897262009482"),
             latitude = BigDecimal("47.99318171311795"),
             googleMapUrl = "https://maps.app.goo.gl/XLYZqFAfjwZrWeSs5",
@@ -226,7 +226,7 @@ class DataSeeder(
             addressLine1 = "Kuwait City",
             addressLine2 = "Al Hamra Tower & Mall",
             opensAt = LocalTime.parse("08:00"),
-            closesAt = LocalTime.parse("12:00"),
+            closesAt = LocalTime.parse("00:00"),
             beaconId = 1,
         )
         val lushAlHamra = StoreLocationEntity(
@@ -238,7 +238,7 @@ class DataSeeder(
             addressLine1 = "Kuwait City",
             addressLine2 = "Al Hamra Tower & Mall",
             opensAt = LocalTime.parse("08:00"),
-            closesAt = LocalTime.parse("12:00"),
+            closesAt = LocalTime.parse("00:00"),
             beaconId = 1,
         )
 
@@ -251,7 +251,7 @@ class DataSeeder(
             addressLine1 = "Kuwait City",
             addressLine2 = "Al Hamra Tower & Mall",
             opensAt = LocalTime.parse("08:00"),
-            closesAt = LocalTime.parse("12:00"),
+            closesAt = LocalTime.parse("00:00"),
             beaconId = 1,
         )
 
@@ -264,7 +264,7 @@ class DataSeeder(
             addressLine1 = "Kuwait City",
             addressLine2 = "Al Hamra Tower & Mall",
             opensAt = LocalTime.parse("08:00"),
-            closesAt = LocalTime.parse("12:00"),
+            closesAt = LocalTime.parse("00:00"),
             beaconId = 1,
         )
 
