@@ -275,6 +275,7 @@ class DataSeeder(
             lushAlHamra, signatureSpaAlHamra, coleHaanAlHamra
         ))
     }
+
     fun seedPromotions() {
         if (promotionRepository.count() > 0L) {
             println("Promotions already exist. Skipping seeding.")
@@ -288,7 +289,7 @@ class DataSeeder(
             businessPartnerId = 2,
             startDate = LocalDate.parse("2025-07-01"),
             endDate = LocalDate.parse("2025-07-10"),
-            description = "20% off Presidential Suite. Experience world-class hospitality.",
+            description = "Enjoy a 20% discount on all rooms and suites. World-class hospitality awaits.",
         )
 
         val almosaferPromotion = PromotionEntity(
@@ -296,7 +297,7 @@ class DataSeeder(
             businessPartnerId = 3,
             startDate = LocalDate.parse("2025-07-02"),
             endDate = LocalDate.parse("2025-07-08"),
-            description = "Book your summer vacation to Greece early and save up to 25%",
+            description = "Book early and enjoy up to 25% off on flights to various destinations.",
         )
 
         val caribouPromotion = PromotionEntity(
@@ -304,7 +305,7 @@ class DataSeeder(
             businessPartnerId = 4,
             startDate = LocalDate.parse("2025-07-01"),
             endDate = LocalDate.parse("2025-07-07"),
-            description = "Buy a large iced beverage and get a free soft serve. Perfect to beat the heat!",
+            description = "Buy any beverage and get a complimentary treat. Cool down with Caribou Coffee!",
         )
 
         val shakeShackPromotion = PromotionEntity(
@@ -312,7 +313,7 @@ class DataSeeder(
             businessPartnerId = 5,
             startDate = LocalDate.parse("2025-07-03"),
             endDate = LocalDate.parse("2025-07-09"),
-            description = "Get 15% off when you order any burger with a shake!",
+            description = "Enjoy a 15% discount on any burger and shake combo. Tasty savings for everyone.",
         )
 
         val voxPromotion = PromotionEntity(
@@ -320,7 +321,7 @@ class DataSeeder(
             businessPartnerId = 7,
             startDate = LocalDate.parse("2025-07-04"),
             endDate = LocalDate.parse("2025-07-06"),
-            description = "Get 10% cashback on tickets to Mission Impossible: Part Two. Make the impossible, possible!",
+            description = "Get a 10% discount on all movie tickets during Mission Impossible Movie Week.",
         )
 
         val kuwaitAirwaysPromotion = PromotionEntity(
@@ -328,7 +329,7 @@ class DataSeeder(
             businessPartnerId = 8,
             startDate = LocalDate.parse("2025-07-02"),
             endDate = LocalDate.parse("2025-07-07"),
-            description = "Special 20% discount on flights this weekend. Explore the world with comfort!",
+            description = "Enjoy a 20% discount on all flight bookings this weekend.",
         )
 
         val xcitePromotion = PromotionEntity(
@@ -336,16 +337,15 @@ class DataSeeder(
             businessPartnerId = 9,
             startDate = LocalDate.parse("2025-07-01"),
             endDate = LocalDate.parse("2025-07-14"),
-            description = "Up to 40% off on selected electronics. Upgrade your tech!",
+            description = "Enjoy up to 40% discount across a wide range of electronics and gadgets.",
         )
-
 
         val hAndMPromotion = PromotionEntity(
             name = "Summer Fashion Collection",
             businessPartnerId = 10,
             startDate = LocalDate.parse("2025-06-28"),
             endDate = LocalDate.parse("2025-07-05"),
-            description = "30% off on selected summer collection. Stay stylish and comfortable this season.",
+            description = "30% discount on all summer fashion collection. Stay stylish and comfortable this season.",
         )
 
         val safatHomePromotion = PromotionEntity(
@@ -353,7 +353,7 @@ class DataSeeder(
             businessPartnerId = 11,
             startDate = LocalDate.parse("2025-07-02"),
             endDate = LocalDate.parse("2025-07-16"),
-            description = "Earn 10% cashback when spending over 100 KD on home decor and furniture purchases",
+            description = "Get a 10% discount sitewide on home decor and furniture.",
         )
 
         val sparkGymPromotion = PromotionEntity(
@@ -361,16 +361,15 @@ class DataSeeder(
             businessPartnerId = 12,
             startDate = LocalDate.parse("2025-07-01"),
             endDate = LocalDate.parse("2025-07-13"),
-            description = "Join our summer fitness program and get 20% off membership fees. Get summer-ready!",
+            description = "Join our summer fitness program and get 20% off all membership fees.",
         )
-
 
         val pickPromotion = PromotionEntity(
             name = "Healthy Meal Deals",
             businessPartnerId = 13,
             startDate = LocalDate.parse("2025-06-04"),
             endDate = LocalDate.parse("2025-07-08"),
-            description = "15% off on all healthy meal options. Eat well, Feel well",
+            description = "15% discount on all menu items. Eat well, feel well.",
         )
 
         val grandCinemasPromotion = PromotionEntity(
@@ -378,7 +377,7 @@ class DataSeeder(
             businessPartnerId = 15,
             startDate = LocalDate.parse("2025-07-02"),
             endDate = LocalDate.parse("2025-07-10"),
-            description = "25% off family tickets for selected shows.",
+            description = "25% discount on all family tickets for any show.",
         )
 
         val chipsStorePromotion = PromotionEntity(
@@ -386,7 +385,7 @@ class DataSeeder(
             businessPartnerId = 16,
             startDate = LocalDate.parse("2025-07-02"),
             endDate = LocalDate.parse("2025-07-09"),
-            description = "Get 8% cashback on gaming accessories and tech gadgets. Level up your setup!",
+            description = "Get an 8% discount on all gaming accessories and tech gadgets.",
         )
 
         val sultanCenterPromotion = PromotionEntity(
@@ -394,7 +393,7 @@ class DataSeeder(
             businessPartnerId = 17,
             startDate = LocalDate.parse("2025-07-03"),
             endDate = LocalDate.parse("2025-07-17"),
-            description = "Get 6% cashback on organic section and veggies purchases. Great deals on smart choices!",
+            description = "Get a 6% discount on all organic and fresh produce purchases.",
         )
 
         val lushPromotion = PromotionEntity(
@@ -402,7 +401,8 @@ class DataSeeder(
             businessPartnerId = 18,
             startDate = LocalDate.parse("2025-07-01"),
             endDate = LocalDate.parse("2025-07-15"),
-            description = "20% off on selected lush products. Make your home a little more colorful!"
+            description = "20% discount sitewide on all Lush products at Al Hamra Tower.",
+            storeId = 17L
         )
 
         val signatureSpaPromotion = PromotionEntity(
@@ -410,7 +410,8 @@ class DataSeeder(
             businessPartnerId = 19,
             startDate = LocalDate.parse("2025-07-01"),
             endDate = LocalDate.parse("2025-07-15"),
-            description = "Enjoy 20% off on selected spa products. Get the perfect fit for your body type."
+            description = "Enjoy a 20% discount on all spa services and products at Al Hamra Tower.",
+            storeId = 18L
         )
 
         val coleHaanPromotion = PromotionEntity(
@@ -418,13 +419,14 @@ class DataSeeder(
             businessPartnerId = 20,
             startDate = LocalDate.parse("2025-07-01"),
             endDate = LocalDate.parse("2025-07-15"),
-            description = "Enjoy 20% off on selected spa products. Get the perfect fit for your body type."
+            description = "Exclusive 20% discount on all Cole Haan products available at our Al Hamra Tower location.",
+            storeId = 19L
         )
 
         promotionRepository.saveAll(listOf(
             jumeirahPromotion, almosaferPromotion, caribouPromotion, shakeShackPromotion, voxPromotion,
-            kuwaitAirwaysPromotion, xcitePromotion, hAndMPromotion, safatHomePromotion, sparkGymPromotion, pickPromotion,
-            grandCinemasPromotion, chipsStorePromotion, sultanCenterPromotion, lushPromotion,
+            kuwaitAirwaysPromotion, xcitePromotion, hAndMPromotion, safatHomePromotion, sparkGymPromotion,
+            pickPromotion, grandCinemasPromotion, chipsStorePromotion, sultanCenterPromotion, lushPromotion,
             signatureSpaPromotion, coleHaanPromotion
         ))
     }
