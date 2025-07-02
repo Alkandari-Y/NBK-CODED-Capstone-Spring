@@ -244,144 +244,116 @@ class DataSeeder(
 
         val jumeirahPromotion = PromotionEntity(
             name = "Luxury Stay Package",
-            businessPartnerId = 1,
-            type = RewardType.DISCOUNT,
+            businessPartnerId = 2,
             startDate = LocalDate.parse("2025-07-01"),
             endDate = LocalDate.parse("2025-07-10"),
             description = "20% off Presidential Suite. Experience world-class hospitality.",
-            storeId = 1
         )
 
         val almosaferPromotion = PromotionEntity(
             name = "Early Bird Flight Deals",
-            businessPartnerId = 2,
-            type = RewardType.DISCOUNT,
+            businessPartnerId = 3,
             startDate = LocalDate.parse("2025-07-02"),
             endDate = LocalDate.parse("2025-07-08"),
             description = "Book your summer vacation to Greece early and save up to 25%",
-            storeId = 2
         )
 
         val caribouPromotion = PromotionEntity(
             name = "Icy Summer, Icy Coffee",
-            businessPartnerId = 3,
-            type = RewardType.DISCOUNT,
+            businessPartnerId = 4,
             startDate = LocalDate.parse("2025-07-01"),
             endDate = LocalDate.parse("2025-07-07"),
             description = "Buy a large iced beverage and get a free soft serve. Perfect to beat the heat!",
-            storeId = 3
         )
 
         val shakeShackPromotion = PromotionEntity(
             name = "Burger & Shake Combo Deal",
-            businessPartnerId = 4,
-            type = RewardType.DISCOUNT,
+            businessPartnerId = 5,
             startDate = LocalDate.parse("2025-07-03"),
             endDate = LocalDate.parse("2025-07-09"),
             description = "Get 15% off when you order any burger with a shake!",
-            storeId = 4
         )
 
         val voxPromotion = PromotionEntity(
             name = "Mission Impossible Movie Week",
-            businessPartnerId = 6,
-            type = RewardType.CASHBACK,
+            businessPartnerId = 7,
             startDate = LocalDate.parse("2025-07-04"),
             endDate = LocalDate.parse("2025-07-06"),
             description = "Get 10% cashback on tickets to Mission Impossible: Part Two. Make the impossible, possible!",
-            storeId = 6
         )
 
         val kuwaitAirwaysPromotion = PromotionEntity(
             name = "Fly Kuwait Special Offer",
-            businessPartnerId = 7,
-            type = RewardType.DISCOUNT,
+            businessPartnerId = 8,
             startDate = LocalDate.parse("2025-07-02"),
             endDate = LocalDate.parse("2025-07-07"),
             description = "Special 20% discount on flights this weekend. Explore the world with comfort!",
-            storeId = 7
         )
 
         val xcitePromotion = PromotionEntity(
             name = "Tech Summer Sale",
-            businessPartnerId = 8,
-            type = RewardType.DISCOUNT,
+            businessPartnerId = 9,
             startDate = LocalDate.parse("2025-07-01"),
             endDate = LocalDate.parse("2025-07-14"),
             description = "Up to 40% off on selected electronics. Upgrade your tech!",
-            storeId = 8
         )
 
 
         val hAndMPromotion = PromotionEntity(
             name = "Summer Fashion Collection",
-            businessPartnerId = 9,
-            type = RewardType.DISCOUNT,
+            businessPartnerId = 10,
             startDate = LocalDate.parse("2025-06-28"),
             endDate = LocalDate.parse("2025-07-05"),
             description = "30% off on selected summer collection. Stay stylish and comfortable this season.",
-            storeId = 9
         )
 
         val safatHomePromotion = PromotionEntity(
             name = "Home Makeover Special",
-            businessPartnerId = 10,
-            type = RewardType.CASHBACK,
+            businessPartnerId = 11,
             startDate = LocalDate.parse("2025-07-02"),
             endDate = LocalDate.parse("2025-07-16"),
             description = "Earn 10% cashback when spending over 100 KD on home decor and furniture purchases",
-            storeId = 10
         )
 
         val sparkGymPromotion = PromotionEntity(
             name = "Summer Fitness Challenge",
-            businessPartnerId = 11,
-            type = RewardType.DISCOUNT,
+            businessPartnerId = 12,
             startDate = LocalDate.parse("2025-07-06"),
             endDate = LocalDate.parse("2025-07-13"),
             description = "Join our summer fitness program and get 20% off membership fees. Get summer-ready!",
-            storeId = 11
         )
 
 
         val pickPromotion = PromotionEntity(
             name = "Healthy Meal Deals",
-            businessPartnerId = 12,
-            type = RewardType.DISCOUNT,
+            businessPartnerId = 13,
             startDate = LocalDate.parse("2025-07-04"),
             endDate = LocalDate.parse("2025-07-08"),
             description = "15% off on all healthy meal options. Eat well, Feel well",
-            storeId = 12
         )
 
         val grandCinemasPromotion = PromotionEntity(
             name = "Family Movie Night",
-            businessPartnerId = 14,
-            type = RewardType.DISCOUNT,
+            businessPartnerId = 15,
             startDate = LocalDate.parse("2025-07-07"),
             endDate = LocalDate.parse("2025-07-10"),
             description = "25% off family tickets for selected shows.",
-            storeId = 14
         )
 
         val chipsStorePromotion = PromotionEntity(
             name = "Gaming Gear Sale",
-            businessPartnerId = 15,
-            type = RewardType.CASHBACK,
+            businessPartnerId = 16,
             startDate = LocalDate.parse("2025-07-02"),
             endDate = LocalDate.parse("2025-07-09"),
             description = "Get 8% cashback on gaming accessories and tech gadgets. Level up your setup!",
-            storeId = 15
         )
 
         val sultanCenterPromotion = PromotionEntity(
             name = "Bulk Shopping Rewards",
-            businessPartnerId = 16,
-            type = RewardType.CASHBACK,
+            businessPartnerId = 17,
             startDate = LocalDate.parse("2025-07-03"),
             endDate = LocalDate.parse("2025-07-17"),
             description = "Get 6% cashback on organic section and veggies purchases. Great deals on smart choices!",
-            storeId = 16
         )
 
         promotionRepository.saveAll(listOf(
