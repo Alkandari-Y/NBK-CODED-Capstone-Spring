@@ -133,7 +133,6 @@ Klue keeps your customers engaged and spending — driving loyalty and deeper pa
 |--------|--------------------------------------------------|-----------------------------------------|
 | GET    | `/api/v1/notifications`                          | Get all your notifications              |
 | GET    | `/api/v1/notifications/details/{notificationId}` | Get details for a specific notification |
-| GET    | `/api/v1/notifications/search`                   | Look up notification sent to you        |
 
 ---
 
