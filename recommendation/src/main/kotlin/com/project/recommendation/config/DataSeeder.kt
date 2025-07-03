@@ -8,11 +8,19 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
 import java.time.LocalTime
+import com.project.recommendation.repositories.PromotionRepository
+import com.project.recommendation.entities.PromotionEntity
+import com.project.common.enums.RewardType
+import com.project.recommendation.filters.LoggingFilter
+import jakarta.mail.Store
+import java.time.LocalDate
 
 
 @Component
 class DataSeeder(
-    private val storeLocationRepository: StoreLocationRepository
+    private val storeLocationRepository: StoreLocationRepository,
+    private val promotionRepository: PromotionRepository,
+    private val loggingFilter: LoggingFilter
 ) {
     @EventListener(ApplicationReadyEvent::class)
     @Transactional
@@ -21,6 +29,7 @@ class DataSeeder(
         Thread.sleep(8000)
         println("Starting data seeding...")
         seedStoreLocations()
+        seedPromotions()
     }
 
     fun seedStoreLocations() {
@@ -31,7 +40,7 @@ class DataSeeder(
 
         println("Seeded default locations.")
         val jumeirahHotel = StoreLocationEntity(
-            partnerId = 1, // reflects partner id
+            partnerId = 1,
             longitude = BigDecimal("29.268885427648737"),
             latitude = BigDecimal("48.08888399119982"),
             googleMapUrl = "https://maps.app.goo.gl/MpCyymSZptJc4W9x5",
@@ -222,10 +231,203 @@ class DataSeeder(
             closesAt = LocalTime.parse("12:00"),
             beaconId = 1,
         )
+        val lushAlHamra = StoreLocationEntity(
+            partnerId = 17,
+            longitude = BigDecimal("29.378143327340798"),
+            latitude = BigDecimal("47.9927118971342"),
+            googleMapUrl = "https://maps.app.goo.gl/ek9UJhpVfyNyLnaw9",
+            country = "Kuwait",
+            addressLine1 = "Kuwait City",
+            addressLine2 = "Al Hamra Tower & Mall",
+            opensAt = LocalTime.parse("08:00"),
+            closesAt = LocalTime.parse("12:00"),
+            beaconId = 1,
+        )
+
+        val signatureSpaAlHamra = StoreLocationEntity(
+            partnerId = 18,
+            longitude = BigDecimal("29.37912848593534"),
+            latitude = BigDecimal("47.99325102112254"),
+            googleMapUrl = "https://maps.app.goo.gl/hp4F7eTu1gc3E3PU6",
+            country = "Kuwait",
+            addressLine1 = "Kuwait City",
+            addressLine2 = "Al Hamra Tower & Mall",
+            opensAt = LocalTime.parse("08:00"),
+            closesAt = LocalTime.parse("12:00"),
+            beaconId = 1,
+        )
+
+        val coleHaanAlHamra = StoreLocationEntity(
+            partnerId = 19,
+            longitude = BigDecimal("29.379551150051835"),
+            latitude = BigDecimal("47.99310187589717"),
+            googleMapUrl = "https://maps.app.goo.gl/gfvfryFrHuhqt7xX8",
+            country = "Kuwait",
+            addressLine1 = "Kuwait City",
+            addressLine2 = "Al Hamra Tower & Mall",
+            opensAt = LocalTime.parse("08:00"),
+            closesAt = LocalTime.parse("12:00"),
+            beaconId = 1,
+        )
+
 
         storeLocationRepository.saveAll(listOf(
             jumeirahHotel, alMosafer, caribouArraya, shakeShack, kidZania, voxCinemas, kuwaitAirways, xcite,
-            hAndM, safatHome, sparkGym, pickAlHamra, ofk, grandCinemas, chipsStore, sultanCenter
+            hAndM, safatHome, sparkGym, pickAlHamra, ofk, grandCinemas, chipsStore, sultanCenter,
+            lushAlHamra, signatureSpaAlHamra, coleHaanAlHamra
+        ))
+    }
+    fun seedPromotions() {
+        if (promotionRepository.count() > 0L) {
+            println("Promotions already exist. Skipping seeding.")
+            return
+        }
+
+        println("Seeding default promotions.")
+
+        val jumeirahPromotion = PromotionEntity(
+            name = "Luxury Stay Package",
+            businessPartnerId = 2,
+            startDate = LocalDate.parse("2025-07-01"),
+            endDate = LocalDate.parse("2025-07-10"),
+            description = "20% off Presidential Suite. Experience world-class hospitality.",
+        )
+
+        val almosaferPromotion = PromotionEntity(
+            name = "Early Bird Flight Deals",
+            businessPartnerId = 3,
+            startDate = LocalDate.parse("2025-07-02"),
+            endDate = LocalDate.parse("2025-07-08"),
+            description = "Book your summer vacation to Greece early and save up to 25%",
+        )
+
+        val caribouPromotion = PromotionEntity(
+            name = "Icy Summer, Icy Coffee",
+            businessPartnerId = 4,
+            startDate = LocalDate.parse("2025-07-01"),
+            endDate = LocalDate.parse("2025-07-07"),
+            description = "Buy a large iced beverage and get a free soft serve. Perfect to beat the heat!",
+        )
+
+        val shakeShackPromotion = PromotionEntity(
+            name = "Burger & Shake Combo Deal",
+            businessPartnerId = 5,
+            startDate = LocalDate.parse("2025-07-03"),
+            endDate = LocalDate.parse("2025-07-09"),
+            description = "Get 15% off when you order any burger with a shake!",
+        )
+
+        val voxPromotion = PromotionEntity(
+            name = "Mission Impossible Movie Week",
+            businessPartnerId = 7,
+            startDate = LocalDate.parse("2025-07-04"),
+            endDate = LocalDate.parse("2025-07-06"),
+            description = "Get 10% cashback on tickets to Mission Impossible: Part Two. Make the impossible, possible!",
+        )
+
+        val kuwaitAirwaysPromotion = PromotionEntity(
+            name = "Fly Kuwait Special Offer",
+            businessPartnerId = 8,
+            startDate = LocalDate.parse("2025-07-02"),
+            endDate = LocalDate.parse("2025-07-07"),
+            description = "Special 20% discount on flights this weekend. Explore the world with comfort!",
+        )
+
+        val xcitePromotion = PromotionEntity(
+            name = "Tech Summer Sale",
+            businessPartnerId = 9,
+            startDate = LocalDate.parse("2025-07-01"),
+            endDate = LocalDate.parse("2025-07-14"),
+            description = "Up to 40% off on selected electronics. Upgrade your tech!",
+        )
+
+
+        val hAndMPromotion = PromotionEntity(
+            name = "Summer Fashion Collection",
+            businessPartnerId = 10,
+            startDate = LocalDate.parse("2025-06-28"),
+            endDate = LocalDate.parse("2025-07-05"),
+            description = "30% off on selected summer collection. Stay stylish and comfortable this season.",
+        )
+
+        val safatHomePromotion = PromotionEntity(
+            name = "Home Makeover Special",
+            businessPartnerId = 11,
+            startDate = LocalDate.parse("2025-07-02"),
+            endDate = LocalDate.parse("2025-07-16"),
+            description = "Earn 10% cashback when spending over 100 KD on home decor and furniture purchases",
+        )
+
+        val sparkGymPromotion = PromotionEntity(
+            name = "Summer Fitness Challenge",
+            businessPartnerId = 12,
+            startDate = LocalDate.parse("2025-07-01"),
+            endDate = LocalDate.parse("2025-07-13"),
+            description = "Join our summer fitness program and get 20% off membership fees. Get summer-ready!",
+        )
+
+
+        val pickPromotion = PromotionEntity(
+            name = "Healthy Meal Deals",
+            businessPartnerId = 13,
+            startDate = LocalDate.parse("2025-06-04"),
+            endDate = LocalDate.parse("2025-07-08"),
+            description = "15% off on all healthy meal options. Eat well, Feel well",
+        )
+
+        val grandCinemasPromotion = PromotionEntity(
+            name = "Family Movie Night",
+            businessPartnerId = 15,
+            startDate = LocalDate.parse("2025-07-02"),
+            endDate = LocalDate.parse("2025-07-10"),
+            description = "25% off family tickets for selected shows.",
+        )
+
+        val chipsStorePromotion = PromotionEntity(
+            name = "Gaming Gear Sale",
+            businessPartnerId = 16,
+            startDate = LocalDate.parse("2025-07-02"),
+            endDate = LocalDate.parse("2025-07-09"),
+            description = "Get 8% cashback on gaming accessories and tech gadgets. Level up your setup!",
+        )
+
+        val sultanCenterPromotion = PromotionEntity(
+            name = "Bulk Shopping Rewards",
+            businessPartnerId = 17,
+            startDate = LocalDate.parse("2025-07-03"),
+            endDate = LocalDate.parse("2025-07-17"),
+            description = "Get 6% cashback on organic section and veggies purchases. Great deals on smart choices!",
+        )
+
+        val lushPromotion = PromotionEntity(
+            name = "Lush Summer Sale",
+            businessPartnerId = 18,
+            startDate = LocalDate.parse("2025-07-01"),
+            endDate = LocalDate.parse("2025-07-15"),
+            description = "20% off on selected lush products. Make your home a little more colorful!"
+        )
+
+        val signatureSpaPromotion = PromotionEntity(
+            name = "Summer Spa Special",
+            businessPartnerId = 19,
+            startDate = LocalDate.parse("2025-0-01"),
+            endDate = LocalDate.parse("2025-07-15"),
+            description = "Enjoy 20% off on selected spa products. Get the perfect fit for your body type."
+        )
+
+        val coleHaan = PromotionEntity(
+            name = "Cole's Hamra Special",
+            businessPartnerId = 20,
+            startDate = LocalDate.parse("2025-07-01"),
+            endDate = LocalDate.parse("2025-07-15"),
+            description = "Enjoy 20% off on selected spa products. Get the perfect fit for your body type."
+        )
+
+        promotionRepository.saveAll(listOf(
+            jumeirahPromotion, almosaferPromotion, caribouPromotion, shakeShackPromotion, voxPromotion,
+            kuwaitAirwaysPromotion, xcitePromotion, hAndMPromotion, safatHomePromotion, sparkGymPromotion, pickPromotion,
+            grandCinemasPromotion, chipsStorePromotion, sultanCenterPromotion, lushPromotion,
+            signatureSpaPromotion
         ))
     }
 }
