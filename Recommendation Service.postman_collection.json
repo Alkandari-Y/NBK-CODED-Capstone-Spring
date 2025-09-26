@@ -1,0 +1,1094 @@
+{
+	"info": {
+		"_postman_id": "f946ef07-e936-49e2-8762-1d3d8499653d",
+		"name": "Recommendation Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13380578",
+		"_collection_link": "https://blue-trinity-17335.postman.co/workspace/NBK-CODED-Capstone~b7814890-45d2-4825-8db1-3ab119439631/collection/13380578-f946ef07-e936-49e2-8762-1d3d8499653d?action=share&source=collection_link&creator=13380578"
+	},
+	"item": [
+		{
+			"name": "Favorite Categories",
+			"item": [
+				{
+					"name": "Favorite Categories",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/fav/categories",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"fav",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set All Favorite Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"categoryIds\": [6, 10, 14]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/fav/categories",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"fav",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add one fav category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"categoryId\": 204\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/fav/categories",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"fav",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Favorite Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"categoryIds\": [1, 2, 3]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/fav/categories",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"fav",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove One Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"categoryId\": 11\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/fav/categories/remove",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"fav",
+								"categories",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Clear categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"categoryIds\": [1, 2, 3, 6]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/fav/categories/clear",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"fav",
+								"categories",
+								"clear"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Favorite Businesses",
+			"item": [
+				{
+					"name": "Favorite Businesses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/fav/businesses",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"fav",
+								"businesses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set All Favorite Businesses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"partnerIds\": [1, 7]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/fav/businesses",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"fav",
+								"businesses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add one fav business",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"partnerId\": 10\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/fav/businesses",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"fav",
+								"businesses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Favorite Businesses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"partnerIds\": [9, 10]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/fav/businesses",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"fav",
+								"businesses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove One Business",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"categoryId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/fav/businesses/remove",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"fav",
+								"businesses",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Clear businesses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"categoryIds\": [1, 2, 3, 6]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/fav/businesses/clear",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"fav",
+								"businesses",
+								"clear"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "StoreLocation",
+			"item": [
+				{
+					"name": "Get All Store Locations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/store-locations",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"store-locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Store Location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/store-locations/details/1",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"store-locations",
+								"details",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Stores near me",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"geo1\",\n  \"name\": \"Avenues\",\n    \"longitude\":29.303206949017863, \n  \"latitude\": 47.936039631200074,\n  \"radius\": 1000,\n  \"type\": \"MALL\",\n  \"description\": \"Test geofence\",\n  \"tags\": [\"something\", \"test\"],\n  \"transitionType\": \"ENTER\",\n  \"userId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/store-locations/near-me",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"store-locations",
+								"near-me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Recommendations",
+			"item": [
+				{
+					"name": "Geofence Entered",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": \"geo1\",\n  \"name\": \"Avenues\",\n  \"longitude\": 29.3041671444999,\n  \"latitude\": 47.93671843875713,\n  \"radius\": 10000,\n  \"type\": \"MALL\",\n  \"description\": \"Test geofence\",\n  \"tags\": [\"something\", \"test\"],\n  \"transitionType\": \"ENTER\",\n  \"userId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/recommendations/geofence",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"recommendations",
+								"geofence"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Onboarding recommendation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/recommendations/onBoarding",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"recommendations",
+								"onBoarding"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Recommendation",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/recommendations",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"recommendations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bluetooth Beacon Trigger",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"beaconId\": 1821,\n    \"userId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/recommendations/bluetooth-beacon",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"recommendations",
+								"bluetooth-beacon"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recommended Account Products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/recommendations",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"recommendations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin - Storelocations",
+			"item": [
+				{
+					"name": "Add store location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"partnerId\":16,\n  \"longitude\": 29.302603485609655,  \n  \"latitude\":47.93756312580713,\n    \"googleMapsUrl\": \"someurl.com\",\n    \"country\": \"Kuwait\",\n    \"addressLine1\": \"address 1\",\n    \"addressLine2\": \"address 2\",\n    \"opensAt\": \"14:30\",\n    \"closesAt\": \"23:45\",\n    \"beaconId\": 2991\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/admin/store-locations",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"store-locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete store location",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"partnerId\": 3,\n    \"longitude\": \"29°18'13\\\"N\",\n    \"latitude\": \"47°56'03\\\"E\",\n    \"googleMapsUrl\": \"someurl.com\",\n    \"country\": \"Kuwait\",\n    \"addressLine1\": \"address 1\",\n    \"addressLine2\": \"address 2\",\n    \"opensAt\": \"14:30\",\n    \"closesAt\": \"23:45\",\n    \"beaconId\": 2991\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/admin/store-locations/3",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"store-locations",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{adminToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Promotions",
+			"item": [
+				{
+					"name": "Get all promotions",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/promotions",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"promotions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Promotion",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/promotions/1",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"promotions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Promotions by Business",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/promotions/business/2",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"promotions",
+								"business",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Active Promotions by Business",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/promotions/business/2/active",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"promotions",
+								"business",
+								"2",
+								"active"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin - Promotions",
+			"item": [
+				{
+					"name": "Create Promotion",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Summer Sale\",\n  \"businessPartnerId\": 15,\n  \"type\": \"CASHBACK\",\n  \"startDate\": \"2025-06-22\",\n  \"endDate\": \"2025-07-31\",\n  \"description\": \"Enjoy up to 50% off during our summer campaign!\",\n  \"storeId\": null,\n  \"xp\": 250\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/admin/promotions",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"promotions"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{adminToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin - Category Score",
+			"item": [
+				{
+					"name": "Increment Category Score",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 2,\n    \"categoryId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/category-scores/increment",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"category-scores",
+								"increment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Initialize Category Scores",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{recommendationServiceUrl}}/category-scores",
+							"host": [
+								"{{recommendationServiceUrl}}"
+							],
+							"path": [
+								"category-scores"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
