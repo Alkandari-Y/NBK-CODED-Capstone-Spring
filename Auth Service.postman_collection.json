@@ -1,0 +1,510 @@
+{
+	"info": {
+		"_postman_id": "ccf03ab2-f551-4af3-99da-b4646eb6f31c",
+		"name": "Auth Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13380578",
+		"_collection_link": "https://blue-trinity-17335.postman.co/workspace/NBK-CODED-Capstone~b7814890-45d2-4825-8db1-3ab119439631/collection/13380578-ccf03ab2-f551-4af3-99da-b4646eb6f31c?action=share&source=collection_link&creator=13380578"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Your test name\", function () {",
+									"    var jsonData = pm.response.json();",
+									"     pm.environment.set(\"token\", jsonData.access);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"testuser@snddev.com\",\n    \"password\": \"passworD123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authServiceUrl}}/auth/register",
+							"host": [
+								"{{authServiceUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Register",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"testuser@snddev.com\",\n    \"password\": \"passworD123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{authServiceUrl}}/auth/register",
+									"host": [
+										"{{authServiceUrl}}"
+									],
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Register Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Your test name\", function () {",
+									"    var jsonData = pm.response.json();",
+									"     pm.environment.set(\"adminToken\", jsonData.access);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"email\": \"admin@gmail.com\",\n    \"password\": \"passworD123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authServiceUrl}}/auth/register",
+							"host": [
+								"{{authServiceUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Your test name\", function () {",
+									"    var jsonData = pm.response.json();",
+									"     pm.environment.set(\"adminToken\", jsonData.access);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"passworD123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authServiceUrl}}/auth/login",
+							"host": [
+								"{{authServiceUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Your test name\", function () {",
+									"    var jsonData = pm.response.json();",
+									"     pm.environment.set(\"token\", jsonData.access);",
+									"     pm.environment.set(\"refreshUser\", jsonData.access)",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\n{\n    \"username\": \"testUser\",\n\n    \"password\": \"passworD123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authServiceUrl}}/auth/login",
+							"host": [
+								"{{authServiceUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Your test name\", function () {",
+									"    var jsonData = pm.response.json();",
+									"     pm.environment.set(\"token\", jsonData.access);",
+									"     pm.environment.set(\"refreshUser\", jsonData.refresh)",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh\": \"eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ0ZXN0dXNlciIsInVzZXJJZCI6Miwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlzQWN0aXZlIjp0cnVlLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTc0ODU1MTY2MCwiZXhwIjoxNzQ5MTU2NDYwfQ.pnw6vdG1utOiFSKCpks49FOYJImnj7jPbHOPk05-W4nBalQ_Y7EDRUqn_qWJvfgD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authServiceUrl}}/auth/refresh",
+							"host": [
+								"{{authServiceUrl}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Validate Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authServiceUrl}}/auth/validate",
+							"host": [
+								"{{authServiceUrl}}"
+							],
+							"path": [
+								"auth",
+								"validate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "AssignRoles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roles\": [\"ROLE_ADMIN\", \"ROLE_DEVELOPER\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authServiceUrl}}/users/add-role/2",
+							"host": [
+								"{{authServiceUrl}}"
+							],
+							"path": [
+								"users",
+								"add-role",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Roles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"ROLE_SUPER_USER_ADMIN_USER_____\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authServiceUrl}}/users/roles",
+							"host": [
+								"{{authServiceUrl}}"
+							],
+							"path": [
+								"users",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set Active",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roles\": [\"ROLE_ADMIN\", \"ROLE_DEVELOPER\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authServiceUrl}}/users/set-active/99",
+							"host": [
+								"{{authServiceUrl}}"
+							],
+							"path": [
+								"users",
+								"set-active",
+								"99"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove roles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roles\": [\"ROLE_ADMIN\", \"ROLE_DEVELOPER\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{authServiceUrl}}/users/remove-role/2",
+							"host": [
+								"{{authServiceUrl}}"
+							],
+							"path": [
+								"users",
+								"remove-role",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJiYmI3NyIsInVzZXJJZCI6NCwicm9sZXMiOlsiUk9MRV9VU0VSIl0sImlzQWN0aXZlIjpmYWxzZSwidHlwZSI6ImFjY2VzcyIsImlhdCI6MTc1MDY5OTQ2NiwiZXhwIjoxNzUxMzA0MjY2fQ.7v_Us44ccohOhKFzgG_eN598FblroqaObTN4mRTzZqp7t9TIzf-dMnKwA5EH4VAp",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

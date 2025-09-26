@@ -1,0 +1,233 @@
+{
+	"info": {
+		"_postman_id": "1a72f5a8-3630-44b0-9cd8-1ffb8dae327e",
+		"name": "Notification Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13380578",
+		"_collection_link": "https://blue-trinity-17335.postman.co/workspace/NBK-CODED-Capstone~b7814890-45d2-4825-8db1-3ab119439631/collection/13380578-1a72f5a8-3630-44b0-9cd8-1ffb8dae327e?action=share&source=collection_link&creator=13380578"
+	},
+	"item": [
+		{
+			"name": "here",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notificationServiceUrl}}/here",
+					"host": [
+						"{{notificationServiceUrl}}"
+					],
+					"path": [
+						"here"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "my notification",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notificationServiceUrl}}/notifications",
+					"host": [
+						"{{notificationServiceUrl}}"
+					],
+					"path": [
+						"notifications"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "my notification details by id",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notificationServiceUrl}}/notifications/details/1",
+					"host": [
+						"{{notificationServiceUrl}}"
+					],
+					"path": [
+						"notifications",
+						"details",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin - notification search",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notificationServiceUrl}}/notifications/search?userId=2&partnerId=2",
+					"host": [
+						"{{notificationServiceUrl}}"
+					],
+					"path": [
+						"notifications",
+						"search"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "2"
+						},
+						{
+							"key": "partnerId",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register User Device",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firebaseToken\": \"fBuREFq0Ry-k6cc3GGJ4GA:APA91bGGz3axgiPiTTfvZufSbypYbrj0zD-GZHWrgFvIAaLkUrbComLE3NOFxeMyBH0DHFKPeEhohvkCGADejXJPguBY_NNLArh67PRyjs1tC-kBty3h-34\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{notificationServiceUrl}}/device/register",
+					"host": [
+						"{{notificationServiceUrl}}"
+					],
+					"path": [
+						"device",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "firebase test",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"token\": \"dfPuwUdoSpSxc9ivf-CPiy:APA91bEJvHFFaWSY_9PDoEi3TR9b3RbCe_nzliADTiXU8Q5RgWgJuE5QHdJiRFqpnUSEvPsfSbNiBVd2poMoSKXRRj9Tggi3EBsTsf6HjhfMISHscaThceA\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{notificationServiceUrl}}/here/test",
+					"host": [
+						"{{notificationServiceUrl}}"
+					],
+					"path": [
+						"here",
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Admin - Account Score Notificaiton",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"account-score test\",\n    \"message\": \"this is a test for the account score\",\n    \"accountProductName\": \"Family\",\n    \"accountProductId\": 6,\n    \"recommendationId\": 10,\n    \"userId\": 2\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{notificationServiceUrl}}/notifications/account-score",
+					"host": [
+						"{{notificationServiceUrl}}"
+					],
+					"path": [
+						"notifications",
+						"account-score"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

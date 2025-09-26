@@ -1,0 +1,1357 @@
+{
+	"info": {
+		"_postman_id": "b3476061-36c3-4c2f-b3da-de0184674b7f",
+		"name": "Banking Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13380578",
+		"_collection_link": "https://blue-trinity-17335.postman.co/workspace/NBK-CODED-Capstone~b7814890-45d2-4825-8db1-3ab119439631/collection/13380578-b3476061-36c3-4c2f-b3da-de0184674b7f?action=share&source=collection_link&creator=13380578"
+	},
+	"item": [
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "All Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/categories",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "AccountProducts",
+			"item": [
+				{
+					"name": "Account Products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/products",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Account Products Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/products/7",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"products",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "All Perks of Account Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/products/4/perks",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"products",
+								"4",
+								"perks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Perk Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/products/perks/4",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"products",
+								"perks",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "KYC",
+			"item": [
+				{
+					"name": "Get My KYC",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/kyc",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"kyc"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User KYC",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/kyc/client/2",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"kyc",
+								"client",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Update KYC",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"yousef\",\n    \"lastName\": \"alk\",\n    \"dateOfBirth\": \"19-01-1992\",\n    \"salary\": 700,\n    \"nationality\": \"Kuwaiti\",\n    \"civilId\": \"1111111\",\n    \"mobileNumber\": \"999091111\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/kyc",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"kyc"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Onboarding Account",
+			"item": [
+				{
+					"name": "onboarding create account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accountProductId\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/accounts/onboarding/create",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"accounts",
+								"onboarding",
+								"create"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "accounts",
+			"item": [
+				{
+					"name": "Get all my accounts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/accounts",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all businesses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/accounts",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accountProductId\": 5\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/accounts",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transfer",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourceAccountNumber\": \"479490501005\",\n    \"destinationAccountNumber\": \"367514308760\",\n    \"amount\": 5\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/accounts/transfer",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"accounts",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Purchase",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sourceAccountNumber\": \"785602154344\",\n    \"destinationAccountNumber\": \"459703329403\",\n    \"amount\": 67\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/accounts/purchase",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"accounts",
+								"purchase"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Close my accounts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"initialBalance\": 500.00,\n    \"name\": \"Totally Not Thief Account\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/accounts/close/50616382945489268676",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"accounts",
+								"close",
+								"50616382945489268676"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Basic Account Details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/accounts/details?accountId=1",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"accounts",
+								"details"
+							],
+							"query": [
+								{
+									"key": "accountNumber",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "accountId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transactions by account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/transactions/account?accountId=11",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"transactions",
+								"account"
+							],
+							"query": [
+								{
+									"key": "accountId",
+									"value": "11"
+								},
+								{
+									"key": "accountNumber",
+									"value": "630703163545",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transactions by user id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{campaignOwnerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/transactions/clients/1",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"transactions",
+								"clients",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ble - Get Client Unique cards and related business",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 2,\n    \"businessPartnerId\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/accounts/clients/products",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"accounts",
+								"clients",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Partners",
+			"item": [
+				{
+					"name": "Get All Partners",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/partners",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"partners"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Partner By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/admin/partners/6/account",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"partners",
+								"6",
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Partners by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/by-category/6",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"by-category",
+								"6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "XP",
+			"item": [
+				{
+					"name": "Get all XP tiers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/xp/tiers",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"xp",
+								"tiers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get XP tier by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/xp/tiers/2",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"xp",
+								"tiers",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User's XP info",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/xp",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"xp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User's XP History",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/xp",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"xp"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin - Account Products",
+			"item": [
+				{
+					"name": "Create Account Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "infinity",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "postman-cloud:///1f04bf06-1175-4a40-a9b0-809672ce88e7"
+								},
+								{
+									"key": "accountType",
+									"value": "CREDIT",
+									"type": "text"
+								},
+								{
+									"key": "interestRate",
+									"value": "2.000",
+									"type": "text"
+								},
+								{
+									"key": "creditLimit",
+									"value": "4000.000",
+									"type": "text"
+								},
+								{
+									"key": "annualFee",
+									"value": "100.000",
+									"type": "text"
+								},
+								{
+									"key": "minSalary",
+									"value": "1000.000",
+									"type": "text"
+								},
+								{
+									"key": "minBalance",
+									"value": "0.000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/admin/products",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"products"
+							],
+							"query": [
+								{
+									"key": "accountNumber",
+									"value": "44444444",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "infinity",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "postman-cloud:///1f04bf06-1175-4a40-a9b0-809672ce88e7"
+								},
+								{
+									"key": "accountType",
+									"value": "CREDIT",
+									"type": "text"
+								},
+								{
+									"key": "interestRate",
+									"value": "2.000",
+									"type": "text"
+								},
+								{
+									"key": "creditLimit",
+									"value": "4000.000",
+									"type": "text"
+								},
+								{
+									"key": "annualFee",
+									"value": "100.000",
+									"type": "text"
+								},
+								{
+									"key": "minSalary",
+									"value": "1000.000",
+									"type": "text"
+								},
+								{
+									"key": "minBalance",
+									"value": "0.000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/admin/products/6",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"products",
+								"6"
+							],
+							"query": [
+								{
+									"key": "accountNumber",
+									"value": "44444444",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Perk",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"DISCOUNT\",\n    \"minPayment\": 10.00,\n    \"rewardsXp\": 500,\n    \"perkAmount\": 5.00,\n    \"isTierBased\": true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/admin/products/5/perks",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"products",
+								"5",
+								"perks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Category to Perk",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n     \"categoryName\": \"construction\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/admin/products/perks/5/category",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"products",
+								"perks",
+								"5",
+								"category"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin - Categories",
+			"item": [
+				{
+					"name": "Create Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"coded\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/categories",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin - Partners",
+			"item": [
+				{
+					"name": "Create Business Partner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Raising Canes\",\n  \"categoryId\": 1,\n  \"logoUrl\": \"something/png\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/admin/partners",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"partners"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Partner Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/admin/partners/1/account",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"partners",
+								"1",
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Business Partner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Zara\",\n  \"categoryId\": 1,\n  \"logoUrl\": \"something/png\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/admin/partners/2",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"partners",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin - XP",
+			"item": [
+				{
+					"name": "Create XP tier",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"minXp\": 5000,\n  \"maxXp\": 9999,\n  \"name\": \"Gold\",\n  \"xpPerkMultiplier\": 3,\n  \"xpPerNotification\": 20,\n  \"xpPerPromotion\": 35,\n  \"perkAmountPercentage\": 15\n}"
+						},
+						"url": {
+							"raw": "{{bankingServiceUrl}}/admin/xp-tiers",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"xp-tiers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete XP tier by ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{bankingServiceUrl}}/admin/xp-tiers/4",
+							"host": [
+								"{{bankingServiceUrl}}"
+							],
+							"path": [
+								"admin",
+								"xp-tiers",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{adminToken}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	]
+}
